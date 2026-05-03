@@ -163,4 +163,8 @@ At the start of every session, mentally confirm:
 
 ---
 
+---
 *This is a working document. Update it as the project evolves: add rules, correct things that turn out to be wrong, note important decisions made. The goal is that any future session — whether continuing with you or switching to a different AI tool — can pick up with complete context from reading this file.*
+
+---
+*Session verification note: Tooling test performed on May 3, 2026. Successfully confirmed file modification capabilities.*

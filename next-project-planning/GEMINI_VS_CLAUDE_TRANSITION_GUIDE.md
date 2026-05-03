@@ -33,13 +33,27 @@ Unlike Claude Code's built-in session memory, Gemini CLI uses a explicit 3-tier 
 
 **Strategy Note:** If you found Sonnet 4.6 worked well, `gemini-3.1-pro` is your best equivalent. We are currently using `gemini-3-flash-preview` for this initialization phase to preserve your daily quota while still maintaining high reasoning.
 
-### Quota Recovery (Going Beyond 100%)
+### Quota Recovery and Billing
 
-If you hit 100% of your daily free quota today (you are currently at ~51% requests used):
+If you hit 100% of your daily free quota:
 
-1. **Switch to API Key:** You can switch to a "pay-as-you-go" Gemini API key instantly.
-2. **Command:** Use the **`/auth`** slash command within our active session. This will open a menu to change your authentication method to your API key (ensure you have `GEMINI_API_KEY` set in your environment).
-3. **Billing:** Metered usage is typically cheaper for developers than flat subscriptions.
+1. **New Google Cloud Project:** For "Heritage Odyssey," we recommend creating a dedicated Google Cloud project to maintain clean billing separation and monitor costs specific to this application.
+2. **Step-by-Step API Key Creation:**
+   - Go to [Google AI Studio](https://aistudio.google.com/).
+   - Click **"Get API key"** in the sidebar.
+   - Click **"Create API key"**.
+   - Create it in a new, dedicated Google Cloud Project.
+   - Securely save the key in your environment variables.
+3. **Switching Auth:** Use the **`/auth`** slash command within our active session to transition to your API key.
+   - *Note:* Changing authentication modes via `/auth` does **not** reset our current chat memory; you can switch seamlessly without losing context.
+4. **Cost Comparison:**
+
+| Model | Input Cost / M tokens | Output Cost / M tokens | Note |
+|---|---|---|---|
+| **Gemini Flash (Paid)** | ~$0.075 | ~$0.30 | Token-based billing |
+| **Claude Sonnet 4.6** | $3.00 | $15.00 | Pro: Flat $20/mo |
+
+*Note: Claude Pro is a flat $20/month subscription, whereas Gemini API is usage-based.*
 
 ## 4. Workflow Non-Negotiables
 
