@@ -50,21 +50,24 @@ All raw data will be stored in `scripts/data/` (gitignored).
 5.  **Upsert:** Write to Pinecone with full metadata.
 
 ### Server Services
-*   **`server/src/services/embedding.ts`:** Wrapper for `openai.embeddings.create`.
-*   **`server/src/services/vectorStore.ts`:**
-    *   `query(text: string, filter?: object)`: Performs the similarity search.
+*   **\`server/src/services/embedding.ts\`**: Wrapper for \`openai.embeddings.create\`.
+*   **\`server/src/services/vectorStore.ts\`**:
+    *   \`query(text: string, filter?: object)\`: Performs the similarity search.
     *   Implements metadata filtering to allow agents to scope searches (e.g., "only search 1890s data").
+*   **\`server/tests/services/vectorStore.test.ts\`**: Vitest unit tests that mock the Pinecone client and verify that \`vectorStore.query\` returns the expected shape (id, score, metadata) and that year and region metadata filters are correctly passed through to the Pinecone query call.
 
 ## 5. Implementation Steps
 1.  **Setup Index:** Manually create the Pinecone serverless index.
 2.  **Collect Data:** Download Gutenberg texts and implement the LOC fetcher script.
 3.  **Process OWID:** Implement CSV-to-Text summary conversion logic.
-4.  **Ingestion Script:** Implement the main `ingest.ts` with LangChain splitters.
-5.  **Server Services:** Implement `embedding.ts` and `vectorStore.ts` in the backend.
+4.  **Ingestion Script:** Implement the main \`ingest.ts\` with LangChain splitters.
+5.  **Server Services:** Implement \`embedding.ts\` and \`vectorStore.ts\` in the backend.
 6.  **Verification Test:** A script that queries "Life at Ellis Island" and returns a relevant Gutenberg/LOC mix.
 
 ## 6. Verification (Done Criteria)
-- [ ] `scripts/data/` contains at least 50MB of diverse historical data.
-- [ ] `npm run ingest` completes without errors, and Pinecone shows >1000 vectors.
-- [ ] `vectorStore.query` returns top-5 matches with metadata in <500ms.
-- [ ] Embeddings use `text-embedding-3-small` with 1536 dimensions.
+- [ ] \`scripts/data/\` contains at least 50MB of diverse historical data.
+- [ ] \`npm run ingest\` completes without errors, and Pinecone shows >1000 vectors.
+- [ ] \`vectorStore.query\` returns top-5 matches with metadata in <500ms.
+- [ ] Embeddings use \`text-embedding-3-small\` with 1536 dimensions.
+- [ ] \`vectorStore.query\` unit tests pass with a mocked Pinecone client, verifying filter passthrough and response shape.
+

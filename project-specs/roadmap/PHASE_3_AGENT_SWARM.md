@@ -85,10 +85,11 @@ The graph is defined in `server/src/agents/graph.ts`:
 > If the draft contradicts the research, set requiresRevision to true and explain the error."
 
 ## 7. Key Files to Implement
-- **`server/src/agents/state.ts`**: Defines the `AgentState` annotation.
-- **`server/src/agents/nodes.ts`**: Contains the logic for Researcher, Synthesizer, and Narrator nodes.
-- **`server/src/agents/graph.ts`**: Compiles the `StateGraph` and exports the runnable agent.
-- **`server/src/services/narrativeService.ts`**: Exports `generateNarrative(query: string)`, which invokes the LangGraph runnable and returns the `finalScript`.
+- **\`server/src/agents/state.ts\`**: Defines the \`AgentState\` annotation.
+- **\`server/src/agents/nodes.ts\`**: Contains the logic for Researcher, Synthesizer, and Narrator nodes.
+- **\`server/src/agents/graph.ts\`**: Compiles the \`StateGraph\` and exports the runnable agent.
+- **\`server/src/services/narrativeService.ts\`**: Exports \`generateNarrative(query: string)\`, which invokes the LangGraph runnable and returns the \`finalScript\`.
+- **\`server/tests/agents/graph.test.ts\`**: A Vitest integration test that compiles the StateGraph and runs one full cycle with all three nodes mocked, verifying two routing scenarios: \`requiresRevision\` false routes to \`END\`, and \`requiresRevision\` true with \`iterationCount\` below 3 routes back to \`researcher_node\`.
 
 ## 8. Error Handling & Loop Control
 - **Iteration Limit:** Max 3 loops. If exceeded, the Narrator must finalize the best possible version.
@@ -96,7 +97,9 @@ The graph is defined in `server/src/agents/graph.ts`:
 
 ## 9. Verification (Done Criteria)
 - [ ] LangGraph successfully executes the full chain from query to script.
-- [ ] Researcher correctly passes filters to the Phase 2 `vectorStore.query`.
+- [ ] Researcher correctly passes filters to the Phase 2 \`vectorStore.query\`.
 - [ ] Logs show the Narrator successfully triggering a re-research edge when a fact is wrong.
-- [ ] `narrativeService.generateNarrative` is unit tested with mock agent outputs.
+- [ ] \`narrativeService.generateNarrative\` is unit tested with mock agent outputs.
 - [ ] A sample query produces a script >300 words with specific historical references.
+- [ ] The StateGraph compiles without error in the test environment.
+- [ ] The conditional routing logic (re-research edge and iteration limit) is verified by automated test.
