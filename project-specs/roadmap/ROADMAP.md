@@ -72,9 +72,15 @@
 *   **Deliverables:**
     1. Final production security audit.
     2. Railway configuration for Express backend.
-    3. Vercel configuration for Next.js/React frontend.
+    3. Vercel configuration for React + Vite frontend.
     4. E2E tests (Playwright) covering user flow.
     5. Production environment variable management.
     6. Final performance and load testing.
 *   **Risks:** Environment differences between staging/prod; CORS and deployment-specific security configs.
 *   **Done:** The application is deployed and accessible in a production environment with all E2E tests passing.
+
+---
+
+## Post-Roadmap Documentation
+
+After all phase planning documents are complete, write `project-specs/docs/API_INTEGRATIONS.md` covering: ElevenLabs, OpenAI Whisper, Pinecone, LangGraph, and Ragas/TruLens. Writing it after the phase docs ensures implementation-specific details (exact methods, endpoints, SDK patterns) are captured accurately rather than generically.
