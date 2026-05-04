@@ -1,4 +1,4 @@
-# Phase 6 Plan: Deployment & Launch
+# Phase 7 Plan: Deployment & Launch
 
 ## 1. Objective
 Finalize the production environment for Heritage Odyssey by deploying the Express 5 backend to Railway and the React 19 frontend to Vercel. This phase focuses on production-grade security, performance stability under load, and end-to-end verification of the full narrative pipeline.
@@ -29,18 +29,18 @@ All environment variables must be configured in the respective deployment platfo
 | :--- | :--- | :--- | :--- |
 | `PORT` | Phase 1 | Port for the Express server (set by Railway automatically) | Server |
 | `NODE_ENV` | Phase 1 | Set to `production` | Server, Client |
-| `OPENAI_API_KEY` | Phase 2, 3, 4 | Used for Whisper (STT) and GPT-4o models (Swarm) | Server |
-| `PINECONE_API_KEY` | Phase 1, 2 | Access to the vector database | Server |
-| `PINECONE_ENVIRONMENT` | Phase 1, 2 | The environment for the Pinecone index | Server |
-| `PINECONE_INDEX` | Phase 1, 2 | The name of the production index | Server |
-| `ELEVENLABS_API_KEY`| Phase 4 | Access to ElevenLabs TTS | Server |
-| `ELEVENLABS_VOICE_ID`| Phase 4 | ID for the narrator voice | Server |
-| `VITE_API_URL` | Phase 6 | The public URL of the deployed Railway backend | Client |
-| `CORS_ORIGIN` | Phase 6 | The public URL of the deployed Vercel frontend | Server |
-| `EVAL_MODE` | Phase 5 | Set to `false` or leave unset in production to disable trace logging | Server |
-| `LANGCHAIN_TRACING_V2`| Phase 3 | Must NOT be enabled in production without a configured LangSmith key; leave unset | Server |
-| `JWT_SECRET` | Phase 1 | Defined in Zod schema; set to placeholder for now (auth out of scope) | Server |
-| `DATABASE_URL` | Phase 1 | Defined in Zod schema; set to placeholder for now (auth out of scope) | Server |
+| `OPENAI_API_KEY` | Phase 3, 4, 5 | Used for Whisper (STT) and GPT-4o models (Swarm) | Server |
+| `PINECONE_API_KEY` | Phase 1, 3 | Access to the vector database | Server |
+| `PINECONE_ENVIRONMENT` | Phase 1, 3 | The environment for the Pinecone index | Server |
+| `PINECONE_INDEX` | Phase 1, 3 | The name of the production index | Server |
+| `ELEVENLABS_API_KEY`| Phase 5 | Access to ElevenLabs TTS | Server |
+| `ELEVENLABS_VOICE_ID`| Phase 5 | ID for the narrator voice | Server |
+| `VITE_API_URL` | Phase 7 | The public URL of the deployed Railway backend | Client |
+| `CORS_ORIGIN` | Phase 7 | The public URL of the deployed Vercel frontend | Server |
+| `EVAL_MODE` | Phase 6 | Set to `false` or leave unset in production to disable trace logging | Server |
+| `LANGCHAIN_TRACING_V2`| Phase 4 | Must NOT be enabled in production without a configured LangSmith key; leave unset | Server |
+| `JWT_SECRET` | Phase 2 | Defined in Zod schema; set to placeholder for now | Server |
+| `DATABASE_URL` | Phase 2 | Defined in Zod schema; set to placeholder for now | Server |
 
 ## 4. Security & Hardening
 

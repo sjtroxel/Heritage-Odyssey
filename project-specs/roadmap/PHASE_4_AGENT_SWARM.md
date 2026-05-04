@@ -1,4 +1,4 @@
-# Phase 3 Plan: Agent Swarm (LangGraph)
+# Phase 4 Plan: Agent Swarm (LangGraph)
 
 ## 1. Objective
 Implement a multi-agent orchestration layer using LangGraph to transform raw user queries about ancestors into emotionally resonant, historically accurate narratives. The swarm will research historical context, synthesize findings, and deliver a final oral-history-style story.

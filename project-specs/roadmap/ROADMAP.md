@@ -3,11 +3,12 @@
 | Phase | Name | Duration | Key Goal |
 | :--- | :--- | :--- | :--- |
 | 1 | **Foundation** | 3 Days | Set up the monorepo structure and development environment. |
-| 2 | **Data & RAG** | 5 Days | Implement document ingestion and vector storage via Pinecone. |
-| 3 | **Agent Swarm** | 6 Days | Build the LangGraph orchestration for historical narrative generation. |
-| 4 | **Voice & UI** | 5 Days | Integrate ElevenLabs/Whisper and develop the frontend interface. |
-| 5 | **Evaluation** | 4 Days | Implement Ragas/TruLens for validation of historical accuracy. |
-| 6 | **Deployment & Launch** | 2 Days | Finalize production deployment and verify platform stability. |
+| 2 | **Database & Auth** | 3 Days | Implement Neon PostgreSQL schema with Drizzle ORM and JWT-based authentication. |
+| 3 | **Data & RAG** | 5 Days | Implement document ingestion and vector storage via Pinecone. |
+| 4 | **Agent Swarm** | 6 Days | Build the LangGraph orchestration for historical narrative generation. |
+| 5 | **Voice & UI** | 5 Days | Integrate ElevenLabs/Whisper and develop the frontend interface. |
+| 6 | **Evaluation** | 4 Days | Implement Ragas/TruLens for validation of historical accuracy. |
+| 7 | **Deployment & Launch** | 2 Days | Finalize production deployment and verify platform stability. |
 
 ---
 
@@ -24,7 +25,18 @@
 *   **Risks:** Ensuring `NodeNext` resolution is strictly followed across workspaces to avoid module errors.
 *   **Done:** All local development environments are initialized, passing lint/type checks, and running base unit tests.
 
-### Phase 2: Data & RAG
+### Phase 2: Database & Auth
+*   **Deliverables:**
+    1. Neon PostgreSQL provisioning and connection pooling.
+    2. Drizzle ORM schema (`users`, `ancestor_profiles`, `saved_narratives` tables).
+    3. `drizzle-kit` migrations.
+    4. JWT signup/login/logout/refresh endpoints.
+    5. Auth middleware (`server/src/middleware/auth.ts`).
+    6. Shared types for `User` and `AuthResponse`.
+*   **Risks:** JWT security best practices; Drizzle and `postgres.js` compatibility with `NodeNext` module resolution.
+*   **Done:** Migrations run successfully, signup and login endpoints issue valid JWTs, auth middleware blocks unauthenticated requests, 80%+ test coverage on auth endpoints.
+
+### Phase 3: Data & RAG
 *   **Deliverables:**
     1. Pinecone project and index creation.
     2. Historical document ingestion script.
@@ -35,7 +47,7 @@
 *   **Risks:** Ensuring accurate retrieval of historical context; managing embedding token costs.
 *   **Done:** A populated Pinecone index that supports semantic search of historical documents with verified retrieval latency.
 
-### Phase 3: Agent Swarm
+### Phase 4: Agent Swarm
 *   **Deliverables:**
     1. LangGraph environment setup.
     2. Primary "Narrator" agent definition.
@@ -47,7 +59,7 @@
 *   **Risks:** Preventing "hallucinations" in historical narratives; agent loop optimization.
 *   **Done:** The multi-agent swarm successfully orchestrates a research-to-narrative pipeline based on an example historical query.
 
-### Phase 4: Voice & UI
+### Phase 5: Voice & UI
 *   **Deliverables:**
     1. OpenAI Whisper STT integration.
     2. ElevenLabs TTS integration.
@@ -58,7 +70,7 @@
 *   **Risks:** Latency in audio generation/streaming; cross-platform audio compatibility.
 *   **Done:** A user can speak/type a prompt, and the app successfully plays back an audio-narrated historical response in the UI.
 
-### Phase 5: Evaluation
+### Phase 6: Evaluation
 *   **Deliverables:**
     1. Ragas/TruLens evaluation framework setup.
     2. Test dataset creation (Historical query/answer pairs).
@@ -68,7 +80,7 @@
 *   **Risks:** Defining "ground truth" for subjective oral-history-style narratives.
 *   **Done:** The system has an automated evaluation suite that provides measurable quality scores for retrieval and historical factual alignment.
 
-### Phase 6: Deployment & Launch
+### Phase 7: Deployment & Launch
 *   **Deliverables:**
     1. Final production security audit.
     2. Railway configuration for Express backend.

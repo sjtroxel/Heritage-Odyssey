@@ -1,4 +1,4 @@
-# Phase 5 Plan: Evaluation
+# Phase 6 Plan: Evaluation
 
 ## 1. Objective
 Establish a rigorous, automated evaluation framework to measure the historical accuracy, retrieval relevance, and narrative quality of the Heritage Odyssey platform. Using **Ragas** and **TruLens**, we will quantify the "hallucination" risk and ensure the multi-agent swarm delivers trustworthy, emotionally resonant stories.

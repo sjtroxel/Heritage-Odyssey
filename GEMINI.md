@@ -74,7 +74,6 @@ The full portfolio context is in `next-project-planning/DEVELOPER_PROFILE_MAY_20
 
 ### Frontend
 - **Mobile-first** — 375px is the base viewport. Desktop layered with `md:` breakpoints.
-- **No authentication** — fully public read-only (or public interactive). No user accounts.
 
 ### Testing
 - **Vitest** for unit + integration tests.
@@ -115,7 +114,7 @@ new-project/
 │   │   ├── server.ts            ← calls listen()
 │   │   └── ...
 │   └── tests/
-├── client/                      ← npm workspace (React/Next.js frontend)
+├── client/                      ← npm workspace (React frontend)
 ├── shared/                      ← npm workspace
 │   ├── types.d.ts               ← shared types (.d.ts not .ts)
 │   └── models.ts                ← AI model constants
@@ -137,10 +136,10 @@ Monorepo with npm workspaces. Same pattern as Asteroid Bonanza and Wildlife Sent
 | Vector DB | Pinecone | `@pinecone-database/pinecone` |
 | Voice (STT) | OpenAI Whisper | `openai` SDK, `audio.transcriptions.create()` |
 | Voice (TTS) | ElevenLabs | `elevenlabs` SDK or direct HTTP |
-| LLM | Claude Haiku 4.5 or Gemini 2.5 Flash | Cost-conscious selection — TBD based on project needs |
-| Embeddings | Google `text-embedding-004` or `gemini-embedding-001` | Via `@google/generative-ai` |
+| LLM | GPT-4o (Researcher + Narrator) / GPT-4o-mini (Synthesizer) | Via @langchain/openai, model strings in shared/models.ts |
+| Embeddings | text-embedding-3-small | Via @langchain/openai, 1536 dimensions, same OPENAI_API_KEY |
 | Evaluation | Ragas and/or TruLens | Standard eval tooling, not custom scoring math |
-| Frontend | React 19 + Vite, or Next.js 15 App Router | TBD based on project needs |
+| Frontend | React 19 + Vite | Same patterns as prior projects |
 | Styling | Tailwind CSS v4 (CSS-first `@theme {}`) | No `tailwind.config.js` |
 | Testing | Vitest + Playwright | Same patterns as prior projects |
 | Deployment | Railway (backend) + Vercel (frontend) | Same as prior projects |

@@ -1,4 +1,4 @@
-# Phase 2 Plan: Data & RAG
+# Phase 3 Plan: Data & RAG
 
 ## 1. Objective
 Build the historical knowledge foundation by sourcing diverse migration data, processing it into optimized chunks, and creating a robust retrieval service using Pinecone and OpenAI.
