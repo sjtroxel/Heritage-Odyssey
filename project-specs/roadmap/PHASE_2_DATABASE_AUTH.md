@@ -13,6 +13,7 @@ Establish a secure, persistent data layer using Neon PostgreSQL and implement JW
     - `users`: `id`, `email`, `password_hash`, `created_at`.
     - `ancestor_profiles`: `id`, `user_id`, `name`, `birth_region`, `era`, `created_at`.
     - `saved_narratives`: `id`, `user_id`, `ancestor_profile_id`, `content_text`, `created_at`.
+    - `model_usage`: `id`, `user_id` (nullable), `model_name`, `prompt_tokens`, `completion_tokens`, `total_tokens`, `endpoint`, `created_at`. Tracks every AI API call for cost visibility.
 3. **Migrations:** Configure `drizzle-kit` for schema migrations and versioning.
 4. **JWT Authentication:**
     - Implement `POST /api/auth/signup` (password hashing with `bcrypt`).
@@ -23,7 +24,7 @@ Establish a secure, persistent data layer using Neon PostgreSQL and implement JW
 6. **Shared Types:** Define `User`, `AuthResponse`, and related types in `shared/types.d.ts`.
 
 ## 4. Key Files
-- `server/src/db/schema.ts`: Drizzle schema definitions.
+- `server/src/db/schema.ts`: Drizzle schema definitions. Add `model_usage` table to Drizzle schema.
 - `server/src/db/index.ts`: Database client and connection pooling.
 - `server/src/middleware/auth.ts`: JWT verification middleware.
 - `server/src/controllers/authController.ts`: Auth endpoint logic.
@@ -37,3 +38,17 @@ Establish a secure, persistent data layer using Neon PostgreSQL and implement JW
 - [ ] `refresh` endpoint successfully rotates tokens.
 - [ ] All auth endpoints have 80%+ test coverage via Supertest with a mocked database.
 - [ ] Authenticated users can successfully create an ancestor profile and save a narrative.
+- [ ] `model_usage` table is included in the Drizzle schema and migrated successfully.
+
+---
+
+## Before Starting Phase 3
+
+**Define the narrative-quality rubric before building the agent that generates narratives.** Ragas (Phase 6) will measure retrieval quality (faithfulness, relevance, precision) — but none of those metrics measure whether the output is emotionally resonant oral history, which is the stated core goal of this project.
+
+Before Phase 3 implementation begins, document in `project-specs/docs/NARRATIVE_RUBRIC.md`:
+- A 5-point LLM-judge scoring scale (1 = factually hollow, 5 = emotionally resonant and grounded)
+- 3–5 named criteria (e.g., historical specificity, emotional grounding, narrative arc, voice authenticity)
+- 2–3 short golden example passages that score a 5
+
+This rubric informs what data to prioritize in Phase 3 ingestion, how to prompt the Narrator node in Phase 4, and how to evaluate output in Phase 6.

@@ -26,6 +26,7 @@ heritage-odyssey/
 │   │   ├── config/
 │   │   │   └── env.ts           # Zod env validation
 │   │   └── services/
+│   │       └── logger.ts            # Structured request/app logger (pino)
 │   └── tests/                   # Vitest unit/integration tests
 ├── client/                      # React 19 + Vite Frontend
 │   ├── package.json
@@ -64,9 +65,17 @@ heritage-odyssey/
     *   `JWT_SECRET`
 
 ### Express 5 Setup
-*   `server/src/app.ts`: Exports `app`, configures middleware (CORS, JSON), and basic error handling.
+*   `server/src/app.ts`: Exports `app`, configures middleware (CORS, JSON, helmet, rate-limit), and basic error handling.
+*   **helmet**: Applied globally in `app.ts` to set secure HTTP response headers.
+*   **express-rate-limit**: Applied globally with a sensible default (e.g., 100 req / 15 min). AI endpoints are expensive — leaving them unprotected through Phase 6 is a cost risk during ingestion testing.
+*   **Zod request validation middleware**: A reusable `validate(schema)` middleware factory in `server/src/middleware/validate.ts` that validates `req.body` against a Zod schema and returns a typed 400 error on failure. Used for all POST/PUT routes from Phase 2 onward.
 *   `server/src/server.ts`: Imports `app` and `env`, starts the server on `env.PORT`.
 *   All relative imports MUST use `.js` extensions per NodeNext rules.
+
+### Structured Logger
+*   `server/src/services/logger.ts`: Thin wrapper around `pino`. Exports a single `logger` instance used across all server modules.
+*   Do not use `console.log` anywhere in server code — use `logger.info`, `logger.warn`, `logger.error`.
+*   Phase 6 eval tracing will build on this logger; establishing the convention now avoids a retroactive refactor.
 
 ### Client Setup (Vite + Tailwind v4)
 *   React 19 + Vite.
@@ -84,8 +93,12 @@ heritage-odyssey/
 2.  **Shared Workspace:** Define `types.d.ts` and `models.ts` boilerplate.
 3.  **Server Workspace:**
     *   Install Express 5, TypeScript, Zod, Vitest, Supertest.
+    *   Install `helmet`, `express-rate-limit`, `pino`.
     *   Implement `env.ts` validation logic.
+    *   Implement `server/src/services/logger.ts` (pino instance, exported as `logger`).
+    *   Implement `server/src/middleware/validate.ts` (Zod schema middleware factory).
     *   Implement `app.ts` (with health check) and `server.ts`.
+    *   Wire `helmet()` and `rateLimit()` into `app.ts` before route registration.
     *   Add basic unit test to verify Express setup.
 4.  **Client Workspace:**
     *   Scaffold Vite + React 19.
@@ -101,5 +114,7 @@ heritage-odyssey/
 - [ ] `npm run test` passes with at least one unit test in both `server` and `client`.
 - [ ] Server starts successfully and responds to a `/health` check.
 - [ ] Client builds and displays a "Heritage Odyssey" placeholder.
+- [ ] `app.ts` applies `helmet` and `express-rate-limit` — verified by inspecting response headers on `/health`.
+- [ ] `server/src/services/logger.ts` exports a `pino` logger instance; no `console.log` calls exist in server source files.
 - [ ] A deliberate pre-commit attempt with a staged secret (e.g., a fake API key pattern) is blocked by gitleaks.
 - [ ] git commit with a staged .ts file triggers lint-staged and the file is linted before the commit proceeds.

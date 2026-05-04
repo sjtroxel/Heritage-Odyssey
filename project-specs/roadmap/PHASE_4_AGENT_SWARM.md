@@ -16,6 +16,7 @@ The graph state will track the evolution of the narrative.
 ```typescript
 // server/src/agents/state.ts
 import { Annotation } from "@langchain/langgraph";
+import { HandoffPackage } from "../../shared/types.js";
 
 export const AgentState = Annotation.Root({
   // The original user query (e.g., "Tell me about a Polish family in 1890 Chicago")
@@ -38,6 +39,9 @@ export const AgentState = Annotation.Root({
   
   // Flag to trigger re-research if fact-check fails
   requiresRevision: Annotation<boolean>,
+
+  // Surfaced when retrieval is too thin to build a story
+  handoffPackage: Annotation<HandoffPackage | null>,
 });
 ```
 
@@ -85,21 +89,41 @@ The graph is defined in `server/src/agents/graph.ts`:
 > If the draft contradicts the research, set requiresRevision to true and explain the error."
 
 ## 7. Key Files to Implement
-- **\`server/src/agents/state.ts\`**: Defines the \`AgentState\` annotation.
-- **\`server/src/agents/nodes.ts\`**: Contains the logic for Researcher, Synthesizer, and Narrator nodes.
-- **\`server/src/agents/graph.ts\`**: Compiles the \`StateGraph\` and exports the runnable agent.
-- **\`server/src/services/narrativeService.ts\`**: Exports \`generateNarrative(query: string)\`, which invokes the LangGraph runnable and returns the \`finalScript\`.
-- **\`server/tests/agents/graph.test.ts\`**: A Vitest integration test that compiles the StateGraph and runs one full cycle with all three nodes mocked, verifying two routing scenarios: \`requiresRevision\` false routes to \`END\`, and \`requiresRevision\` true with \`iterationCount\` below 3 routes back to \`researcher_node\`.
+- `server/src/agents/state.ts`: Defines the `AgentState` annotation.
+- `server/src/agents/nodes.ts`: Contains the logic for Researcher, Synthesizer, and Narrator nodes.
+- `server/src/agents/graph.ts`: Compiles the `StateGraph` and exports the runnable agent.
+- `server/src/services/narrativeService.ts`: Exports `generateNarrative(query: string)`, which invokes the LangGraph runnable and returns the `finalScript` or `HandoffPackage`.
+- `server/src/services/modelRouter.ts`: Wraps all OpenAI/LangChain SDK calls. After each call, logs a row to the model_usage table (model name, token counts, endpoint). This is the only place in the codebase that imports openai or @langchain/openai directly — all agent nodes call through ModelRouter. Enables cost tracking and a clean swap point if models change.
+- `server/tests/agents/graph.test.ts`: A Vitest integration test that compiles the StateGraph and runs one full cycle with all three nodes mocked, verifying two routing scenarios: `requiresRevision` false routes to `END`, and `requiresRevision` true with `iterationCount` below 3 routes back to `researcher_node`.
 
 ## 8. Error Handling & Loop Control
 - **Iteration Limit:** Max 3 loops. If exceeded, the Narrator must finalize the best possible version.
 - **Empty Retrieval:** Researcher broadens search parameters if no results found.
 
-## 9. Verification (Done Criteria)
+## 9. HandoffPackage: Low-Confidence Surfacing
+
+When the Researcher returns fewer than a configurable minimum number of relevant results (e.g., fewer than 3 vectors above a similarity threshold), the graph must **not** proceed to narrative generation. Instead, it should return a structured `HandoffPackage` to the caller:
+
+```typescript
+interface HandoffPackage {
+  reason: 'insufficient_retrieval';
+  query: string;
+  retrievedCount: number;
+  suggestion: string; // e.g., "We don't have enough source material on Polish immigration to Chicago in the 1880s. Try broadening the era or region."
+}
+```
+
+This is a first-class output type of narrativeService.generateNarrative() — not an error. The API route returns it as a structured 200 response so the client can display a helpful message rather than a fabricated narrative. Add handoffPackage: HandoffPackage | null to AgentState.
+
+Both Asteroid Bonanza and Poster Pilot implemented this pattern. It prevents hallucination on thin retrieval and is a portfolio-visible quality signal.
+
+## 10. Verification (Done Criteria)
 - [ ] LangGraph successfully executes the full chain from query to script.
-- [ ] Researcher correctly passes filters to the Phase 2 \`vectorStore.query\`.
+- [ ] Researcher correctly passes filters to the Phase 2 `vectorStore.query`.
 - [ ] Logs show the Narrator successfully triggering a re-research edge when a fact is wrong.
-- [ ] \`narrativeService.generateNarrative\` is unit tested with mock agent outputs.
+- [ ] `narrativeService.generateNarrative` is unit tested with mock agent outputs.
 - [ ] A sample query produces a script >300 words with specific historical references.
 - [ ] The StateGraph compiles without error in the test environment.
 - [ ] The conditional routing logic (re-research edge and iteration limit) is verified by automated test.
+- [ ] When retrieval returns fewer than 3 results above threshold, generateNarrative returns a HandoffPackage instead of a narrative — verified by unit test with a mocked empty vectorStore response.
+- [ ] Every model call logs a row to model_usage — verified by checking the table after a test narrative run.

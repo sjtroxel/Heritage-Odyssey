@@ -6,18 +6,7 @@
 
 ## The Prior Portfolio (Context — Do Not Rebuild These)
 
-Six projects have been completed and deployed before this one. You do not need to understand every detail, but knowing they exist will help you calibrate what's already proven vs. what's new.
-
-| Project | What it is | Key tech |
-|---|---|---|
-| Mighty Mileage Meetup | Full-stack meetup app with interactive map | Angular 19, Rails API, Leaflet, JWT, Playwright |
-| Strawberry Star Travel | Travel app with JWT auth, demo mode | React 19, Express, TypeScript, Vite |
-| ChronoQuizzr | AI-powered GeoGuessr for historical events | React, Express, Claude Haiku, Playwright |
-| Poster Pilot | Multimodal RAG platform (CLIP + pgvector) | React, Express, Supabase, CLIP, Claude, 253 Vitest tests |
-| Asteroid Bonanza | 5-agent AI swarm analyzing near-Earth asteroids | Angular 21, Express, Claude Sonnet, Voyage AI, Three.js, 209 Vitest + 226 Playwright |
-| Wildlife Sentinel | 24/7 autonomous wildlife crisis intelligence system | Node.js, discord.js, Redis Streams, PostGIS, Gemini, Claude, Next.js, 470 Vitest + 43 Playwright |
-
-The full portfolio context is in `next-project-planning/DEVELOPER_PROFILE_MAY_2026.md`. The job market analysis is in the same folder. Read both if you want to understand the strategic goals.
+Six projects exist before this one. Full context: `next-project-planning/DEVELOPER_PROFILE_MAY_2026.md`.
 
 ---
 
@@ -49,18 +38,7 @@ The full portfolio context is in `next-project-planning/DEVELOPER_PROFILE_MAY_20
 - **Wait for Signal:** Do NOT proceed to research, implementation, or architectural phases until sjtroxel gives the explicit "begin" or "proceed" instruction.
 - **For large implementation phases:** Save the implementation plan to a `.md` file in `project-specs/roadmap/` before starting. This creates alignment and a reference for the work.
 - After completing work, **summarize what was done and tell sjtroxel to commit** — don't commit yourself.
-
-### TypeScript
-- `strict: true` and `noUncheckedIndexedAccess: true` — always, no exceptions.
-- **NodeNext module resolution** — all relative imports must end in `.js` (e.g., `import { x } from './services/myService.js'`).
-- `shared/types.d.ts` — use `.d.ts` extension, never `.ts`. This avoids rootDir expansion that breaks Railway deployment.
-- `app.ts` exports the Express app without `listen()`. `server.ts` calls `listen()`. This split is required for testing with Vitest + supertest.
-
-### AI Architecture
-- **No self-reported confidence.** Confidence scores must come from observable fields (data completeness, source quality, etc.), never from asking an LLM "how confident are you?"
-- **No hardcoded model strings in agent files.** Import from a `shared/models.ts` file.
-- **Tools are structured outputs.** LLMs return JSON intent. TypeScript executes the action. LLMs do not make HTTP calls directly.
-- LangGraph is explicitly planned for this project, but the 12-factor agent principles still apply within it: own your prompts, own your context window, small focused agents.
+- Run `lint + typecheck + tests` (all three) before declaring any work done.
 
 ### Code Style
 - No unnecessary comments. Only add a comment when the WHY is non-obvious.
@@ -74,13 +52,6 @@ The full portfolio context is in `next-project-planning/DEVELOPER_PROFILE_MAY_20
 
 ### Frontend
 - **Mobile-first** — 375px is the base viewport. Desktop layered with `md:` breakpoints.
-
-### Testing
-- **Vitest** for unit + integration tests.
-- **Playwright** for E2E.
-- Never call real AI APIs, external APIs, Redis, or databases in unit tests — always mock or use fixtures.
-- Run `lint + typecheck + tests` (all three) before declaring any work done.
-- Coverage target: 80%+ statement coverage on server-side code.
 
 ---
 
