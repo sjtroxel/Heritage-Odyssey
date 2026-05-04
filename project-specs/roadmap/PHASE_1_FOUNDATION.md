@@ -77,6 +77,7 @@ heritage-odyssey/
 *   **Vitest:** Configured in `server` and `client`.
 *   **ESLint:** Flat config (`eslint.config.js`) supporting React and TypeScript.
 *   **Prettier:** Standard project-wide formatting.
+*   **Husky + lint-staged:** Pre-commit hook that runs ESLint and Prettier on staged files only. gitleaks: Secret scanning tool run as a pre-commit hook to prevent accidental credential commits.
 
 ## 4. Implementation Steps
 1.  **Initialize Root:** Create root `package.json`, root `tsconfig.json`, and basic workspace folders.
@@ -92,6 +93,7 @@ heritage-odyssey/
     *   Add basic smoke test with Vitest.
 5.  **Scripts Workspace:** Initialize folder structure and `tsconfig.json` only.
 6.  **CI/Validation:** Configure top-level scripts to run linting, type-checking, and tests across the monorepo.
+7.  **Install and configure Husky and lint-staged at the monorepo root. Add a pre-commit hook that runs lint-staged (ESLint + Prettier on staged .ts and .tsx files) and gitleaks.**
 
 ## 5. Verification (Done Criteria)
 - [ ] `npm run lint` passes across all workspaces.
@@ -99,3 +101,5 @@ heritage-odyssey/
 - [ ] `npm run test` passes with at least one unit test in both `server` and `client`.
 - [ ] Server starts successfully and responds to a `/health` check.
 - [ ] Client builds and displays a "Heritage Odyssey" placeholder.
+- [ ] A deliberate pre-commit attempt with a staged secret (e.g., a fake API key pattern) is blocked by gitleaks.
+- [ ] git commit with a staged .ts file triggers lint-staged and the file is linted before the commit proceeds.

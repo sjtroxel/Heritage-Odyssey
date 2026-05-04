@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - 'client/**'
+      - 'shared/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - 'client/**'
+      - 'shared/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      # Placeholder values — all external services are mocked in tests. Replace with GitHub Actions secrets once Phase 2+ services are provisioned.
+      - name: Test
+        run: npm run test
+        env:
+          PORT: 3000
+          NODE_ENV: test
+          DATABASE_URL: postgresql://test:test@localhost/test
+          JWT_SECRET: test_secret_for_ci_do_not_use_32chars
+          OPENAI_API_KEY: sk-test-placeholder
+          PINECONE_API_KEY: test-placeholder
+          PINECONE_ENVIRONMENT: us-east-1-aws
+          PINECONE_INDEX: heritage-odyssey-test
+          ELEVENLABS_API_KEY: test-placeholder
+          ELEVENLABS_VOICE_ID: test-placeholder
+
+      # Root build script will be defined in Phase 1. This step will verify the full monorepo compiles cleanly.
+      - name: Build
+        run: npm run build
