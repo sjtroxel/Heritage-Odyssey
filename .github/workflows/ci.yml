@@ -45,8 +45,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-        - name: Dependency audit
-          run: npm audit --audit-level=high
+      - name: Dependency audit
+        run: npm audit --audit-level=high
 
       - name: Typecheck
         run: npm run typecheck
@@ -69,20 +69,20 @@ jobs:
           ELEVENLABS_API_KEY: test-placeholder
           ELEVENLABS_VOICE_ID: test-placeholder
 
-        # Requires `coverage` script and coverage thresholds configured in vitest.config.ts — wired during Phase 1 implementation.
-        - name: Coverage threshold
-          run: npm run coverage
-          env:
-            PORT: 3000
-            NODE_ENV: test
-            DATABASE_URL: postgresql://test:test@localhost/test
-            JWT_SECRET: test_secret_for_ci_do_not_use_32chars
-            OPENAI_API_KEY: sk-test-placeholder
-            PINECONE_API_KEY: test-placeholder
-            PINECONE_ENVIRONMENT: us-east-1-aws
-            PINECONE_INDEX: heritage-odyssey-test
-            ELEVENLABS_API_KEY: test-placeholder
-            ELEVENLABS_VOICE_ID: test-placeholder
+      # Requires `coverage` script and coverage thresholds configured in vitest.config.ts — wired during Phase 1 implementation.
+      - name: Coverage threshold
+        run: npm run coverage
+        env:
+          PORT: 3000
+          NODE_ENV: test
+          DATABASE_URL: postgresql://test:test@localhost/test
+          JWT_SECRET: test_secret_for_ci_do_not_use_32chars
+          OPENAI_API_KEY: sk-test-placeholder
+          PINECONE_API_KEY: test-placeholder
+          PINECONE_ENVIRONMENT: us-east-1-aws
+          PINECONE_INDEX: heritage-odyssey-test
+          ELEVENLABS_API_KEY: test-placeholder
+          ELEVENLABS_VOICE_ID: test-placeholder
 
       # Root build script will be defined in Phase 1. This step will verify the full monorepo compiles cleanly.
       - name: Build
