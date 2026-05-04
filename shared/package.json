@@ -1,0 +1,10 @@
+{
+  "name": "@heritage-odyssey/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./types": "./types.d.ts",
+    "./models": "./models.js"
+  }
+}

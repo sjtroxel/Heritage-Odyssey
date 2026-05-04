@@ -1,0 +1,7 @@
+#!/usr/bin/env bash                                                                                                                    
+if [ ! -x /usr/local/bin/gitleaks ]; then
+    echo "Error: gitleaks not found. Please install it to commit."                                                                     
+    exit 1
+fi                                                                                                                                     
+/usr/local/bin/gitleaks protect --staged --redact
+npx lint-staged
