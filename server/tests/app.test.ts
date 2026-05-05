@@ -16,4 +16,21 @@ describe('Express App', () => {
     expect(response.headers).toHaveProperty('x-dns-prefetch-control');
     expect(response.headers).toHaveProperty('x-frame-options');
   });
+
+  describe('Auth Routes', () => {
+    it('should return 400 for signup with missing data', async () => {
+      const response = await request(app).post('/api/auth/signup').send({});
+      expect(response.status).toBe(400);
+    });
+
+    it('should return 400 for login with missing data', async () => {
+      const response = await request(app).post('/api/auth/login').send({});
+      expect(response.status).toBe(400);
+    });
+
+    it('should return 401 for /api/profile without token', async () => {
+      const response = await request(app).get('/api/profile');
+      expect(response.status).toBe(401);
+    });
+  });
 });

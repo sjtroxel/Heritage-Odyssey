@@ -61,7 +61,8 @@ jobs:
           PORT: 3000
           NODE_ENV: test
           DATABASE_URL: postgresql://test:test@localhost/test
-          JWT_SECRET: test_secret_for_ci_do_not_use_32chars
+          JWT_ACCESS_SECRET: test_access_secret_for_ci_only_32chars_x
+          JWT_REFRESH_SECRET: test_refresh_secret_for_ci_only_32chars_x
           OPENAI_API_KEY: sk-test-placeholder
           PINECONE_API_KEY: test-placeholder
           PINECONE_ENVIRONMENT: us-east-1-aws
@@ -76,7 +77,8 @@ jobs:
           PORT: 3000
           NODE_ENV: test
           DATABASE_URL: postgresql://test:test@localhost/test
-          JWT_SECRET: test_secret_for_ci_do_not_use_32chars
+          JWT_ACCESS_SECRET: test_access_secret_for_ci_only_32chars_x
+          JWT_REFRESH_SECRET: test_refresh_secret_for_ci_only_32chars_x
           OPENAI_API_KEY: sk-test-placeholder
           PINECONE_API_KEY: test-placeholder
           PINECONE_ENVIRONMENT: us-east-1-aws
