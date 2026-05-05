@@ -18,6 +18,7 @@
 7. [My Honest Competitive Position](#7-my-honest-competitive-position)
 8. [What I Need to Do Next](#8-what-i-need-to-do-next)
 9. [The Imposter Syndrome Note](#9-the-imposter-syndrome-note)
+10. [LinkedIn Update Log](#10-linkedin-update-log)
 
 ---
 
@@ -26,7 +27,12 @@
 **Handle:** sjtroxel
 **Email:** sjtroxel@protonmail.com
 
-**Origin story:** Not a career developer by traditional origin. Did not start coding professionally from a CS degree. Came into serious software development through self-teaching, accelerated heavily by AI-assisted development tools, and formalized through an intensive AI Masterclass (Codefi, 6 weeks, Feb–March 2026). The path was non-linear, but the output is real.
+**Origin story:** Not a career developer by traditional origin. Did not start coding professionally from a CS degree. Came into serious software development through self-teaching, accelerated heavily by AI-assisted development tools, and formalized through a year-long bootcamp plus two AI-focused courses at Codefi (codefiworks.com). The path was non-linear, but the output is real.
+
+**Codefi training arc (2025–2026):** Three sequential programs.
+- **CodeLabs (full-stack bootcamp, all of 2025):** Year-long curriculum across three quarters. Q1 2025 — JavaScript fundamentals plus a JavaScript solo capstone. Q2 2025 — TypeScript and Angular (Classes 18–36) plus an Angular solo capstone. Q3 2025 — Ruby on Rails (Classes 001–022) plus the full-stack solo capstone, "Mighty Mileage Meetup." Every class committed to its own GitHub repo (visible at github.com/sjtroxel). Self-study repos for React, Tailwind, Node, and Express filled the gaps between cohorts.
+- **Prompt-to-Product (Codefi "Build AI Skills" track, January–February 2026):** Course on AI-powered no-code app building — Replit, Google AI Studio, Lovable, Bolt, and similar platforms. Built the Return-Hub app in Replit (downloaded and committed to GitHub for record-keeping; the bulk of the work lived in the Replit IDE itself, which is why GitHub shows little of it). Not the developer's preferred style of work, but completed and competent in the toolset — useful for product/business conversations and for understanding the rapid-prototyping side of the AI tooling landscape.
+- **AI Masterclass (Codefi "Build AI Skills" track, February–March 2026):** The 6-week production-AI-engineering intensive covered in Section 2 below. The capstone project was Asteroid Bonanza.
 
 **Working environment:** WSL2 on Windows. TypeScript everywhere. Node.js for backend. Has navigated the gap between "works on my machine" and "deployed to Railway and running in production" multiple times with real users or real autonomous processes.
 
@@ -39,6 +45,8 @@
 ## 2. The Masterclass Curriculum (What Was Taught)
 
 The Codefi AI Masterclass ran 6 live sessions from February 5 to March 12, 2026. This covers what was formally taught — as opposed to what was built in projects, which is covered in Section 3.
+
+*(The companion Prompt-to-Product course ran in parallel January–February 2026 and focused on no-code AI platforms — see Section 1 for that summary. The Masterclass below is the production-engineering track and is the more relevant credential for the AI Software Engineer target.)*
 
 ### Week 1 — The AI Landscape
 - The tools landscape (Claude Code, Cursor, Codex, Aider, Gemini CLI, Antigravity, OpenCode)
@@ -228,6 +236,22 @@ NASA FIRMS, NOAA NHC, USGS NWIS, US Drought Monitor, NOAA Coral Reef Watch, GDAC
 - Phase 11 charity integration: conservation charity DB, REST API, Discord `/donate` command, frontend charity cards
 
 **750 IUCN species ranges** loaded into PostGIS. **30 conservation charities** with species + event-type linkage. The system is not a demo — it runs continuously.
+
+---
+
+### Project 7: Heritage Odyssey (In Progress — Phase 1 Complete May 2026)
+**Type:** Family migration & history intelligence system with voice-narrated output
+**Planned stack:** TypeScript strict, LangGraph agent swarm, Pinecone vector store, ElevenLabs Voice AI for narration
+**Status:** Phase 1 (foundation) complete and CI passing as of May 4, 2026. Repo structure, package versions, husky + lint-staged, and GitHub Actions CI all in place. Gemini CLI is the primary coding agent on this project; Claude Code is in advisory role only.
+
+**What this project represents (relative to prior portfolio):**
+- First use of LangGraph (vs. hand-rolled orchestration on Asteroid Bonanza and Wildlife Sentinel) — gains agent-framework exposure listed in many AI Engineer job postings
+- First use of Pinecone (vs. pgvector on Poster Pilot / Asteroid Bonanza / Wildlife Sentinel) — adds a managed vector DB to the resume alongside the self-hosted experience
+- First voice-AI integration (ElevenLabs) — voice as a first-class delivery channel
+- New domain: genealogy / family history intelligence
+- Continues the multi-agent + RAG patterns established in Wildlife Sentinel
+
+**Note:** Implementation still in progress as of May 5, 2026. Subsequent phases will be added to this entry as they ship. Worth noting for context: this is the first project where the developer is using Gemini CLI as primary agent (a deliberate hedge in case Claude Code is dropped from the Pro plan), so the development experience itself is also new territory.
 
 ---
 
@@ -451,10 +475,11 @@ Listed in priority order. These are concrete actions, not vague directions.
    - This is one of the clearest paths to Anthropic and similar companies per their stated hiring criteria
    - Aim: one good post, not five mediocre ones
 
-3. **Build a minimal LinkedIn presence.**
+3. **Build a minimal LinkedIn presence.** *(Started May 5, 2026.)*
    - Profile photo, clear headline ("AI Software Engineer | TypeScript | Node.js | Multi-Agent Systems"), brief summary referencing the two strongest projects
    - Link all deployed projects
    - Follow and engage with AI engineering accounts (Simon Willison, Swyx, Andrej Karpathy — who is active)
+   - **Existing profile state as of May 5, 2026 (the starting point):** Name field shows "sjtroxel" not full name. Headline is empty. No projects listed. Skills section still shows only legal-era endorsements (Legal Writing, Lexis). Experience section shows only the Codefi apprenticeship (Jan 2025 – present) and the prior Aquatics Director role. Education shows IU Bloomington (B.A. Criminal Justice, plus IU Swimming & Diving — Big 10 Champions 2006, Olympic Trials 2008) and SMU Dedman School of Law (J.D., 2009–2012). Anxiety about LinkedIn is the main blocker, not the work to be displayed.
 
 ### Near-term (May–June 2026, next project)
 
@@ -500,5 +525,65 @@ The path forward is visibility, not more learning.
 
 ---
 
-*Last updated: April 30, 2026*
-*Next update: After project 7 is underway, or after first employment offer — whichever comes first.*
+## 10. LinkedIn Update Log
+
+A running log of changes made to the LinkedIn profile, in chronological order. The starting state of the profile (before any changes) is documented in Section 8.3.
+
+### May 5, 2026
+
+- **Headline:** Set to:
+  > `AI Software Engineer | Multi-Agent Systems · RAG · TypeScript / Node.js | Building production LLM applications`
+
+  *Reasoning:* aligns the profile with the AI Software Engineer target role identified in Section 6. Hits the two highest-frequency recruiter search terms ("Multi-Agent Systems" and "RAG"). Includes language/runtime backbone (TypeScript/Node.js). The "Building production LLM applications" tagline signals shipped systems vs. tutorial work — the differentiator from the entry-level applicant pool.
+
+- **Skills section rebuilt.** Deleted legal-era endorsements (Legal Writing, Lexis). Added 24 skills, ordered for recruiter relevance. Top 2 (the ones LinkedIn shows above the fold on the profile preview): **Artificial Intelligence (AI)** and **TypeScript** — together they signal "AI engineer who codes in TypeScript," the core pitch.
+
+  Full skill list, in order added:
+  1. Artificial Intelligence (AI)
+  2. TypeScript
+  3. Large Language Models (LLM)
+  4. Retrieval-Augmented Generation (RAG)
+  5. Multi-agent Systems
+  6. Prompt Engineering
+  7. Vector Databases
+  8. Anthropic Claude
+  9. Anthropic API
+  10. Node.js
+  11. Express.js
+  12. PostgreSQL
+  13. Redis
+  14. React.js
+  15. Angular
+  16. Tailwind CSS
+  17. Ruby on Rails
+  18. Full-Stack Development
+  19. Software Testing
+  20. Continuous Integration and Continuous Delivery (CI/CD)
+  21. Replit
+  22. GitHub
+  23. Vitest
+  24. Discord API *(swapped from "Discord" mid-session — LinkedIn's autocomplete only offered "Discord" or "Discord API"; "Discord API" is the stronger signal because it implies building with the platform vs. using it as a chat app)*
+
+  All 24 associated with the "Steffan at Codefi" Experience entry as the skill-context tag. *(Choice made deliberately: skill-context tagging on each skill was skipped for now — anxiety/bandwidth call. The "75% of hirers value skill context" prompt from LinkedIn is a future-session optimization, not a blocker. Skills still appear in recruiter search filters without context tags.)*
+
+### Pending changes (in priority order, per Section 8.3)
+
+1. **Featured / Projects section.** Add the four live deployments with short descriptions:
+   - Poster Pilot — https://poster-pilot.vercel.app
+   - ChronoQuizzr — https://chrono-quizzr.vercel.app
+   - Asteroid Bonanza — https://asteroid-bonanza.vercel.app
+   - Wildlife Sentinel — https://wildlife-sentinel.vercel.app
+2. **About / Summary section.** 3–4 paragraph prose summary referencing the Codefi training arc and the strongest two projects. Hardest section because it requires sustained writing — save for a session with the most momentum, not the least.
+3. **Add a second Experience entry: "AI Software Engineer (Self-Directed) · 2024–Present"** *(or similar phrasing — to be drafted).* The Codefi apprenticeship is currently the only tech Experience entry, which underrepresents six deployed production AI projects. A self-directed entry would give the portfolio its own home and let skills be re-tagged to it for clearer recruiter context. **User flagged this as a good idea on May 5, 2026.** Drafting the entry's title, date range, and bullet points is a near-term task.
+4. **Skill-context tags (optional polish).** Per LinkedIn: "75% of hirers value skill context." Currently all 24 skills are tagged to the Codefi apprenticeship; once the self-directed Experience entry above exists, project-specific skills (RAG, Multi-Agent Systems, pgvector, etc.) could be re-tagged there for stronger context.
+5. **Experience section polish (optional).** Add a brief description under the Codefi apprenticeship entry summarizing what was built. No removals required.
+
+### Notes on cadence
+
+LinkedIn work is a marathon, not a sprint. Anxiety is the main blocker (per Section 8.3) — small wins per session beat one perfectionist push. Logging here so progress is visible and momentum is preserved across sessions.
+
+---
+
+*Last updated: May 5, 2026 (added full Codefi training arc context for 2025 CodeLabs and Prompt-to-Product, added Project 7 — Heritage Odyssey, Phase 1 complete; added current LinkedIn profile starting state; added Section 10 LinkedIn Update Log with first headline change and Skills section rebuild — 24 skills added, all tagged to Codefi apprenticeship; flagged self-directed Experience entry as a near-term task)*
+*Previous update: April 30, 2026 (initial doc)*
+*Next update: After Heritage Odyssey Phase 2 ships, after the first technical blog post is published, or after the first job offer — whichever comes first.*
