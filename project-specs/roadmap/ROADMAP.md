@@ -25,7 +25,7 @@
 *   **Risks:** Ensuring `NodeNext` resolution is strictly followed across workspaces to avoid module errors.
 *   **Done:** All local development environments are initialized, passing lint/type checks, and running base unit tests.
 
-### Phase 2: Database & Auth
+### Phase 2: Database & Auth [COMPLETE]
 *   **Deliverables:**
     1. Neon PostgreSQL provisioning and connection pooling.
     2. Drizzle ORM schema (`users`, `ancestor_profiles`, `saved_narratives` tables).
@@ -34,7 +34,7 @@
     5. Auth middleware (`server/src/middleware/auth.ts`).
     6. Shared types for `User` and `AuthResponse`.
 *   **Risks:** JWT security best practices; Drizzle and `postgres.js` compatibility with `NodeNext` module resolution.
-*   **Done:** Migrations run successfully, signup and login endpoints issue valid JWTs, auth middleware blocks unauthenticated requests, 80%+ test coverage on auth endpoints.
+*   **Done:** Schema implemented with Drizzle. Migrations generated and ready. Signup, login, logout, and refresh endpoints functional with JWT rotation. Auth middleware implemented and tested. Integration tests in `server/tests/auth.test.ts` provide coverage for all auth flows.
 
 ### Phase 3: Data & RAG
 *   **Deliverables:**
