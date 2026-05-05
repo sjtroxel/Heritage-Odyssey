@@ -4,12 +4,21 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "fetch-loc": "tsx src/fetch-loc.ts",
+    "convert-owid": "tsx src/convert-owid.ts",
+    "ingest": "tsx src/ingest.ts"
   },
   "dependencies": {
-    "@heritage-odyssey/shared": "*"
+    "@heritage-odyssey/shared": "*",
+    "@langchain/textsplitters": "^1.0.1",
+    "@pinecone-database/pinecone": "^7.2.0",
+    "csv-parse": "^6.2.1",
+    "dotenv": "^16.6.1",
+    "openai": "^6.36.0"
   },
   "devDependencies": {
+    "tsx": "^4.21.0",
     "typescript": "^5.4.5"
   }
 }
