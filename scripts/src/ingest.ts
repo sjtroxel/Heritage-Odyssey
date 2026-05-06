@@ -141,11 +141,23 @@ async function ingest() {
   const chunks: { pageContent: string; metadata: RecordMetadata }[] = [];
   for (const doc of rawDocs) {
     const splitDocs = await splitter.createDocuments([doc.pageContent], [doc.metadata]);
-    // LangChain docs have metadata as Record<string, any>, cast to Pinecone's RecordMetadata
     for (const splitDoc of splitDocs) {
+      // Clean metadata to remove nested objects (like 'loc') that Pinecone rejects
+      const cleanedMetadata: RecordMetadata = {};
+      for (const [key, value] of Object.entries(splitDoc.metadata)) {
+        if (
+          typeof value === 'string' ||
+          typeof value === 'number' ||
+          typeof value === 'boolean' ||
+          (Array.isArray(value) && value.every((v) => typeof v === 'string'))
+        ) {
+          cleanedMetadata[key] = value;
+        }
+      }
+
       chunks.push({
         pageContent: splitDoc.pageContent,
-        metadata: splitDoc.metadata as RecordMetadata,
+        metadata: cleanedMetadata,
       });
     }
   }
@@ -169,7 +181,10 @@ async function ingest() {
     const vectors = batch.map((chunk, j) => ({
       id: `doc_${i + j}_${Date.now()}`,
       values: embeddings.data[j]!.embedding,
-      metadata: chunk.metadata,
+      metadata: {
+        ...chunk.metadata,
+        text: chunk.pageContent,
+      },
     }));
 
     await index.upsert({ records: vectors });
