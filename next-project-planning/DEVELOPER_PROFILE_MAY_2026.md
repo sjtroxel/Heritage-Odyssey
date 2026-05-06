@@ -566,6 +566,61 @@ A running log of changes made to the LinkedIn profile, in chronological order. T
 
   All 24 associated with the "Steffan at Codefi" Experience entry as the skill-context tag. *(Choice made deliberately: skill-context tagging on each skill was skipped for now — anxiety/bandwidth call. The "75% of hirers value skill context" prompt from LinkedIn is a future-session optimization, not a blocker. Skills still appear in recruiter search filters without context tags.)*
 
+### May 6, 2026
+
+Experience section rebuilt — the centerpiece of the day's work. Pending Changes #3 and #5 from May 5 are both resolved by this session.
+
+- **Codefi Experience entry refined.** Fields that were generic or blank on May 5 were filled in to capture the full 2025–2026 arc cleanly:
+  - **Title:** `Student Software Engineer` (LinkedIn dropdown option that best matches the actual role across both the 2025 web-dev work and the 2026 AI training)
+  - **Employment type:** `Apprenticeship` · **Currently working ✓** · **Start:** January 2025 · **Location type:** Remote
+  - **Description:**
+    > Codefi CodeLabs Full-Stack Web Development (grad. Fall 2025)
+    > Codefi AI Skills Training: Prompt-to-Product & AI Masterclass (grad. both Spring 2026)
+
+  *Reasoning:* one Codefi entry rather than splitting it into a 2025-web-dev and 2026-AI-training pair. Splitting would have read as tacky for what is a single affiliation that simply changed nature over time. Title kept singular to avoid the "title changed mid-engagement" optics; the 2025 vs 2026 distinction lives in the description, not the title line.
+
+- **New Experience entry added: AI Software Engineer (Self-Directed).** This resolves Pending Change #3 from May 5. Rationale held up under examination: the Wildlife Sentinel / Asteroid Bonanza / Poster Pilot / ChronoQuizzr / Heritage Odyssey work is not Codefi coursework. Filing it under the Codefi apprenticeship undersold it by making it look like assignments. Pulling it out into its own entry tells the truth and gives the portfolio its own home for skill-tagging.
+
+  Field-by-field, locked in:
+
+  | Field | Value |
+  |---|---|
+  | Title | `AI Software Engineer` |
+  | Employment type | `Self-employed` (deliberate over `Freelance` — Freelance implies paid client engagements; Self-employed is the broader umbrella that correctly covers indie builders and self-directed engineers) |
+  | Company or Organization | `sjtroxel` (standard pattern for independent engineers; LinkedIn lets you add a tiny logo/avatar for it later) |
+  | Currently working in this role | ✓ |
+  | Start date | `January 2026` (anchored to the first Prompt-to-Product class where multi-agent orchestration clicked as the through-line for everything that followed — worth holding onto for the About section as a personal-spark detail) |
+  | Location type | `Remote` |
+
+  **Skills (top 5) tagged to this entry — partially addresses Pending Change #4:**
+  1. Multi-agent Systems
+  2. Retrieval-Augmented Generation (RAG)
+  3. Large Language Models (LLM)
+  4. Anthropic API
+  5. TypeScript
+
+  *Reasoning for the 5:* these are the differentiators that distinguish this role from the Codefi apprenticeship. Multi-agent + RAG + LLM are the core AI Engineer search filters; Anthropic API signals direct SDK fluency (a differentiator from the Python/LangChain crowd); TypeScript is the language backbone. The remaining 19 skills stay tagged to the Codefi entry.
+
+  **Description (final, pasted to LinkedIn at ~1,249 chars):**
+  > Self-directed AI engineering work. Building and shipping production multi-agent and RAG systems in TypeScript, deployed live on Railway and Vercel.
+  >
+  > Live Projects: Wildlife Sentinel, Asteroid Bonanza, Poster Pilot, ChronoQuizzr. Details and links in media below.
+  >
+  > Currently Working On: Heritage Odyssey, a family migration intelligence system with voice narration. LangGraph + Pinecone + ElevenLabs.
+  >
+  > How I Work: spec-first development, direct SDK usage with Anthropic & Google AI, confidence scoring from observable fields (not self-reports), human-in-the-loop handoff, production observability.
+
+  *Notes on the description language:* an earlier draft included "(no LangChain)" as a recruiter-signal differentiator. Decision was made to drop it — a recruiter could read it as principled refusal of the framework rather than a stack choice, when the truth is Heritage Odyssey itself uses LangGraph and the developer would happily use LangChain on a team that asked for it. The nuanced "I learned direct SDK first to understand the patterns underneath" answer is saved for interviews where it can be delivered with context. AI-cadence tells (em dashes, "Selected Projects:" template headers, decorative bullet symbols, emojis) were also deliberately stripped from the final wording.
+
+  **Media (4 cards drafted with per-card descriptions; the technical depth lives next to each project's visual card rather than crammed into the main description block):**
+
+  - **Wildlife Sentinel** — A 24/7 autonomous wildlife crisis system. Twelve scout agents poll nine government APIs, a five-agent AI swarm processes events through a Redis Streams pipeline, and a Refiner/Evaluator loop scores predictions against real outcomes. PostGIS on 750 IUCN species ranges. 470 tests. Stack: TypeScript, Node, Next.js 15, discord.js, Neon + PostGIS + pgvector, Gemini, Claude Haiku.
+  - **Asteroid Bonanza** — Four-agent AI intelligence platform analyzing 35,000+ near-Earth asteroids. Typed SwarmState contracts, dual RAG indices, per-event SSE observability, Three.js orbital visualization. Stack: Angular 21 signals-first, TypeScript strict, Express 5, Supabase + pgvector, Claude Sonnet, Voyage AI.
+  - **ChronoQuizzr** — AI-powered geography trivia game. Generate → Adversary → Rewrite multi-agent pipeline. Haversine + exponential decay scoring. Stack: React 19, Express, Claude Haiku.
+  - **Poster Pilot** — Multimodal RAG platform indexing 5,000+ historical posters from DPLA. CLIP embeddings, Reciprocal Rank Fusion, grounded SSE chatbot with confidence scoring + human handoff. 253 tests, 99.5% coverage. Stack: React 19, Express 5, Supabase + pgvector, CLIP via Replicate, Claude Sonnet.
+
+- **Session-recovery note.** The Claude Code conversation that produced this Experience-section work crashed at ~15:32 with a 529 Overloaded API error coinciding with a VS Code update. The work itself was already pasted into LinkedIn before the crash. The transcript was recovered from the on-disk session file (`b46cebb3-a04b-4374-a91e-9ffa5020e1e2.jsonl`) and reconstructed in a fresh session, where this log entry was written. The state was also saved to Claude's auto-memory before close to prevent re-reconstructing next time.
+
 ### Pending changes (in priority order, per Section 8.3)
 
 1. **Featured / Projects section.** Add the four live deployments with short descriptions:
@@ -573,10 +628,10 @@ A running log of changes made to the LinkedIn profile, in chronological order. T
    - ChronoQuizzr — https://chrono-quizzr.vercel.app
    - Asteroid Bonanza — https://asteroid-bonanza.vercel.app
    - Wildlife Sentinel — https://wildlife-sentinel.vercel.app
-2. **About / Summary section.** 3–4 paragraph prose summary referencing the Codefi training arc and the strongest two projects. Hardest section because it requires sustained writing — save for a session with the most momentum, not the least.
-3. **Add a second Experience entry: "AI Software Engineer (Self-Directed) · 2024–Present"** *(or similar phrasing — to be drafted).* The Codefi apprenticeship is currently the only tech Experience entry, which underrepresents six deployed production AI projects. A self-directed entry would give the portfolio its own home and let skills be re-tagged to it for clearer recruiter context. **User flagged this as a good idea on May 5, 2026.** Drafting the entry's title, date range, and bullet points is a near-term task.
-4. **Skill-context tags (optional polish).** Per LinkedIn: "75% of hirers value skill context." Currently all 24 skills are tagged to the Codefi apprenticeship; once the self-directed Experience entry above exists, project-specific skills (RAG, Multi-Agent Systems, pgvector, etc.) could be re-tagged there for stronger context.
-5. **Experience section polish (optional).** Add a brief description under the Codefi apprenticeship entry summarizing what was built. No removals required.
+
+   *Note:* the four media cards on the new self-directed Experience entry already display these projects with thumbnails inside that entry. Featured/Projects is a separate top-of-profile section that surfaces them before any Experience entry needs to be expanded — still worth doing, but the urgency is lower than it was on May 5.
+2. **About / Summary section.** 3–4 paragraph prose summary referencing the Codefi training arc and the strongest two projects. Hardest section because it requires sustained writing — save for a session with the most momentum, not the least. The "January 2026 / multi-agent orchestration clicked" detail from the new Experience entry is good raw material for this.
+3. **Skill-context tags for the remaining 19 skills (optional polish, partially started May 6).** 5 of the 24 skills are now tagged to the new self-directed Experience entry. The remaining 19 are still tagged only to the Codefi apprenticeship. Per LinkedIn: "75% of hirers value skill context." Project-specific skills (Vector Databases, pgvector, Redis, Anthropic Claude, etc.) could be re-tagged from Codefi to the self-directed entry over time without urgency.
 
 ### Notes on cadence
 
@@ -584,6 +639,7 @@ LinkedIn work is a marathon, not a sprint. Anxiety is the main blocker (per Sect
 
 ---
 
-*Last updated: May 5, 2026 (added full Codefi training arc context for 2025 CodeLabs and Prompt-to-Product, added Project 7 — Heritage Odyssey, Phase 1 complete; added current LinkedIn profile starting state; added Section 10 LinkedIn Update Log with first headline change and Skills section rebuild — 24 skills added, all tagged to Codefi apprenticeship; flagged self-directed Experience entry as a near-term task)*
-*Previous update: April 30, 2026 (initial doc)*
-*Next update: After Heritage Odyssey Phase 2 ships, after the first technical blog post is published, or after the first job offer — whichever comes first.*
+*Last updated: May 6, 2026 (added Section 10 May 6 entry — Codefi Experience entry refined with "Student Software Engineer" title and full-arc description; new self-directed "AI Software Engineer" Experience entry added with all locked-in fields, 5 tagged skills, final description, and 4 media cards; Pending Changes #3 and #5 from May 5 resolved; Pending Changes list re-numbered)*
+*Previous update: May 5, 2026 (added full Codefi training arc context for 2025 CodeLabs and Prompt-to-Product, added Project 7 — Heritage Odyssey, Phase 1 complete; added current LinkedIn profile starting state; added Section 10 LinkedIn Update Log with first headline change and Skills section rebuild — 24 skills added, all tagged to Codefi apprenticeship; flagged self-directed Experience entry as a near-term task)*
+*Earlier: April 30, 2026 (initial doc)*
+*Next update: After Featured/Projects or About/Summary section is added to LinkedIn, after Heritage Odyssey Phase 2 ships, after the first technical blog post is published, or after the first job offer — whichever comes first.*
