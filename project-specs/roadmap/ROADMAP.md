@@ -14,7 +14,7 @@
 
 ## Detailed Phase Breakdown
 
-### Phase 1: Foundation
+### Phase 1: Foundation [COMPLETE]
 *   **Deliverables:**
     1. Monorepo workspace configuration (`server`, `client`, `shared`).
     2. Express 5 boilerplate with `app.ts`/`server.ts` split.
@@ -36,7 +36,7 @@
 *   **Risks:** JWT security best practices; Drizzle and `postgres.js` compatibility with `NodeNext` module resolution.
 *   **Done:** Schema implemented with Drizzle. Migrations generated and ready. Signup, login, logout, and refresh endpoints functional with JWT rotation. Auth middleware implemented and tested. Integration tests in `server/tests/auth.test.ts` provide coverage for all auth flows.
 
-### Phase 3: Data & RAG
+### Phase 3: Data & RAG [COMPLETE]
 *   **Deliverables:**
     1. Pinecone project and index creation.
     2. Historical document ingestion script.
@@ -47,7 +47,7 @@
 *   **Risks:** Ensuring accurate retrieval of historical context; managing embedding token costs.
 *   **Done:** A populated Pinecone index that supports semantic search of historical documents with verified retrieval latency.
 
-### Phase 4: Agent Swarm
+### Phase 4: Agent Swarm [IN PROGRESS]
 *   **Deliverables:**
     1. LangGraph environment setup.
     2. Primary "Narrator" agent definition.
@@ -57,7 +57,7 @@
     6. Tool definitions for historical query handling.
     7. Prompt templates for historical and emotional accuracy.
 *   **Risks:** Preventing "hallucinations" in historical narratives; agent loop optimization.
-*   **Done:** The multi-agent swarm successfully orchestrates a research-to-narrative pipeline based on an example historical query.
+*   **Done:** Steps 1 (Infrastructure & ModelRouter) and 2 (State Definition & Types) are complete.
 
 ### Phase 5: Voice & UI
 *   **Deliverables:**

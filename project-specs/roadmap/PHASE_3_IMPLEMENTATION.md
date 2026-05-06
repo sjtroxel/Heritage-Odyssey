@@ -20,7 +20,7 @@ This document outlines the specific implementation steps for Phase 3: Data & RAG
 
 ---
 
-## Step 1 — Install packages in scripts and server workspaces
+## Step 1 — Install packages in scripts and server workspaces [x]
 - **Files to Modify:**
   - `.env.example` (Add `OPENAI_API_KEY`, `PINECONE_API_KEY`, `PINECONE_INDEX`)
   - `scripts/package.json` (Add scripts: `fetch-loc`, `convert-owid`, `ingest`)
@@ -34,7 +34,7 @@ This document outlines the specific implementation steps for Phase 3: Data & RAG
 
 **STOP HERE — await review**
 
-## Step 2 — LOC fetcher script (scripts/src/fetch-loc.ts)
+## Step 2 — LOC fetcher script (scripts/src/fetch-loc.ts) [x]
 - **Files to Create:**
   - `scripts/src/fetch-loc.ts` (Implementation using Chronicling America API)
 - **Actions:**
@@ -43,7 +43,7 @@ This document outlines the specific implementation steps for Phase 3: Data & RAG
 
 **STOP HERE — await review**
 
-## Step 3 — OWID CSV converter (scripts/src/convert-owid.ts)
+## Step 3 — OWID CSV converter (scripts/src/convert-owid.ts) [x]
 - **Files to Create:**
   - `scripts/src/convert-owid.ts` (CSV to structured text summary converter)
 - **Actions:**
@@ -53,7 +53,7 @@ This document outlines the specific implementation steps for Phase 3: Data & RAG
 
 **STOP HERE — await review**
 
-## Step 4 — Main ingest pipeline (scripts/src/ingest.ts)
+## Step 4 — Main ingest pipeline (scripts/src/ingest.ts) [x]
 - **Files to Create:**
   - `scripts/src/ingest.ts` (Orchestrates cleaning, splitting, embedding, and upserting)
 - **Logic:**
@@ -64,7 +64,7 @@ This document outlines the specific implementation steps for Phase 3: Data & RAG
 
 **STOP HERE — await review**
 
-## Step 5 — Server services (embedding.ts + vectorStore.ts)
+## Step 5 — Server services (embedding.ts + vectorStore.ts) [x]
 - **Files to Create:**
   - `server/src/services/embedding.ts` (OpenAI embedding wrapper)
   - `server/src/services/vectorStore.ts` (Pinecone query implementation with metadata filters)
@@ -73,7 +73,7 @@ This document outlines the specific implementation steps for Phase 3: Data & RAG
 
 **STOP HERE — await review**
 
-## Step 6 — vectorStore tests + full CI check
+## Step 6 — vectorStore tests + full CI check [x]
 - **Files to Create:**
   - `server/tests/vectorStore.test.ts` (Unit tests with mocked Pinecone client)
 - **Actions:**
@@ -82,3 +82,10 @@ This document outlines the specific implementation steps for Phase 3: Data & RAG
   - Verify `vectorStore.query` returns expected results and correctly handles filters.
 
 **STOP HERE — await review**
+
+## 7. Verification (Done Criteria)
+- [x] `scripts/data/` contains at least 50MB of diverse historical data.
+- [x] `npm run ingest` completes without errors, and Pinecone shows >1000 vectors.
+- [x] `vectorStore.query` returns top-5 matches with metadata in <500ms.
+- [x] Embeddings use `text-embedding-3-small` with 1536 dimensions.
+- [x] `vectorStore.query` unit tests pass with a mocked Pinecone client, verifying filter passthrough and response shape.

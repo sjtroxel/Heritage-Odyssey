@@ -42,3 +42,10 @@ export interface HealthStatus {
   timestamp: string;
   version: string;
 }
+
+export interface HandoffPackage {
+  reason: 'insufficient_retrieval';
+  query: string;
+  retrievedCount: number;
+  suggestion: string;
+}

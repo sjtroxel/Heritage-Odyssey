@@ -91,3 +91,14 @@ This document outlines the specific implementation steps, packages, and architec
 - **Husky/lint-staged:** Automated linting and formatting on every commit.
 - **Gitleaks:** Integrated into pre-commit hook to prevent credential leakage.
 - **Monorepo Scripts:** Root-level `lint`, `typecheck`, and `test` commands that orchestrate workspace execution.
+
+## 8. Verification (Done Criteria)
+- [x] `npm run lint` passes across all workspaces.
+- [x] `npm run typecheck` passes (NodeNext resolution verified).
+- [x] `npm run test` passes with at least one unit test in both `server` and `client`.
+- [x] Server starts successfully and responds to a `/health` check.
+- [x] Client builds and displays a "Heritage Odyssey" placeholder.
+- [x] `app.ts` applies `helmet` and `express-rate-limit` — verified by inspecting response headers on `/health`.
+- [x] `server/src/services/logger.ts` exports a `pino` logger instance; no `console.log` calls exist in server source files.
+- [x] A deliberate pre-commit attempt with a staged secret (e.g., a fake API key pattern) is blocked by gitleaks.
+- [x] git commit with a staged .ts file triggers lint-staged and the file is linted before the commit proceeds.
