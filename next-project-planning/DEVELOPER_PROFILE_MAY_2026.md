@@ -621,17 +621,40 @@ Experience section rebuilt — the centerpiece of the day's work. Pending Change
 
 - **Session-recovery note.** The Claude Code conversation that produced this Experience-section work crashed at ~15:32 with a 529 Overloaded API error coinciding with a VS Code update. The work itself was already pasted into LinkedIn before the crash. The transcript was recovered from the on-disk session file (`b46cebb3-a04b-4374-a91e-9ffa5020e1e2.jsonl`) and reconstructed in a fresh session, where this log entry was written. The state was also saved to Claude's auto-memory before close to prevent re-reconstructing next time.
 
-### Pending changes (in priority order, per Section 8.3)
+### May 7, 2026
 
-1. **Featured / Projects section.** Add the four live deployments with short descriptions:
-   - Poster Pilot — https://poster-pilot.vercel.app
-   - ChronoQuizzr — https://chrono-quizzr.vercel.app
-   - Asteroid Bonanza — https://asteroid-bonanza.vercel.app
-   - Wildlife Sentinel — https://wildlife-sentinel.vercel.app
+Three shipping items today: Featured/Projects section, Headline revision, and a custom-generated Cover image. Pending Change #1 from May 6 is fully resolved.
 
-   *Note:* the four media cards on the new self-directed Experience entry already display these projects with thumbnails inside that entry. Featured/Projects is a separate top-of-profile section that surfaces them before any Experience entry needs to be expanded — still worth doing, but the urgency is lower than it was on May 5.
-2. **About / Summary section.** 3–4 paragraph prose summary referencing the Codefi training arc and the strongest two projects. Hardest section because it requires sustained writing — save for a session with the most momentum, not the least. The "January 2026 / multi-agent orchestration clicked" detail from the new Experience entry is good raw material for this.
-3. **Skill-context tags for the remaining 19 skills (optional polish, partially started May 6).** 5 of the 24 skills are now tagged to the new self-directed Experience entry. The remaining 19 are still tagged only to the Codefi apprenticeship. Per LinkedIn: "75% of hirers value skill context." Project-specific skills (Vector Databases, pgvector, Redis, Anthropic Claude, etc.) could be re-tagged from Codefi to the self-directed entry over time without urgency.
+- **Featured / Projects section completed.** All four live deployments added as link-type Featured items, ordered to land on the user's preferred display sequence (Wildlife Sentinel first → Asteroid Bonanza → ChronoQuizzr → Poster Pilot last). LinkedIn's Featured section displays newest-added items first, so the cards were added in reverse-priority order: Poster Pilot first, then ChronoQuizzr, Asteroid Bonanza, and finally Wildlife Sentinel. Display order verified post-add. Each card has a custom title and ~3-sentence description pulled from this profile doc.
+
+  *Reasoning for the user's preferred order:* Wildlife Sentinel is the most technically sophisticated project (Redis Streams pipeline, Refiner/Evaluator loop, 470 tests, PostGIS on 750 IUCN species) and the strongest single recruiter signal. Asteroid Bonanza is second strongest (multi-agent platform, dual RAG, Three.js orbital viz). ChronoQuizzr and Poster Pilot are both solid but less differentiated — they sit later so they don't dilute the lead.
+
+- **Headline revised.** Closing tagline `Building production LLM applications` was replaced with `github.com/sjtroxel`. New full headline:
+  > `AI Software Engineer | Multi-Agent Systems · RAG · TypeScript / Node.js | github.com/sjtroxel`
+
+  *Reasoning:* the original tagline had become redundant — the Featured section now shows four production deployments with thumbnails, so the work itself proves "production LLM applications" without the headline needing to claim it. Putting the GitHub URL in the headline solves a separate problem: there's no native LinkedIn way to surface a GitHub link prominently for free accounts. Creator Mode (which would allow a link directly under the headline) is no longer available on this account — it has been deprecated for many users and is not present in any settings panel. The Custom Button feature that places a clickable CTA under the headline is paywalled to LinkedIn Premium ($30+/month). Embedding the URL in the headline text is the free workaround that ensures the GitHub link surfaces in every place the headline does (search results, post bylines, comment metadata, recruiter previews) — at the cost of not being clickable in those contexts.
+
+- **Cover image custom-generated and uploaded.** First custom cover image, replacing the default solid-color LinkedIn template. Concept: silhouetted engineer in a starship cockpit gazing at an inverted biolumescent jungle planet hanging above, with translucent topographic contours and orbital trajectory lines overlaying a deep starfield. Lower-left of frame is intentionally dark/atmospheric so the profile photo (which overlays that area) does not obscure key content. Saved as `next-project-planning/Firefly2.jpg` (3072×768, 4:1 aspect ratio, ~520 KB).
+
+  *Generation tooling:* Adobe Firefly free tier. Three iterations: first with Gemini 3.1 (Nano Banana 2) for a baseline, second with Flux 2 to compare aesthetics, third with Flux 2 again on a refined prompt that dropped a problematic visual element. Flux 2 was the winning model for cinematic sci-fi illustration (Gemini was strong on color palette but produced a more dim/conventional console; Flux landed the dramatic inverted-planet composition and a clean dark lower-left). Generative Expand was then used to widen the chosen image from 16:9 to 4:1 without losing vertical content.
+
+  *Concept origin (private creative seed):* the image was inspired by *The Nth Degree* (Star Trek: TNG, S4E19), specifically the scene of Lt. Barclay augmented at a console — an emotional anchor for the user, who connects the parallel to using AI to expand his own capability. Earlier prompt iterations included a literal cyan beam from console to the figure's head to render the neural-interface motif. Both models struggled to render this gracefully (Gemini's beam was ambiguous; Flux's looked, in the user's words, "like a stream of urine into the toilet"). Decision was made to drop the literal beam and let the augmented-mind feeling carry through composition alone — figure dwarfed by a vast organic-cosmic vista, contemplative pose, hands at sides. Recruiters see *engineer at the controls of something vast.* The Barclay seed is preserved as private meaning, not as a recognizable element.
+
+  *Themes pulled from the portfolio:* the biolumescent jungle planet echoes Wildlife Sentinel (PostGIS species data, conservation domain). The topographic contours and orbital trajectories echo Asteroid Bonanza (NASA orbital data, Three.js viz) and the maps theme that runs through Wildlife Sentinel and ChronoQuizzr. Single image, multiple project signals — without redundantly re-showing the project thumbnails that already appear in Featured and in the AI Engineer Experience entry's media cards.
+
+### Pending changes (in priority order)
+
+1. **About / Summary section.** 3–4 paragraph prose summary referencing the Codefi training arc and the strongest two projects. Hardest section because it requires sustained writing — save for a session with the most momentum, not the least. The "January 2026 / multi-agent orchestration clicked" detail from the new Experience entry is good raw material for this.
+2. **Skill-context tags for the remaining 19 skills (optional polish, partially started May 6).** 5 of the 24 skills are now tagged to the new self-directed Experience entry. The remaining 19 are still tagged only to the Codefi apprenticeship. Per LinkedIn: "75% of hirers value skill context." Project-specific skills (Vector Databases, pgvector, Redis, Anthropic Claude, etc.) could be re-tagged from Codefi to the self-directed entry over time without urgency.
+
+### Optional polish items (out of original scope, flagged 2026-05-07 for consideration)
+
+These were not part of the original LinkedIn rebuild plan but came up in the May 7 session as items the user may want to address in future:
+
+- **"Open to Work" toggle.** Recruiter-only visibility setting that surfaces the profile in LinkedIn's recruiter search tool. Worth deciding on when active job-search begins.
+- **Education section detail.** Codefi programs could be added as Education entries (currently captured only in the Experience description).
+- **Certifications section.** Codefi graduation certificates (CodeLabs, Prompt-to-Product, AI Masterclass) could be added with dates as separate certification entries.
+- **Profile URL customization.** Verify that the LinkedIn profile URL is the clean `linkedin.com/in/sjtroxel` form rather than the default random-string form.
 
 ### Notes on cadence
 
@@ -639,7 +662,8 @@ LinkedIn work is a marathon, not a sprint. Anxiety is the main blocker (per Sect
 
 ---
 
-*Last updated: May 6, 2026 (added Section 10 May 6 entry — Codefi Experience entry refined with "Student Software Engineer" title and full-arc description; new self-directed "AI Software Engineer" Experience entry added with all locked-in fields, 5 tagged skills, final description, and 4 media cards; Pending Changes #3 and #5 from May 5 resolved; Pending Changes list re-numbered)*
-*Previous update: May 5, 2026 (added full Codefi training arc context for 2025 CodeLabs and Prompt-to-Product, added Project 7 — Heritage Odyssey, Phase 1 complete; added current LinkedIn profile starting state; added Section 10 LinkedIn Update Log with first headline change and Skills section rebuild — 24 skills added, all tagged to Codefi apprenticeship; flagged self-directed Experience entry as a near-term task)*
-*Earlier: April 30, 2026 (initial doc)*
+*Last updated: May 7, 2026 (added Section 10 May 7 entry — Featured/Projects section completed with all 4 live deployments in correct display order; Headline revised to swap "Building production LLM applications" tagline for github.com/sjtroxel URL since Creator Mode is no longer available on free tier and Custom Button is Premium-only; Cover image custom-generated via Adobe Firefly Flux 2 and uploaded — first custom banner replacing the default; Pending Change #1 from May 6 resolved; Pending Changes list re-numbered; Optional polish items section added)*
+*Previous update: May 6, 2026 (added Section 10 May 6 entry — Codefi Experience entry refined with "Student Software Engineer" title and full-arc description; new self-directed "AI Software Engineer" Experience entry added with all locked-in fields, 5 tagged skills, final description, and 4 media cards; Pending Changes #3 and #5 from May 5 resolved; Pending Changes list re-numbered)*
+*Earlier: May 5, 2026 (added full Codefi training arc context for 2025 CodeLabs and Prompt-to-Product, added Project 7 — Heritage Odyssey, Phase 1 complete; added current LinkedIn profile starting state; added Section 10 LinkedIn Update Log with first headline change and Skills section rebuild — 24 skills added, all tagged to Codefi apprenticeship; flagged self-directed Experience entry as a near-term task)*
+*Initial: April 30, 2026 (initial doc)*
 *Next update: After Featured/Projects or About/Summary section is added to LinkedIn, after Heritage Odyssey Phase 2 ships, after the first technical blog post is published, or after the first job offer — whichever comes first.*

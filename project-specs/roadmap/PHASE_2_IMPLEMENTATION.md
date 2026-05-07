@@ -1,4 +1,4 @@
-I was# Phase 2 Implementation Plan: Database & Auth
+# Phase 2 Implementation Plan: Database & Auth
 
 This document outlines the specific implementation steps, packages, and architectural decisions for Phase 2: Database & Auth. This phase establishes the persistent data layer using Neon PostgreSQL and Drizzle-ORM, and implements a JWT-based authentication system.
 
