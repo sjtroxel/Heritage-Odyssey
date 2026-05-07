@@ -11,7 +11,7 @@ As of the current version (`1.59.0`), the following call signatures are verified
 
 ---
 
-## Step 1 — Voice Service (Backend)
+## Step 1 — Voice Service (Backend) [x]
 - **Files to Create:**
   - `server/src/services/voiceService.ts`
 - **Logic:**
@@ -21,7 +21,7 @@ As of the current version (`1.59.0`), the following call signatures are verified
 
 **STOP HERE — await review**
 
-## Step 2 — Routes & Multer Setup (Backend)
+## Step 2 — Routes & Multer Setup (Backend) [x]
 - **Files to Create:**
   - `server/src/routes/voiceRoutes.ts`
 - **Files to Modify:**
@@ -33,7 +33,7 @@ As of the current version (`1.59.0`), the following call signatures are verified
 
 **STOP HERE — await review**
 
-## Step 3 — Narrative Streaming Integration (Backend)
+## Step 3 — Narrative Streaming Integration (Backend) [x]
 - **Files to Modify:**
   - `server/src/routes/voiceRoutes.ts`
 - **Logic:**

@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import { rateLimit } from 'express-rate-limit';
 import { logger } from './services/logger.js';
 import * as authController from './controllers/authController.js';
+import voiceRoutes from './routes/voiceRoutes.js';
 import { authenticate } from './middleware/auth.js';
 import type { HealthStatus } from '@heritage-odyssey/shared/types';
 
@@ -45,6 +46,8 @@ app.post('/api/auth/refresh', authController.refresh);
 app.get('/api/profile', authenticate, (req: Request, res: Response) => {
   res.json({ user: req.user });
 });
+
+app.use('/api', voiceRoutes);
 
 // Error handling
 app.use((err: Error, req: Request, _res: Response, _next: NextFunction) => {

@@ -33,4 +33,16 @@ describe('Express App', () => {
       expect(response.status).toBe(401);
     });
   });
+
+  describe('Voice Routes', () => {
+    it('should return 401 for /api/voice/transcribe without token', async () => {
+      const response = await request(app).post('/api/voice/transcribe');
+      expect(response.status).toBe(401);
+    });
+
+    it('should return 401 for /api/narrative/stream without token', async () => {
+      const response = await request(app).post('/api/narrative/stream');
+      expect(response.status).toBe(401);
+    });
+  });
 });
