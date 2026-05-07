@@ -118,12 +118,12 @@ This is a first-class output type of narrativeService.generateNarrative() — no
 Both Asteroid Bonanza and Poster Pilot implemented this pattern. It prevents hallucination on thin retrieval and is a portfolio-visible quality signal.
 
 ## 10. Verification (Done Criteria)
-- [ ] LangGraph successfully executes the full chain from query to script.
-- [ ] Researcher correctly passes filters to the Phase 2 `vectorStore.query`.
-- [ ] Logs show the Narrator successfully triggering a re-research edge when a fact is wrong.
-- [ ] `narrativeService.generateNarrative` is unit tested with mock agent outputs.
-- [ ] A sample query produces a script >300 words with specific historical references.
-- [ ] The StateGraph compiles without error in the test environment.
-- [ ] The conditional routing logic (re-research edge and iteration limit) is verified by automated test.
-- [ ] When retrieval returns fewer than 3 results above threshold, generateNarrative returns a HandoffPackage instead of a narrative — verified by unit test with a mocked empty vectorStore response.
-- [ ] Every model call logs a row to model_usage — verified by checking the table after a test narrative run.
+- [x] LangGraph successfully executes the full chain from query to script.
+- [x] Researcher correctly passes filters to the Phase 2 `vectorStore.query`.
+- [x] Logs show the Narrator successfully triggering a re-research edge when a fact is wrong.
+- [x] `narrativeService.generateNarrative` is unit tested with mock agent outputs.
+- [x] A sample query produces a script >300 words with specific historical references.
+- [x] The StateGraph compiles without error in the test environment.
+- [x] The conditional routing logic (re-research edge and iteration limit) is verified by automated test.
+- [x] When retrieval returns fewer than 3 results above threshold, generateNarrative returns a HandoffPackage instead of a narrative — verified by unit test with a mocked empty vectorStore response.
+- [x] Every model call logs a row to model_usage — verified by checking the table after a test narrative run.

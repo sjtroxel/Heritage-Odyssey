@@ -5,6 +5,17 @@ import { synthesizerNode } from './nodes/synthesizer.js';
 import { narratorNode } from './nodes/narrator.js';
 
 /**
+ * Conditional logic to determine the next step after the Researcher node.
+ * Routes to END if a handoffPackage is present (insufficient retrieval).
+ */
+function routeAfterResearcher(state: typeof AgentState.State) {
+  if (state.handoffPackage) {
+    return END;
+  }
+  return 'synthesizer';
+}
+
+/**
  * Conditional logic to determine the next step after the Narrator node.
  * Routes back to Researcher if revision is required and iteration limit not reached.
  */
@@ -22,19 +33,21 @@ const workflow = new StateGraph(AgentState)
   .addNode('synthesizer', synthesizerNode)
   .addNode('narrator', narratorNode)
 
-  // 3. Define the linear edges
+  // 3. Define the starting edge
   .addEdge(START, 'researcher')
-  .addEdge('researcher', 'synthesizer')
   .addEdge('synthesizer', 'narrator')
 
-  // 4. Add conditional edge from Narrator
+  // 4. Add conditional edges
+  .addConditionalEdges('researcher', routeAfterResearcher, {
+    synthesizer: 'synthesizer',
+    [END]: END,
+  })
   .addConditionalEdges('narrator', routeAfterNarrator, {
     researcher: 'researcher',
     [END]: END,
   });
 
 /**
- * The compiled LangGraph runnable agent swarm.
- * This is the primary entry point for generating historical narratives.
+ * The compiled LangGraph agent swarm.
  */
 export const graph = workflow.compile();

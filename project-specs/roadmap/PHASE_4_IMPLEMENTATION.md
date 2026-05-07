@@ -21,17 +21,17 @@ This document outlines the specific implementation steps for Phase 4: Agent Swar
 **STOP HERE — await review**
 
 ## Step 2 — State Definition & Types [x]
+- `shared/types.d.ts` (Add `HandoffPackage` interface)
 - **Files to Create:**
   - `server/src/agents/state.ts` (LangGraph `Annotation.Root` definition)
 - **Files to Modify:**
-  - `shared/types.d.ts` (Add `HandoffPackage` interface)
 - **Logic:**
   - Define `AgentState` as described in `PHASE_4_AGENT_SWARM.md`.
   - Add `requiresRevision`, `iterationCount`, and `handoffPackage` to the state.
 
 **STOP HERE — await review**
 
-## Step 3 — The Researcher Agent & Tools
+## Step 3 — The Researcher Agent & Tools [x]
 - **Files to Create:**
   - `server/src/agents/nodes/researcher.ts` (Researcher node logic)
 - **Logic:**
@@ -41,7 +41,7 @@ This document outlines the specific implementation steps for Phase 4: Agent Swar
 
 **STOP HERE — await review**
 
-## Step 4 — The Synthesizer & Narrator Agents
+## Step 4 — The Synthesizer & Narrator Agents [x]
 - **Files to Create:**
   - `server/src/agents/nodes/synthesizer.ts` (Emotional storytelling logic)
   - `server/src/agents/nodes/narrator.ts` (Polishing & Fact-checking logic)
@@ -52,7 +52,7 @@ This document outlines the specific implementation steps for Phase 4: Agent Swar
 
 **STOP HERE — await review**
 
-## Step 5 — Graph Composition & Routing
+## Step 5 — Graph Composition & Routing [x]
 - **Files to Create:**
   - `server/src/agents/graph.ts` (Compiles the `StateGraph`)
 - **Logic:**
@@ -62,7 +62,7 @@ This document outlines the specific implementation steps for Phase 4: Agent Swar
 
 **STOP HERE — await review**
 
-## Step 6 — Narrative Service Integration
+## Step 6 — Narrative Service Integration [x]
 - **Files to Create:**
   - `server/src/services/narrativeService.ts` (Public service for the backend)
 - **Logic:**
@@ -73,7 +73,7 @@ This document outlines the specific implementation steps for Phase 4: Agent Swar
 
 **STOP HERE — await review**
 
-## Step 7 — Unit & Integration Testing
+## Step 7 — Unit & Integration Testing [x]
 - **Files to Create:**
   - `server/tests/agents/graph.test.ts` (Integration test for the graph)
   - `server/tests/services/narrativeService.test.ts` (Unit tests for the service)
@@ -84,7 +84,7 @@ This document outlines the specific implementation steps for Phase 4: Agent Swar
 
 **STOP HERE — await review**
 
-## Step 8 — Final Validation & CI
+## Step 8 — Final Validation & CI [x]
 - **Actions:**
   - Run full suite: `npm run lint && npm run typecheck && npm run test`.
   - Verify `model_usage` entries are created after a test run.
