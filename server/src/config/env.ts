@@ -11,6 +11,7 @@ const envSchema = z.object({
   PINECONE_ENVIRONMENT: z.string().min(1),
   PINECONE_INDEX: z.string().min(1),
   ELEVENLABS_API_KEY: z.string().min(1),
+  ELEVENLABS_VOICE_ID: z.string().min(1),
   OPENAI_API_KEY: z.string().min(1),
   JWT_ACCESS_SECRET: z.string().min(8),
   JWT_REFRESH_SECRET: z.string().min(8),
