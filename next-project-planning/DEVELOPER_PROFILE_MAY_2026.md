@@ -642,28 +642,89 @@ Three shipping items today: Featured/Projects section, Headline revision, and a 
 
   *Themes pulled from the portfolio:* the biolumescent jungle planet echoes Wildlife Sentinel (PostGIS species data, conservation domain). The topographic contours and orbital trajectories echo Asteroid Bonanza (NASA orbital data, Three.js viz) and the maps theme that runs through Wildlife Sentinel and ChronoQuizzr. Single image, multiple project signals — without redundantly re-showing the project thumbnails that already appear in Featured and in the AI Engineer Experience entry's media cards.
 
+### May 8, 2026
+
+The original LinkedIn rebuild scope is now fully complete. Five shipping items today: Education section, removal of past-life graduation dates, profile URL verification, About / Summary section, and Open to Work activation. Pending Change #1 from May 7 is resolved; three of four optional polish items from May 7 are also resolved (only Certifications remains).
+
+- **Education section completed.** Two Codefi entries added as minimal Education records (school + program name + dates only; description, activities, and grade fields left blank). Deliberate low-cognitive-load choice — extra fields would have duplicated the Experience entry without adding recruiter-search value:
+  - Codefi — `Codefi CodeLabs Full-Stack Web Development (Bootcamp)`, Jan 2025 – Oct 2025
+  - Codefi — `AI Engineering & Skills Training: Prompt-to-Product & AI Masterclass`, Jan 2026 – Present
+
+  *Reasoning for adding Education entries despite duplication with the Experience description:* recruiters filter on Education separately from Experience. LinkedIn does not penalize the duplication. ~5 minutes of work for measurable recruiter-search lift.
+
+  *Note on the AI program wording:* the Education entry uses "AI Engineering & Skills Training" while the Experience entry uses "AI Skills Training." Slight inconsistency. The Education wording is actually stronger because "AI Engineering" is a higher-value search keyword. Optional future cleanup: update the Experience entry to match.
+
+- **Graduation dates removed from past-life Education entries (IU and SMU).** Both entries previously displayed graduation years (2009 IU B.A., 2012 SMU J.D.) and the IU activities line included Olympic Trials 2008 and the Big 10 Champions year. Dates removed from both entries before any About-section work began. Activities line preserved on the IU entry; date references inside it removed.
+
+  *Reasoning:* age signaling. The user is positioning toward AI engineering roles where age bias in tech hiring (real, well-documented) cuts against. Removable dates can be reconstructed by anyone determined to dig, but the casual recruiter-skim view no longer leads with mid-2000s timestamps. This decision was made independently by the user before pasting the Education section into the conversation for review.
+
+- **Profile URL confirmed.** Already in clean form: `www.linkedin.com/in/sjtroxel`. No action needed.
+
+- **About / Summary section posted.** Pending Change #1 from May 7 is fully resolved. The session arc to get here was substantial. The user flagged this section as the hardest and approached it with explicit anxiety on two axes:
+  - **Past-life identity exposure:** what people from SMU, IU Bloomington, and Indiana Swimming would think when they saw the rebuild. The "even though I shouldn't care" framing was pushed back on as not a flaw to override but the real cost of having had real prior versions of oneself.
+  - **The capture problem:** the user's stated belief that no About section can really capture them. Resolution path: explicitly reframe the About as functional / recruiter-facing rather than capture-the-person. The About's job is to make a stranger click "message," not to summarize a life.
+
+  Final posted version is the "with two flavor details" variant — 3 paragraphs, ~725 chars, well under half of LinkedIn's 2,600 limit. Stored in `next-project-planning/LINKEDIN_ABOUT_DRAFTS.md` along with the iteration history (which preserves the longer ~1,470 char first draft and the three shorter alternatives at ~250 / ~235 / ~580 chars). Final wording:
+
+  > I'm an AI Software Engineer building production multi-agent and RAG systems in TypeScript. Four live deployments are in the Featured section below.
+  >
+  > Of the four, the strongest is a 24/7 autonomous wildlife crisis monitoring platform: a five-agent AI swarm on a Redis Streams pipeline with a Refiner/Evaluator loop that scores its own predictions against real outcomes and rewrites its agent prompts when accuracy drops. Close behind it is a four-agent intelligence platform that analyzes 35,000+ near-Earth asteroids with dual RAG indices, per-event SSE observability, and Anthropic tool use giving each agent real NASA API access at runtime.
+  >
+  > Looking for a remote AI engineering role at a company shipping production LLM systems.
+
+  *Iteration notes:* the ~1,470 char first draft was set aside for being too long and duplicating the Experience entry's "How I Work" / project-list / Heritage-Odyssey content. A "six live deployments" count error (correct count is four — the four in Featured) was caught by the user mid-iteration and corrected. The opening of the middle paragraph was revised from "The strongest is..." to "Of the four, the strongest is..." after the user noted the unclear referent across the paragraph break, and "Close behind is..." was revised to "Close behind it is..." for the same reason. Two flavor details (Wildlife Sentinel + Asteroid Bonanza) replaced an earlier single-detail version once the user asked to expand.
+
+  *AI tells stripped from final wording:* no em dashes, no emojis, no "Selected Projects:" template headers, no "no LangChain" framing (per existing feedback memory). The "How I work:" header that appears in the Experience entry was deliberately omitted from the About to avoid duplication.
+
+  **About skill tags (5 tagged to the About section):** Multi-agent Systems, Retrieval-Augmented Generation (RAG), Large Language Models (LLM), Anthropic API, TypeScript. Same five as on the AI Software Engineer Experience entry — deliberately consistent. LinkedIn's auto-suggestions ("Juniors," "Software Infrastructure," "Software Industry," "Internet Software") were rejected: generic and junior-leaning, exactly the framing the rebuild positions against.
+
+- **Open to Work activated.** Pre-existing setting was "Junior Software Engineer" alone (configured November 2025 and never touched), which produced zero inbound across six months. Replaced with:
+
+  | Field | Value |
+  |---|---|
+  | Visibility | Public green frame (#OpenToWork) |
+  | Locations | Remote (United States) |
+  | Job types | Full-time |
+  | Start date | Immediately |
+  | Job titles (4) | Artificial Intelligence Engineer, Generative AI Engineer, Prompt Engineer, Artificial Intelligence Specialist |
+
+  *Reasoning for visibility choice:* user opted for the public green frame for maximum recruiter visibility. Tradeoff acknowledged (visible to all connections including past-life ones; small minority of hiring managers read the frame as overly available). Reversible at any time.
+
+  *Reasoning for the 4 titles:*
+  - **Artificial Intelligence Engineer** — LinkedIn's #1 fastest-growing job title for young workers (2nd year running per Section 6). Primary target.
+  - **Generative AI Engineer** — newer but established term; specifically catches LLM-focused postings.
+  - **Prompt Engineer** — declining as a standalone role but still searched. Originally framed as "last resort" but kept after better alternatives didn't appear in LinkedIn's curated catalog.
+  - **Artificial Intelligence Specialist** — fills the 4th slot. "Specialist" is neutral on seniority and catches AI postings from non-tech-first companies (consulting, healthcare, fintech) that don't use "Engineer" in the title.
+
+  *Titles deliberately rejected:*
+  - **Senior Software Engineer / Senior Artificial Intelligence Engineer** — honesty concern. The user's coding workflow is AI-augmented and a generic Senior SE interview process (whiteboard algorithm grinding without AI) would mismatch their strengths. The portfolio is sophisticated enough to defend a senior title in conversation, but the interview-format mismatch makes the title-search inbound a net negative. (Also: "Senior Artificial Intelligence Engineer" was not in LinkedIn's catalog regardless.)
+  - **AI Operations Strategist / AI Implementation Strategist** — outside lane. These are business-consulting roles that involve no-code workflow tools (Zapier, n8n, Make.com) and stakeholder change-management, not engineering. User correctly identified the mismatch.
+  - **Machine Learning Engineer** — requires Python (per Section 5). User does not have Python yet.
+  - **AI Software Engineer / LLM Engineer / Senior AI Engineer / Founding Engineer / AI Developer / Applied AI Engineer / AI/ML Engineer / AI Solutions Engineer / AI Architect / NLP Engineer / Conversational AI Engineer** — none in LinkedIn's curated Open-to-Work catalog at the time of this session. LinkedIn does not publish the catalog publicly; titles must be discovered by typing and seeing what autocompletes.
+
 ### Pending changes (in priority order)
 
-1. **About / Summary section.** 3–4 paragraph prose summary referencing the Codefi training arc and the strongest two projects. Hardest section because it requires sustained writing — save for a session with the most momentum, not the least. The "January 2026 / multi-agent orchestration clicked" detail from the new Experience entry is good raw material for this.
-2. **Skill-context tags for the remaining 19 skills (optional polish, partially started May 6).** 5 of the 24 skills are now tagged to the new self-directed Experience entry. The remaining 19 are still tagged only to the Codefi apprenticeship. Per LinkedIn: "75% of hirers value skill context." Project-specific skills (Vector Databases, pgvector, Redis, Anthropic Claude, etc.) could be re-tagged from Codefi to the self-directed entry over time without urgency.
+1. **Four technical blog posts (one per live deployment), starting 2026-05-09.** User flagged at end of May 8 session: planning to write four LinkedIn blog posts, one for each of the four deployed projects (Wildlife Sentinel, Asteroid Bonanza, Poster Pilot, ChronoQuizzr), at a cadence of one project every couple of days over a week or so. Each post will dive into how that project was built in technical depth. This directly addresses Section 8 priority #2 ("Write a technical blog post about Wildlife Sentinel or Asteroid Bonanza") and the visibility / public-artifacts gap flagged in Section 7. Workflow expectation: Claude will revisit each project's repo as needed at the start of each post to refresh context per project. Recommendation set by Codefi instructor: blog posts on LinkedIn are a high-leverage visibility move now that the profile basics are shipped.
 
-### Optional polish items (out of original scope, flagged 2026-05-07 for consideration)
+2. **Skill-context tags for the remaining 19 skills (optional polish, partially started May 6, no urgency).** 5 of the 24 skills are tagged to the AI Software Engineer Experience entry. 5 are tagged to the About section (intentionally the same 5). The remaining 19 are still tagged only to the Codefi apprenticeship. Per LinkedIn: "75% of hirers value skill context." Project-specific skills (Vector Databases, pgvector, Redis, Anthropic Claude, etc.) could be re-tagged from Codefi to the self-directed entry over time.
 
-These were not part of the original LinkedIn rebuild plan but came up in the May 7 session as items the user may want to address in future:
+### Optional polish items (out of original scope)
 
-- **"Open to Work" toggle.** Recruiter-only visibility setting that surfaces the profile in LinkedIn's recruiter search tool. Worth deciding on when active job-search begins.
-- **Education section detail.** Codefi programs could be added as Education entries (currently captured only in the Experience description).
-- **Certifications section.** Codefi graduation certificates (CodeLabs, Prompt-to-Product, AI Masterclass) could be added with dates as separate certification entries.
-- **Profile URL customization.** Verify that the LinkedIn profile URL is the clean `linkedin.com/in/sjtroxel` form rather than the default random-string form.
+- **Certifications section.** Codefi graduation certificates (CodeLabs, Prompt-to-Product, AI Masterclass) could be added with dates as separate certification entries — if the user has the PDFs.
+
+(The other items from the May 7 optional polish list are now resolved: "Open to Work" toggle ✓ activated 2026-05-08, Education section detail ✓ added 2026-05-08, Profile URL customization ✓ verified clean 2026-05-08.)
 
 ### Notes on cadence
 
-LinkedIn work is a marathon, not a sprint. Anxiety is the main blocker (per Section 8.3) — small wins per session beat one perfectionist push. Logging here so progress is visible and momentum is preserved across sessions.
+LinkedIn rebuild went from "anxiety-blocked, profile substantively empty" on 2026-05-05 to "fully shipped, recruiter-ready, Open to Work active" on 2026-05-08. Four sessions over four days. The original anxiety was real and the small-wins-per-session pacing was correct.
+
+Phase shift now: from profile-building (recruiter-facing static content) to visibility-building (recruiter-facing dynamic content via blog posts). The four-post series planned for the week of 2026-05-09 is the first execution of this phase.
 
 ---
 
-*Last updated: May 7, 2026 (added Section 10 May 7 entry — Featured/Projects section completed with all 4 live deployments in correct display order; Headline revised to swap "Building production LLM applications" tagline for github.com/sjtroxel URL since Creator Mode is no longer available on free tier and Custom Button is Premium-only; Cover image custom-generated via Adobe Firefly Flux 2 and uploaded — first custom banner replacing the default; Pending Change #1 from May 6 resolved; Pending Changes list re-numbered; Optional polish items section added)*
-*Previous update: May 6, 2026 (added Section 10 May 6 entry — Codefi Experience entry refined with "Student Software Engineer" title and full-arc description; new self-directed "AI Software Engineer" Experience entry added with all locked-in fields, 5 tagged skills, final description, and 4 media cards; Pending Changes #3 and #5 from May 5 resolved; Pending Changes list re-numbered)*
+*Last updated: May 8, 2026 (added Section 10 May 8 entry — Education section completed with two minimal Codefi entries; IU and SMU graduation dates removed for age-signaling reasons; Profile URL confirmed clean; About / Summary section drafted across multiple iterations and posted as the ~725-char "two flavor details" variant with 5 skill tags; Open to Work activated with public green frame and 4 AI-tilted job titles; Pending Change #1 from May 7 resolved; three of four May 7 optional polish items resolved (only Certifications remains); Pending changes list rewritten with the four-post blog series as new top item)*
+*Previous update: May 7, 2026 (added Section 10 May 7 entry — Featured/Projects section completed with all 4 live deployments in correct display order; Headline revised to swap "Building production LLM applications" tagline for github.com/sjtroxel URL since Creator Mode is no longer available on free tier and Custom Button is Premium-only; Cover image custom-generated via Adobe Firefly Flux 2 and uploaded — first custom banner replacing the default; Pending Change #1 from May 6 resolved; Pending Changes list re-numbered; Optional polish items section added)*
+*Earlier: May 6, 2026 (added Section 10 May 6 entry — Codefi Experience entry refined with "Student Software Engineer" title and full-arc description; new self-directed "AI Software Engineer" Experience entry added with all locked-in fields, 5 tagged skills, final description, and 4 media cards; Pending Changes #3 and #5 from May 5 resolved; Pending Changes list re-numbered)*
 *Earlier: May 5, 2026 (added full Codefi training arc context for 2025 CodeLabs and Prompt-to-Product, added Project 7 — Heritage Odyssey, Phase 1 complete; added current LinkedIn profile starting state; added Section 10 LinkedIn Update Log with first headline change and Skills section rebuild — 24 skills added, all tagged to Codefi apprenticeship; flagged self-directed Experience entry as a near-term task)*
 *Initial: April 30, 2026 (initial doc)*
-*Next update: After Featured/Projects or About/Summary section is added to LinkedIn, after Heritage Odyssey Phase 2 ships, after the first technical blog post is published, or after the first job offer — whichever comes first.*
+*Next update: After the first blog post is drafted, after Heritage Odyssey Phase 2 ships, or after the first job offer — whichever comes first.*
