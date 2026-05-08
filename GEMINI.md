@@ -37,7 +37,8 @@ Six projects exist before this one. Full context: `next-project-planning/DEVELOP
 - **Plan before you act.** For any non-trivial task, lay out the approach and let sjtroxel approve it before starting. Don't make significant architectural decisions unilaterally.
 - **Wait for Signal:** Do NOT proceed to research, implementation, or architectural phases until sjtroxel gives the explicit "begin" or "proceed" instruction.
 - **For large implementation phases:** Save the implementation plan to a `.md` file in `project-specs/roadmap/` before starting. This creates alignment and a reference for the work.
-- After completing work, **summarize what was done and tell sjtroxel to commit** — don't commit yourself.
+- After completing work, **summarize what was done and tell sjtroxel to commit** (and save any implementation decisions 
+or gotchas NOT already in GEMINI.md or phase specs to memory) — don't commit yourself.
 - Run `lint + typecheck + tests` (all three) before declaring any work done.
 
 ### Code Style

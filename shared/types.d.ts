@@ -49,3 +49,22 @@ export interface HandoffPackage {
   retrievedCount: number;
   suggestion: string;
 }
+
+export interface TranscriptionResponse {
+  text: string;
+}
+
+export interface StreamNarrativeRequest {
+  query: string;
+}
+
+export type InteractionMode = 'idle' | 'recording' | 'processing' | 'playing';
+
+export interface NarrativeState {
+  id: string;
+  query: string;
+  text: string | null;
+  // audioUrl points to the /api/narrative/stream endpoint; the browser audio element opens it as a streaming connection.
+  audioUrl: string | null;
+  status: InteractionMode;
+}

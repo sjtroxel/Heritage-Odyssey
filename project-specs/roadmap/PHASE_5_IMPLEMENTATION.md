@@ -56,7 +56,7 @@ As of the current version (`1.59.0`), the following call signatures are verified
 
 **STOP HERE — await review**
 
-## Step 5 — Audio Stream Hook (Frontend)
+## Step 5 — Audio Stream Hook (Frontend) [x]
 - **Files to Create:**
   - `client/src/hooks/useAudioStream.ts`
 - **Logic:**
