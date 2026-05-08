@@ -47,7 +47,7 @@
 *   **Risks:** Ensuring accurate retrieval of historical context; managing embedding token costs.
 *   **Done:** A populated Pinecone index that supports semantic search of historical documents with verified retrieval latency.
 
-### Phase 4: Agent Swarm [IN PROGRESS]
+### Phase 4: Agent Swarm [COMPLETE]
 *   **Deliverables:**
     1. LangGraph environment setup.
     2. Primary "Narrator" agent definition.
@@ -57,9 +57,9 @@
     6. Tool definitions for historical query handling.
     7. Prompt templates for historical and emotional accuracy.
 *   **Risks:** Preventing "hallucinations" in historical narratives; agent loop optimization.
-*   **Done:** Steps 1 (Infrastructure & ModelRouter) and 2 (State Definition & Types) are complete.
+*   **Done:** Multi-agent orchestration layer implemented using LangGraph. Researcher, Synthesizer, and Narrator nodes are connected with loop-back logic for fact-checking. Insufficient retrieval handoff implemented. Service integration and tests in `server/tests/agents/graph.test.ts` verify the full flow.
 
-### Phase 5: Voice & UI
+### Phase 5: Voice & UI [COMPLETE]
 *   **Deliverables:**
     1. OpenAI Whisper STT integration.
     2. ElevenLabs TTS integration.
@@ -68,7 +68,7 @@
     5. Query input mechanism (voice/text).
     6. Narrative output visualization.
 *   **Risks:** Latency in audio generation/streaming; cross-platform audio compatibility.
-*   **Done:** A user can speak/type a prompt, and the app successfully plays back an audio-narrated historical response in the UI.
+*   **Done:** STT and TTS services implemented. Backend provides a streaming endpoint for audio narratives. Frontend includes a mobile-first UI with audio recording and playback integration. Integration tests in `server/tests/routes/voiceRoutes.test.ts` verify the end-to-end backend voice flow.
 
 ### Phase 6: Evaluation
 *   **Deliverables:**

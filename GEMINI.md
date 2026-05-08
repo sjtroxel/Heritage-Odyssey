@@ -124,6 +124,15 @@ Building the project is the primary work, but there is a parallel career goal ru
 
 ---
 
+## Durable Patterns & Implementation Decisions
+
+*Promotion Rule: Add here only when a pattern is proven across multiple steps or is a critical architectural "Why".*
+
+- **Voice/Audio Streaming:** Use `POST` to `/api/narrative/stream` to support large queries. Frontend: Use `fetch` + `createObjectURL` + `HTMLAudioElement` for progressive streaming.
+- **Hook State:** Ensure `cleanup()` functions explicitly pause audio/media and revoke URLs to prevent memory leaks in long sessions.
+
+---
+
 ## Session Start Checklist
 
 At the start of every session, mentally confirm:

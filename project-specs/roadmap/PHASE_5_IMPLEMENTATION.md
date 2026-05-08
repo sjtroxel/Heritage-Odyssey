@@ -23,7 +23,7 @@ As of the current version (`1.59.0`), the following call signatures are verified
 
 ## Step 2 — Routes & Multer Setup (Backend) [x]
 - **Files to Create:**
-  - `server/src/routes/voiceRoutes.ts`
+  - `server/src/routes/voiceRoutes.ts
 - **Files to Modify:**
   - `server/src/app.ts` (Register `voiceRoutes`)
 - **Logic:**
@@ -66,7 +66,7 @@ As of the current version (`1.59.0`), the following call signatures are verified
 
 **STOP HERE — await review**
 
-## Step 6 — UI Components (Interaction Layer)
+## Step 6 — UI Components (Interaction Layer) [x]
 - **Files to Create:**
   - `client/src/components/InteractionLayer.tsx`
   - `client/src/components/AudioVisualizer.tsx`
@@ -79,7 +79,7 @@ As of the current version (`1.59.0`), the following call signatures are verified
 
 **STOP HERE — await review**
 
-## Step 7 — Integration Testing & Final Polish
+## Step 7 — Integration Testing & Final Polish [x]
 - **Files to Create:**
   - `server/tests/routes/voiceRoutes.test.ts`
 - **Actions:**

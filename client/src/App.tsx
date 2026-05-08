@@ -1,9 +1,10 @@
 import React from 'react';
 import { History, MapPin, Mic, Wind } from 'lucide-react';
+import InteractionLayer from './components/InteractionLayer';
 
 const App: React.FC = () => {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 pb-32 md:pb-40">
       {/* Header */}
       <header className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -65,7 +66,7 @@ const App: React.FC = () => {
         {/* Placeholder for visual flair */}
         <section className="max-w-7xl mx-auto px-4 pb-20">
           <div className="aspect-video rounded-3xl bg-linear-to-br from-indigo-500 via-purple-500 to-slate-900 relative overflow-hidden shadow-2xl">
-            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)]"></div>
+            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,var(--tw-gradient-from)_0%,transparent_70%)]"></div>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-white/40 font-mono text-sm tracking-[0.2em] uppercase">
                 Historical Intelligence Interface
@@ -86,6 +87,9 @@ const App: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Persistent Interaction Layer */}
+      <InteractionLayer />
     </div>
   );
 };
