@@ -1,0 +1,5 @@
+ragas
+trulens-eval
+openai
+pandas
+python-dotenv

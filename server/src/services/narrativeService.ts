@@ -1,6 +1,7 @@
 import { graph } from '../agents/graph.js';
 import { HandoffPackage } from '@heritage-odyssey/shared/types';
 import { logger } from './logger.js';
+import { exportTrace } from './evalService.js';
 
 /**
  * Public service to generate a historical narrative using the multi-agent swarm.
@@ -39,6 +40,15 @@ export async function generateNarrative(
         query,
       });
       return result.handoffPackage;
+    }
+
+    const answer = result.finalScript ?? result.narrativeDraft;
+
+    // Evaluation Trace Capture (Fire-and-forget)
+    if (process.env.EVAL_MODE === 'true' && answer) {
+      exportTrace(query, result.historicalContext, answer).catch((err) => {
+        logger.warn('Failed to export eval trace in fire-and-forget call', err);
+      });
     }
 
     // 2. Return the final script if available

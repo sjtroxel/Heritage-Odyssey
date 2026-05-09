@@ -70,15 +70,15 @@
 *   **Risks:** Latency in audio generation/streaming; cross-platform audio compatibility.
 *   **Done:** STT and TTS services implemented. Backend provides a streaming endpoint for audio narratives. Frontend includes a mobile-first UI with audio recording and playback integration. Integration tests in `server/tests/routes/voiceRoutes.test.ts` verify the end-to-end backend voice flow.
 
-### Phase 6: Evaluation
+### Phase 6: Evaluation [IN PROGRESS]
 *   **Deliverables:**
-    1. Ragas/TruLens evaluation framework setup.
-    2. Test dataset creation (Historical query/answer pairs).
+    1. Ragas/TruLens evaluation framework setup. [DONE]
+    2. Test dataset creation (Historical query/answer pairs). [DONE]
     3. "Accuracy" evaluation module.
     4. "Retrieval" quality scoring module.
     5. Automated evaluation report generator.
 *   **Risks:** Defining "ground truth" for subjective oral-history-style narratives.
-*   **Done:** The system has an automated evaluation suite that provides measurable quality scores for retrieval and historical factual alignment.
+*   **Done:** Python evaluation environment initialized with `ragas` and `trulens-eval`. Golden dataset (`golden_set.json`) populated. Backend trace capture (`evalService`) implemented and integrated into `narrativeService` to record agent interactions when `EVAL_MODE=true`.
 
 ### Phase 7: Deployment & Launch
 *   **Deliverables:**

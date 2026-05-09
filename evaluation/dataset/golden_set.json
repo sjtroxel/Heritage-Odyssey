@@ -1,0 +1,98 @@
+[
+  {
+    "question": "What was daily life like for a Union soldier during the American Civil War?",
+    "ground_truth": "Union soldiers endured long stretches of monotony punctuated by intense violence. Camp life involved drilling, cooking over open fires, and writing letters home, while disease — particularly dysentery and typhoid — killed more men than combat. A soldier's rations typically included hardtack, salt pork, and coffee, and shelter ranged from canvas tents to crude winter huts. Morale varied widely depending on proximity to home, recent battle outcomes, and the quality of leadership.",
+    "contexts": [
+      "The life of a Union private was one of long marches and longer waiting. Letters home described the mud, the lice, the bad beef, and the hardtack so hard it required soaking in coffee before it could be eaten without breaking a tooth. Disease swept through camps with regularity; for every man killed by a Confederate bullet, two more died of illness.",
+      "Regimental records from 1863 show that typhoid and dysentery were the primary causes of hospitalization, accounting for nearly sixty percent of all medical cases. Surgeons performed amputations by the hundreds after major engagements, and infection killed many who had survived the initial wound."
+    ]
+  },
+  {
+    "question": "What were the economic conditions for small farmers in the American Midwest during the 1880s?",
+    "ground_truth": "The 1880s were a turbulent decade for Midwestern farmers caught between rising railroad freight rates and falling commodity prices. Many had taken on debt to acquire land and equipment during the post-war expansion, and by the late 1880s drought and depressed grain prices pushed thousands into foreclosure. The decade gave rise to the Farmers' Alliance and eventually the Populist movement, as rural communities sought collective solutions to structural economic hardship.",
+    "contexts": [
+      "Wheat prices that had commanded over a dollar a bushel in 1870 had fallen to below sixty cents by 1886. The farmer who had borrowed at high interest to fence and break his quarter-section found himself working harder each year to repay a debt that deflation never lightened.",
+      "The Patrons of Husbandry — commonly called the Grange — organized cooperative grain elevators and advocated for railroad regulation, but many farmers found the relief too little and too late. Railroad companies charged more to ship grain from Kansas to Chicago than from Chicago to Liverpool, a disparity that became the central grievance of the agrarian movement."
+    ]
+  },
+  {
+    "question": "What was the average life expectancy in the United States in the 1850s, and what drove early death?",
+    "ground_truth": "Life expectancy at birth in the United States in the 1850s was approximately 38 to 40 years, though this figure was heavily skewed by very high infant and child mortality. A person who survived to age 20 could reasonably expect to live into their 50s or 60s. Infectious diseases — tuberculosis, cholera, and scarlet fever — were the leading causes of death, and medical care was limited and often ineffective by modern standards.",
+    "contexts": [
+      "In the antebellum United States, one child in five did not survive to their first birthday. The diseases that swept through communities — scarlet fever, diphtheria, cholera — spared neither the wealthy nor the poor, though the poor suffered in greater concentrations. Life tables compiled from the 1850 census suggest a mean life expectancy at birth of approximately 39.5 years for white males.",
+      "Infant mortality rates exceeded 200 deaths per 1,000 live births in many urban counties, a figure that would not begin to decline significantly until improved sanitation systems were built in the 1880s and 1890s. Tuberculosis — then called consumption — was the single largest cause of adult death throughout the nineteenth century."
+    ]
+  },
+  {
+    "question": "Why did millions of Europeans immigrate to the United States between 1890 and 1914?",
+    "ground_truth": "The mass immigration from Southern and Eastern Europe between 1890 and 1914 was driven by a combination of economic hardship, political instability, and deliberate recruitment by American industries and shipping companies. Overpopulation and land scarcity in rural Italy, Poland, and the Austro-Hungarian Empire pushed families toward departure, while the promise of industrial wages in American mills and mines pulled them across the Atlantic. Between 1900 and 1914 alone, nearly 13 million immigrants arrived, the majority settling in northeastern cities and industrial towns.",
+    "contexts": [
+      "The steamship companies competed aggressively for steerage passengers, posting agents in village squares across Sicily, Galicia, and the Pale of Settlement. A one-way ticket from Naples to New York cost less than the average Italian laborer earned in a month. The promise of American wages — three to five times higher than what could be earned at home — was not exaggerated.",
+      "At Ellis Island, inspectors processed as many as 11,000 arrivals in a single day during peak years. Most passed through in three to five hours; fewer than two percent were turned away. The immigrants who stayed crowded into tenement neighborhoods and took the hardest industrial jobs, building the railroads, digging the tunnels, and working the steel furnaces."
+    ]
+  },
+  {
+    "question": "How did the 1918 influenza pandemic affect American families?",
+    "ground_truth": "The 1918 Spanish influenza pandemic killed an estimated 675,000 Americans in roughly two years, making it the deadliest public health crisis in U.S. history. Unusually, the virus struck hardest at young adults aged 20 to 40, meaning many families lost their primary breadwinner rather than an elderly relative. Schools, churches, and public gatherings were banned in major cities, hospitals were overwhelmed, and the pandemic left lasting psychological trauma in communities across the country.",
+    "contexts": [
+      "In Philadelphia, the dead accumulated faster than coffins could be built. City officials borrowed wagons to collect bodies from row houses where entire families lay ill together. The Board of Health recorded 759 deaths in a single day in October 1918, and the city's morgues overflowed into improvised storage in church basements.",
+      "Unlike ordinary influenza, the 1918 strain attacked the lungs with an intensity that turned them fluid-filled and rigid within days. Physicians noted with alarm that the victims were overwhelmingly in their twenties and thirties — the age group least expected to die of respiratory illness. The demographic inversion devastated young households and left many children orphaned."
+    ]
+  },
+  {
+    "question": "What were living conditions for formerly enslaved people in the American South during Reconstruction?",
+    "ground_truth": "Reconstruction brought legal freedom but persistent economic and social hardship for formerly enslaved people across the South. Most freedpeople remained on the land as sharecroppers, locked into labor arrangements that left them perpetually indebted to white landowners. Freedmen's Bureau schools offered literacy and basic education to hundreds of thousands, and Black political participation surged briefly, but organized white supremacist violence suppressed many of these gains. By the time federal troops withdrew in 1877, a system of de facto racial subjugation was being reimposed through Black Codes and convict leasing.",
+    "contexts": [
+      "The freedman found that liberty without land was a narrow thing. The promise of forty acres was withdrawn almost as soon as it was made, and by the spring of 1866 most of the men who had expected to farm their own ground were signing labor contracts with the same planters who had once owned them. The contracts left little room for negotiation and required the laborer to remain on the land through the harvest.",
+      "The Freedmen's Bureau established over 4,000 schools across the South between 1865 and 1870, teaching basic literacy to adults and children alike. In many communities, church and school were the same building, and attendance was treated as an act of assertion by those who had been legally forbidden to read. Klan violence against schoolteachers — Black and white — was common in the interior counties."
+    ]
+  },
+  {
+    "question": "What was daily life like for a woman on an American farm in the 1870s?",
+    "ground_truth": "Farm women in 1870s America performed an enormous and largely uncompensated range of labor: cooking over wood fires, making and mending clothing, tending kitchen gardens, raising poultry, preserving food for winter, and caring for children through frequent illness and childbirth. A woman might give birth to six or more children, several of whom would not survive to adulthood. While isolated from town life, farm women often sustained dense mutual aid networks with neighbors for births, harvests, and illness. Women on the frontier faced additional hardships including physical isolation, sod-house conditions, and the near-total absence of the social infrastructure of eastern communities.",
+    "contexts": [
+      "A farm wife's day began before sunrise and ended well after dark. Bread had to be baked, butter churned, children fed and tended, and whatever kitchen garden produce the season offered had to be put up before it spoiled. A woman who also contributed to field work during planting and harvest was not unusual, though this double labor was rarely recorded in any official account.",
+      "Census records from 1870 show an average completed fertility of over five children per married rural woman, with infant and child mortality claiming roughly a third of those births before the child's fifth birthday. Childbirth itself was dangerous: puerperal fever killed a significant fraction of women in their reproductive years, and most deliveries were attended by a neighbor or midwife rather than a physician."
+    ]
+  },
+  {
+    "question": "What were working conditions like for children in American factories and mines around 1900?",
+    "ground_truth": "At the turn of the twentieth century, approximately 1.75 million children under the age of sixteen were employed in American industries, including textile mills, coal mines, glass factories, and canneries. Working days of ten to twelve hours were common, wages were a fraction of adult pay, and injuries from machinery were frequent. Reformers and documentary photographers like Lewis Hine built public support for child labor legislation, which culminated in the Keating-Owen Act of 1916, though the Supreme Court later struck it down before federal protections were finally established in 1938.",
+    "contexts": [
+      "In the spinning rooms of southern cotton mills, children as young as seven worked the overnight shift, tying broken threads with small quick fingers that the machine-tenders said were better suited for the work than adult hands. They earned three or four cents an hour. The mills were hot, the air thick with cotton fiber, and the machines loud enough to make ordinary conversation impossible.",
+      "Lewis Hine's photographs of breaker boys in the Pennsylvania coal mines — their faces blackened with coal dust, their expressions exhausted and old — became some of the most powerful social reform documents of the Progressive Era. The breaker boys sorted coal by hand, crouching over moving chutes in cramped, unheated rooms, breathing coal dust for nine or ten hours a day."
+    ]
+  },
+  {
+    "question": "What hardships did homesteaders face settling the Great Plains in the 1860s and 1870s?",
+    "ground_truth": "Homesteaders on the Great Plains confronted an environment fundamentally different from the wooded East: almost no timber for construction, unpredictable rainfall, extreme summer heat and winter blizzards, and periodic grasshopper invasions that could strip a field bare in hours. Most settlers built sod houses from thick prairie turf, which were warm in winter but prone to leaks and collapse. Isolation was a major psychological strain, and fewer than 40 percent of Homestead Act claims were ultimately proved up into deeded land.",
+    "contexts": [
+      "The sod house — the 'soddy' — became the defining dwelling of the Plains frontier. Cut from the deep-rooted buffalo grass in bricks and stacked like masonry, a soddy could be built without nails or lumber. It was dark inside, and in a wet spring the roof dripped mud for days. Snakes occasionally fell through the ceiling. But it was warm in January when the thermometer dropped to twenty below and the wind crossed five hundred miles of open ground before it found you.",
+      "The grasshopper plague of 1874 remains one of the most catastrophic agricultural events in American history. Rocky Mountain locusts descended on Kansas, Nebraska, and the Dakota Territory in numbers that darkened the sky, consuming everything green — crops, leather harness straps, wooden tool handles — and leaving farmers with nothing to sell and nothing to eat through the coming winter."
+    ]
+  },
+  {
+    "question": "How did the Great Depression of the 1930s affect ordinary American families?",
+    "ground_truth": "The Great Depression pushed unemployment to 25 percent nationally and disrupted the lives of tens of millions of families. Savings were wiped out when banks failed without warning, farms were foreclosed, and the Dust Bowl drought compounded agricultural ruin across the Great Plains. Families doubled up in housing, children left school to contribute wages, and mass migration — most famously of displaced farm families to California — became a survival strategy. Federal New Deal programs provided limited but significant relief through work programs, crop subsidies, and the beginnings of a social insurance system.",
+    "contexts": [
+      "By 1932, one in four American workers had no job. Men who had held steady employment for decades stood in breadlines or sold apples on street corners. Families who had saved carefully for years saw their bank accounts disappear overnight when local banks shuttered without warning and without any depositor protection.",
+      "In the Texas Panhandle and western Kansas, drought and decades of deep-plowing had turned the topsoil to powder. Dust storms — called black blizzards — buried fences and filled houses, ruining lungs and crops alike. An estimated 2.5 million people abandoned the Great Plains during the 1930s, many heading west on Route 66 with everything they owned loaded onto a single car or truck."
+    ]
+  },
+  {
+    "question": "How common was infant and child death in Victorian-era America, and how did families cope with it?",
+    "ground_truth": "Infant and child mortality in the mid-to-late nineteenth century was a near-universal experience for American families. Roughly one in five babies did not survive their first year, and cumulative mortality by age five reached 30 to 40 percent in many communities. Causes included diarrheal disease, diphtheria, scarlet fever, whooping cough, and measles. Families coped through religious faith, elaborate mourning rituals, and postmortem photography — creating the only likeness many parents would ever have of a child who died young.",
+    "contexts": [
+      "It was not unusual for a woman to bear eight or nine children and see three or four of them buried before they reached school age. The gravestones in any rural churchyard tell the story plainly: 'Infant son of J. and M. Hartwell, aged 4 months, 12 days.' Then, two years later: 'Mary Alice Hartwell, aged 2 years.' Grief was woven into the fabric of family life as a matter of inevitability, not exception.",
+      "Postmortem photography became a widespread mourning practice in the Victorian era, particularly for infants and young children who had died before any living photograph could be taken. Families treasured these images as the only visual record they would ever have of the child. Photographers sometimes posed the dead child in the arms of a living parent, or arranged siblings around the body as if posing for an ordinary family portrait."
+    ]
+  },
+  {
+    "question": "What was life like for free Black Americans in the Northern states before the Civil War?",
+    "ground_truth": "Free Black Americans in the antebellum North lived under significant legal and social constraints despite their nominal freedom. In most northern states they could not vote, were excluded from skilled trades through union restrictions, and faced pervasive residential segregation. Black communities in cities like Philadelphia, Boston, and Cincinnati built parallel institutions — churches, mutual aid societies, newspapers, and schools — that provided economic support and cultural sustenance. The Fugitive Slave Act of 1850 created a persistent climate of fear: even those born free could be seized on the claim of a slave catcher and had few legal protections.",
+    "contexts": [
+      "The free colored population of Philadelphia numbered over 22,000 by 1850, making it the largest free Black community in the antebellum North. They supported their own churches, insurance societies, and improvement associations, and published newspapers that circulated as far south as the border states. Yet few could vote, almost none could join a trade union, and all lived under the shadow of a law that required even white strangers to assist in the capture of any person claimed as a runaway.",
+      "Frederick Douglass, writing in his 1845 Narrative, described the peculiar terror of being a Black man in a nominally free state: watched, suspected, and always one accusation away from the slave pen. The Underground Railroad, which moved through Philadelphia, Cincinnati, and other northern cities, depended entirely on Black mutual aid networks and sympathetic white allies to function."
+    ]
+  }
+]

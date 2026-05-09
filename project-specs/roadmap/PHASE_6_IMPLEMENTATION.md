@@ -4,42 +4,36 @@ This document outlines the specific implementation steps for Phase 6: Evaluation
 
 ---
 
-## Step 1 — Python Environment & Structure
+## [x] Step 1 — Python Environment & Structure
 - **Directories to Create:**
-  - `evaluation/`
-  - `evaluation/dataset/`
-  - `evaluation/traces/`
-  - `evaluation/reports/`
+  - `evaluation/` [DONE]
+  - `evaluation/dataset/` [DONE]
+  - `evaluation/traces/` [DONE]
+  - `evaluation/reports/` [DONE]
 - **Files to Create:**
-  - `evaluation/requirements.txt` (ragas, trulens-eval, openai, pandas, python-dotenv)
+  - `evaluation/requirements.txt` (ragas, trulens-eval, openai, pandas, python-dotenv) [DONE]
 - **Actions:**
-  - Initialize a Python virtual environment (`venv`) within `evaluation/`.
-  - Verify `pip install -r requirements.txt` succeeds.
+  - Initialize a Python virtual environment (`venv`) within `evaluation/`. [DONE]
+  - Verify `pip install -r requirements.txt` succeeds. [DONE]
 
-**STOP HERE — await review**
-
-## Step 2 — Golden Dataset Preparation
+## [x] Step 2 — Golden Dataset Preparation
 - **Files to Create:**
-  - `evaluation/dataset/golden_set.json`
+  - `evaluation/dataset/golden_set.json` [DONE - POPULATED]
 - **Logic:**
   - Manually draft 5–10 "Ground Truth" pairs (Query -> Historical Fact -> Sample Narrative).
   - These serve as the benchmark for "perfect" system performance.
   - Follow the Ragas schema: `{"question": "...", "ground_truth": "...", "context": [...]}`.
 
-**STOP HERE — await review**
-
-## Step 3 — Trace Export Service (Backend)
+## [x] Step 3 — Trace Export Service (Backend)
 - **Files to Create:**
-  - `server/src/services/evalService.ts`
+  - `server/src/services/evalService.ts` [DONE]
 - **Files to Modify:**
-  - `server/src/services/narrativeService.ts` (or `graph.ts`)
+  - `server/src/services/narrativeService.ts` (or `graph.ts`) [DONE]
 - **Logic:**
   - Implement `exportTrace` to capture `question`, `contexts`, and `answer`.
   - Guard the export logic with `process.env.EVAL_MODE === 'true'`.
   - Resolve the export path to `evaluation/traces/latest_run.json` using `import.meta.url`.
   - Ensure it appends or manages a list of traces for batch evaluation.
-
-**STOP HERE — await review**
 
 ## Step 4 — Ragas Scoring Script (Python)
 - **Files to Create:**
