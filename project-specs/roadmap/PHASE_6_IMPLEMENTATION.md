@@ -35,13 +35,13 @@ This document outlines the specific implementation steps for Phase 6: Evaluation
   - Resolve the export path to `evaluation/traces/latest_run.json` using `import.meta.url`.
   - Ensure it appends or manages a list of traces for batch evaluation.
 
-## Step 4 — Ragas Scoring Script (Python)
+## [x] Step 4 — Ragas Scoring Script (Python)
 - **Files to Create:**
-  - `evaluation/main.py`
+  - `evaluation/main.py` [DONE]
 - **Logic:**
-  - Load traces from `traces/latest_run.json`.
-  - Initialize Ragas metrics: `faithfulness`, `answer_relevance`, and `context_precision`.
-  - Run the evaluation and output a preliminary `summary.json`.
+  - Load traces from `traces/latest_run.json`. [DONE]
+  - Initialize Ragas metrics: `faithfulness`, `answer_relevance`, and `context_precision`. [DONE]
+  - Run the evaluation and output a preliminary `summary.json`. [DONE]
 
 **STOP HERE — await review**
 

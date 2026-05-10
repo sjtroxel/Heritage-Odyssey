@@ -1,4 +1,6 @@
-ragas
+ragas==0.1.9
+langchain-openai==0.1.7
+langchain==0.1.20
 trulens-eval
 openai
 pandas
