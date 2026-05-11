@@ -1,7 +1,7 @@
 {
   "scores": {
-    "faithfulness": 0.5462699337699337,
-    "answer_relevancy": 0.9173347490034883,
+    "faithfulness": 0.45312118437118437,
+    "answer_relevancy": 0.9122452925570865,
     "context_precision": 0.9999999999458332
   },
   "sample_count": 12

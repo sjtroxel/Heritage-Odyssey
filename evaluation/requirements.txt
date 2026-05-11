@@ -1,7 +1,11 @@
 ragas==0.1.9
 langchain-openai==0.1.7
 langchain==0.1.20
-trulens-eval
+langchain-core==0.1.53
+langchain-community==0.0.38
+langsmith==0.1.147
+trulens-eval==2.8.0
+trulens-providers-openai==2.8.0
 openai
 pandas
 python-dotenv
