@@ -8,7 +8,8 @@
 | 4 | **Agent Swarm** | 6 Days | Build the LangGraph orchestration for historical narrative generation. |
 | 5 | **Voice & UI** | 5 Days | Integrate ElevenLabs/Whisper and develop the frontend interface. |
 | 6 | **Evaluation** | 4 Days | Implement Ragas/TruLens for validation of historical accuracy. |
-| 7 | **Deployment & Launch** | 2 Days | Finalize production deployment and verify platform stability. |
+| 7 | **UI Overhaul & Pre-Deployment Polish** | 3 Days | Fix functional bugs, redesign UI to historical theme, verify end-to-end locally before deployment. |
+| 8 | **Deployment & Launch** | 2 Days | Finalize production deployment and verify platform stability. |
 
 ---
 
@@ -80,7 +81,17 @@
 *   **Risks:** Defining "ground truth" for subjective oral-history-style narratives.
 *   **Done:** Python evaluation environment initialized with `ragas` and `trulens-eval`. Golden dataset (`golden_set.json`) populated. Backend trace capture (`evalService`) implemented. Ragas scoring script (`evaluation/main.py`) successfully executed against captured traces, generating automated reports in `evaluation/reports/summary.json`.
 
-### Phase 7: Deployment & Launch
+### Phase 7: UI Overhaul & Pre-Deployment Polish
+*   **Deliverables:**
+    1. Visual redesign of the frontend to match a "historical archive" aesthetic.
+    2. Implementation of a global error handling system for the voice/narrative pipeline.
+    3. Refinement of the `AudioVisualizer` component for smoother animations.
+    4. Manual bug bash covering edge cases in agent handoffs.
+    5. Local E2E verification of the full user flow.
+*   **Risks:** UI redesign introducing regressions in existing mobile-responsive layouts.
+*   **Done:** (Planned)
+
+### Phase 8: Deployment & Launch
 *   **Deliverables:**
     1. Final production security audit.
     2. Railway configuration for Express backend.

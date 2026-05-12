@@ -1,4 +1,4 @@
-# Phase 7 Plan: Deployment & Launch
+# Phase 8 Plan: Deployment & Launch
 
 ## 1. Objective
 Finalize the production environment for Heritage Odyssey by deploying the Express 5 backend to Railway and the React 19 frontend to Vercel. This phase focuses on production-grade security, performance stability under load, and end-to-end verification of the full narrative pipeline.
@@ -35,8 +35,8 @@ All environment variables must be configured in the respective deployment platfo
 | `PINECONE_INDEX` | Phase 1, 3 | The name of the production index | Server |
 | `ELEVENLABS_API_KEY`| Phase 5 | Access to ElevenLabs TTS | Server |
 | `ELEVENLABS_VOICE_ID`| Phase 5 | ID for the narrator voice | Server |
-| `VITE_API_URL` | Phase 7 | The public URL of the deployed Railway backend | Client |
-| `CORS_ORIGIN` | Phase 7 | The public URL of the deployed Vercel frontend | Server |
+| `VITE_API_URL` | Phase 8 | The public URL of the deployed Railway backend | Client |
+| `CORS_ORIGIN` | Phase 8 | The public URL of the deployed Vercel frontend | Server |
 | `EVAL_MODE` | Phase 6 | Set to `false` or leave unset in production to disable trace logging | Server |
 | `LANGCHAIN_TRACING_V2`| Phase 4 | Must NOT be enabled in production without a configured LangSmith key; leave unset | Server |
 | `JWT_SECRET` | Phase 2 | Defined in Zod schema; set to placeholder for now | Server |
