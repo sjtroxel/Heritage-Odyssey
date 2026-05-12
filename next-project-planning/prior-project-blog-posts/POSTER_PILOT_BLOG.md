@@ -9,23 +9,15 @@
 
 ## The Post (paste into LinkedIn as-is)
 
-> Built a poster search where an open-ended query gets expanded into 3–5 concrete descriptive phrases, each runs as a parallel CLIP vector search, and the rankings merge with Reciprocal Rank Fusion.
+> Poster Pilot is a multimodal image search over 5,000 historical posters. The interesting part: vague, intent-heavy queries don't break the retrieval. Vibe mode expands each query into 3–5 concrete descriptive phrases with Claude Sonnet 4.6, runs each phrase as a parallel CLIP vector search against a 768-dim pgvector space, and merges the rankings with Reciprocal Rank Fusion (RRF, from TREC research; not a wrapper around cosine similarity).
 >
-> The problem: a user types "WPA posters about hope" and a single embedding misses most of what they want. Semantic similarity is not semantic coverage.
+> The catalog is 5,000 posters from NARA, the Library of Congress, and the Smithsonian (via DPLA), embedded once with OpenAI's CLIP vit-large-patch14. Four search modes share the same vector space: text, image, hybrid, and vibe.
 >
-> How it's built:
->
-> - 5,000 posters from NARA, the Library of Congress, and the Smithsonian (via DPLA), embedded once with OpenAI's CLIP vit-large-patch14 into a 768-dim pgvector space.
-> - Four search modes share the same vector space: text, image, hybrid, and vibe.
-> - Vibe mode uses Claude Sonnet 4.6 to expand the query. RRF is an information-retrieval technique from TREC research, not a wrapper around cosine similarity.
-> - A grounded RAG chatbot ("The Archivist") answers follow-up questions. Temperature 0.2, citation required, system prompt forbids invented dates or creators.
-> - When CLIP's top result drops below 0.20 confidence, the app says so and routes you to a real NARA archivist.
+> A grounded RAG chatbot ("The Archivist") handles follow-up questions at temperature 0.2 with citations required, and a system prompt that forbids invented dates or creators. When CLIP's top result drops below 0.20 confidence, the app says so and routes you to a real NARA archivist.
 >
 > 5,000 posters is enough to demonstrate the architecture, not enough to cover every long-tail query. The mechanism is the demo; production scale is a separate problem.
 >
-> Stack: React 19, TypeScript, Tailwind v4, Express 5, Supabase + pgvector, Replicate (CLIP), Anthropic SDK. 253 tests at 99.5% statement coverage.
->
-> Try it: poster-pilot.vercel.app
+> Built with React 19, TypeScript, Tailwind v4, Express 5, Supabase + pgvector, Replicate for CLIP, and the Anthropic SDK. 253 tests at 99.5% statement coverage. Live at poster-pilot.vercel.app.
 >
 > #AIEngineering #RAG #VectorSearch #MultimodalAI #OpenToWork
 
@@ -33,9 +25,9 @@
 
 ## Length Check
 
-- **Word count:** ~213 words (target was ~200 for posts #1–2; on spec)
-- **Character count:** ~1,500 chars (well under LinkedIn's 3,000 cap)
-- **Hook line cut-point:** The full first sentence is ~190 characters. On desktop the "...see more" cut lands around 210 chars, so the full hook is visible. On mobile (~140-char cut), the cut lands inside the sentence at "...gets expanded into 3–5..." — still intriguing enough to drive an expand-click.
+- **Word count:** ~203 words (target was ~200 for posts #1–2; on spec)
+- **Character count:** ~1,340 chars (well under LinkedIn's 3,000 cap)
+- **Hook line cut-point:** The first sentence ("Poster Pilot is a multimodal image search over 5,000 historical posters.") is ~72 characters — product name and substrate visible above the fold on both desktop (~210-char cut) and mobile (~140-char cut). The second sentence ("The interesting part: vague, intent-heavy queries don't break the retrieval.") completes at ~149 chars cumulative. On mobile (~140-char cut), the cut lands at roughly "...don't break the retri..." which is a clean cliffhanger driving the expand-click. On desktop (~210), the cut lands inside sentence 3 mid-pipeline-description ("...vibe mode expands each query into 3–5..."), also a productive cliffhanger.
 
 ---
 
@@ -117,6 +109,31 @@ User flagged on 2026-05-11 that ChronoQuizzr already led with "Claude" and a sec
 - No "no LangChain" framing (per existing feedback memory)
 - Hook is concrete and specific in the first sentence; doesn't lead with abstract claims
 - Vendor name (Claude) does not appear in the hook; appears in the body where it carries technical signal
+
+**Revision 2026-05-12: deviated from the ChronoQuizzr structural template**
+
+After ChronoQuizzr published 2026-05-11, user noticed the Poster Pilot draft mirrored its skeleton almost exactly: "Built a [X] where..." opener, "The problem:" label, bulleted "How it's built:" section, "Stack:" label, "Try it:" link line. Two posts in identical format = recruiter pattern-matches on "AI-generated content." Revised the post (not the rationale, not the facts) to break the surface template.
+
+Structural changes (all retained in final):
+
+- "The problem:" label removed; friction woven into the opening prose.
+- "How it's built:" label removed.
+- "Stack:" label replaced with "Built with..." conversational sentence.
+- "Try it:" label replaced with "Live at..." appended to the stack sentence.
+
+**Opener went through two iterations on 2026-05-12 before locking:**
+
+**Iteration 1 — Quoted-user-query opener (rejected by user).** First revision led with *"WPA posters about hope" is the kind of query that breaks a single embedding.* User correctly flagged this as gating the hook behind American-history knowledge: a casual doomscroller who doesn't know what the WPA was bounces, even though they'd be interested in the actual project (multimodal semantic search using pgvector, Replicate, the Anthropic SDK). The opener's job is to get readers *into* the post, not filter for history buffs. Rejected.
+
+**Iteration 2 — Product-first opener (LOCKED).** Final opener: *"Poster Pilot is a multimodal image search over 5,000 historical posters. The interesting part: vague, intent-heavy queries don't break the retrieval. Vibe mode expands each query into 3–5 concrete descriptive phrases with Claude Sonnet 4.6, runs each phrase as a parallel CLIP vector search against a 768-dim pgvector space, and merges the rankings with Reciprocal Rank Fusion (RRF, from TREC research; not a wrapper around cosine similarity)."*
+
+User chose this from three offered directions (experience-first, principle-first, product-first). Key rationales:
+
+- **Product name + substrate above the fold in the first 72 characters.** Strongest informational first impression. Recruiters scanning the feed see the project and the scale immediately.
+- **"The interesting part:" is doing double duty as a deliberate signpost.** User's own observation (worth preserving for reuse on later posts): the phrase functions both as a literal transition AND as a subconscious "this looks dense but it's worth your attention, bear with me" cue. It earns the reader's patience for the long technical paragraph that follows. Without that bridge phrase, the dense pipeline sentence would feel like a wall; with it, the reader has been told what to expect and given a reason to push through. Paragraph lengths shorten substantially after the opener, which the signpost implicitly promises.
+- **No bullets anywhere in the post.** Stronger structural distinctiveness from ChronoQuizzr (which had a 3-bullet section). Skimmability rests on short paragraph topic-openers ("The catalog is...", "A grounded RAG chatbot...", "5,000 posters is...", "Built with..."). Trade-off: marginally harder to scan than bullets, materially less template-y.
+
+All facts/stats preserved across both iterations. Word count drifted from 213 → 218 (iter 1) → 203 (iter 2, final). The bullet-free prose-first structure with a product-name hook and an "interesting part" rhetorical bridge is the strongest deviation possible from the ChronoQuizzr template without abandoning the post's information density. If the engagement metrics on this post are weaker than ChronoQuizzr's after 24h, that's signal to dial bullets back UP on posts #3–4; if engagement is comparable or stronger, the bullet-free direction is validated.
 
 ---
 

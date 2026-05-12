@@ -74,19 +74,28 @@ Every post follows this skeleton:
 - Lead with concrete specifics, not abstract claims
 - No "I'm thrilled to share / excited to announce" openings
 
-## 9. Pre-post #3 work: Asteroid Bonanza rate limit
+## 9. Pre-post #3 work: Asteroid Bonanza rate limit — **COMPLETED 2026-05-12**
 
 **Problem:** Each analysis = 60–90s of 4-Sonnet inference, ~$0.50+ from prepaid Claude balance. Without a guard, spammed traffic could exhaust the user's credit budget before recruiters get value.
 
-**Plan** (handled in a separate Claude session opened at the asteroid-bonanza repo, since this Heritage-Odyssey session is scoped to a different working directory):
+**Status by item (as of 2026-05-12, end of day):**
 
-1. Add `express-rate-limit` middleware. 2 analyses per IP per 24 hours. 429 response with a friendly "demo budget exhausted; see video walkthrough above" message.
-2. Record the 60–90s native screencast of a real analysis running, end-to-end. Save to disk and upload directly to the LinkedIn post.
-3. Optional: a "view sample analysis" route that loads a pre-computed dossier with zero API cost — lets visitors browse the output structure even after their rate-limit quota is spent.
+1. **Rate-limit middleware — DONE.** `express-rate-limit` middleware applied to swarm-firing endpoints (POST `/api/analysis/:id` and GET `/api/analysis/:id/stream`) at 2 swarm runs per IP per 24h. Production-only (skips in dev/test). 429 response body uses friendly framing: *"Today's 2-analysis quota is exhausted. The 4-Sonnet swarm is expensive to run, so the demo is rate-limited per visitor. Quota resets in 24 hours."* The original planned message referenced "see video walkthrough above" — dropped because video is now TBD (see item 2). Also: trust-proxy was unset on the existing 500/15min global limiter — fixed in the same patch (`app.set('trust proxy', 1)`).
 
-**Sequence:** ship #1 first, then defer this until after post #1 (ChronoQuizzr) is live. Must be done before post #3 publishes. ~30–60 min of work.
+   **Plus three unplanned-but-needed additions caught during the work:**
+   - **Companion `GET /api/analysis/quota` endpoint.** The Asteroid Bonanza client uses `EventSource` for streaming, which cannot read standard `RateLimit-*` HTTP headers in the browser. Added a peek-the-MemoryStore-non-mutatively endpoint that returns `{ limit, used, remaining, resetTime, active }` in JSON form. Client wires this for pre-flight (block stream open if exhausted) AND post-completion refresh (display "1 of 2 used today" indicator). See `project_asteroid_eventsource_migration` memory note for the longer-term migration path that would obsolete this workaround.
+   - **IDE/ESLint config drift fix.** Server's `tsconfig.json` only included `src/**/*`, so the editor's eslint-plugin couldn't lint test files. Created `tsconfig.eslint.json` that extends the main one but widens scope to `tests/**/*`; ESLint config now points there. Also added explicit `rootDir: "./src"` to client's `tsconfig.app.json` and `tsconfig.spec.json` to silence the TS6059 warning. Pure editor-UX cleanup; no CI impact.
+   - **Husky prepare script + railway.toml installCommand fix.** Surfaced during deployment debugging (see "Deployment cascade" below). Root `package.json` now has `"prepare": "husky || true"`. `railway.toml`'s `[build]` block now has `installCommand = "npm ci --include=dev"` so devDeps are present during Railway's build phase even with NODE_ENV=production.
 
-**Do not downgrade to Haiku.** The 4-Sonnet swarm is the story. Cost-shifting through rate limit + cached samples is the right answer.
+2. **Native screencast of a real analysis — NOT DONE.** User pivoted away from video for this post on 2026-05-12 based on two arguments: 60–90s analysis runtime is too long for LinkedIn's engagement sweet spot, and the most visually striking moments of the app are static (completed dashboard, handoff case, orbital canvas) rather than motion. Replacing with a 2–3-still carousel approach. Final visuals decision deferred to user closer to publish.
+
+3. **Optional pre-cached sample-analysis route — NOT DONE.** The original justification was "lets visitors browse output even after rate-limit quota is spent." Mostly obsoleted by the fact that the existing cheap-read endpoints (`/latest`, `/record/:id`, dossier route, planetary-defense dashboard) all stay open under the new rate-limit design — they aren't rate-limited because they're cheap DB reads. Visitors who exhaust their swarm quota can still browse any prior analysis cached in the DB. Deferred indefinitely.
+
+**Deployment cascade (the multi-hour debug saga):** Setting `NODE_ENV=production` on Railway (required for the new limiter to activate) caused npm ci to skip devDependencies, which cascaded into multiple deploy failures: missing husky during prepare, then missing tsc during build. Two-commit fix landed: `package.json` prepare made production-safe (`husky || true`), then `railway.toml` got an explicit `installCommand = "npm ci --include=dev"` override. Lesson captured in `feedback_railway_node_env_cascade.md` memory for future Railway deploys (including Heritage Odyssey when it gets there).
+
+**Test impact:** Server test suite grew from ~215 tests to 229 tests (7 new rate-limit + quota tests in `tests/integration/analysis.test.ts`; coverage held at 96.45% lines, comfortably above the 80% threshold). Client tests unchanged at 28 passing.
+
+**"Do not downgrade to Haiku" rule held.** 4-Sonnet swarm preserved. Cost-shifting through per-IP rate limit + open cheap reads turned out to be sufficient; no model downgrade needed.
 
 ## 10. Poster Pilot honesty note
 
