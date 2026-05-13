@@ -1,8 +1,27 @@
 import React from 'react';
-import { History, MapPin, Mic, Wind } from 'lucide-react';
-import InteractionLayer from './components/InteractionLayer';
+import { History, MapPin, Mic, Wind, Loader2 } from 'lucide-react';
+import InteractionLayer from './components/InteractionLayer.js';
+import LoginScreen from './components/LoginScreen.js';
+import { useAuthContext } from './context/AuthContext.js';
 
 const App: React.FC = () => {
+  const { isAuthenticated, isLoading } = useAuthContext();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-paper flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="animate-spin text-cast-iron" size={40} />
+          <p className="font-['Spectral'] italic text-stone">Consulting the Registry...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <LoginScreen />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 pb-32 md:pb-40">
       {/* Header */}

@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { apiUrl } from '../lib/api';
+import { apiUrl, authFetch } from '../lib/api.js';
+import { useAuthContext } from '../context/AuthContext.js';
 
 /**
  * Hook to handle playback of the streaming audio from the narrative endpoint.
@@ -10,6 +11,7 @@ export const useAudioStream = () => {
   const [error, setError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const objectUrlRef = useRef<string | null>(null);
+  const { token, refresh } = useAuthContext();
 
   const cleanup = useCallback(() => {
     if (audioRef.current) {
@@ -28,37 +30,25 @@ export const useAudioStream = () => {
   }, []);
 
   const playStream = useCallback(
-    async (query: string, token?: string) => {
+    async (query: string, overrideToken?: string) => {
       // Stop any current playback and clear previous errors
       cleanup();
       setError(null);
       setIsPlaying(true);
 
       try {
-        const headers: Record<string, string> = {
-          'Content-Type': 'application/json',
-        };
-
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-
-        const response = await fetch(apiUrl('/api/narrative/stream'), {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ query }),
-        });
-
-        if (!response.ok) {
-          let errorMessage = `Stream failed with status ${response.status}`;
-          try {
-            const errorData = await response.json();
-            errorMessage = errorData.error || errorMessage;
-          } catch {
-            // Fallback to default message if response isn't JSON
-          }
-          throw new Error(errorMessage);
-        }
+        const response = await authFetch(
+          apiUrl('/api/narrative/stream'),
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query }),
+          },
+          overrideToken || token,
+          refresh,
+        );
 
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
@@ -84,7 +74,7 @@ export const useAudioStream = () => {
         setIsPlaying(false);
       }
     },
-    [cleanup],
+    [cleanup, token, refresh],
   );
 
   // Cleanup on unmount

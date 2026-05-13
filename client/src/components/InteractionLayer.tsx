@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { Mic, Send, Square, Loader2, Volume2, VolumeX } from 'lucide-react';
-import { useMediaRecorder } from '../hooks/useMediaRecorder';
-import { useAudioStream } from '../hooks/useAudioStream';
-import { apiUrl } from '../lib/api';
-import AudioVisualizer from './AudioVisualizer';
+import { useMediaRecorder } from '../hooks/useMediaRecorder.js';
+import { useAudioStream } from '../hooks/useAudioStream.js';
+import { apiUrl, authFetch } from '../lib/api.js';
+import AudioVisualizer from './AudioVisualizer.js';
+import { useAuthContext } from '../context/AuthContext.js';
 
 /**
  * Sticky-bottom interaction layer providing voice and text input.
@@ -12,6 +13,7 @@ import AudioVisualizer from './AudioVisualizer';
 const InteractionLayer: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const { token, refresh } = useAuthContext();
 
   const { playStream, isPlaying, error: audioError } = useAudioStream();
 
@@ -23,14 +25,15 @@ const InteractionLayer: React.FC = () => {
         // Use a generic name, the server will detect the type
         formData.append('audio', blob, 'recording.audio');
 
-        const response = await fetch(apiUrl('/api/voice/transcribe'), {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to transcribe audio');
-        }
+        const response = await authFetch(
+          apiUrl('/api/voice/transcribe'),
+          {
+            method: 'POST',
+            body: formData,
+          },
+          token,
+          refresh,
+        );
 
         const data = await response.json();
         if (data.text) {
@@ -43,7 +46,7 @@ const InteractionLayer: React.FC = () => {
         setIsProcessing(false);
       }
     },
-    [playStream],
+    [playStream, token, refresh],
   );
 
   const { isRecording, startRecording, stopRecording, isSupported, permissionDenied } =

@@ -4,24 +4,24 @@ This document defines the technical execution of the Phase 7 Polish plan.
 
 ## TRACK 1: BUG FIXES
 
-### Step 1 — Fix index.css
+### Step 1 — Fix index.css [x]
 **Files to modify:** `client/src/index.css`
 **Logic:** Remove all default `:root` and `body` boilerplate styles provided by Vite. Retain only the Tailwind directives. Replace brand colors with the Victorian palette.
 - **Custom Properties:**
   - `--color-paper: #f4ece1`
-  - `--color-ink: #1a1512`
+  - `--color- ink: #1a1512`
   - `--color-cast-iron: #2d4a3e`
   - `--color-cast-iron-dark: #1e3329`
   - `--color-brass: #9a7b2f`
   - `--color-stone: #5c5651`
 **Done Criteria:** No dark background or body-centering styles remain; the application uses the new palette base.
 
-### Step 2 — Add Vite dev proxy
+### Step 2 — Add Vite dev proxy [x]
 **Files to modify:** `client/vite.config.ts`
 **Logic:** Add a `server.proxy` block to route all `/api` requests to `http://localhost:3000` with `changeOrigin: true`.
 **Done Criteria:** `fetch('/api/health')` from the browser returns 200 when both client and server are running.
 
-### Step 3 — Wire VITE_API_URL
+### Step 3 — Wire VITE_API_URL [x]
 **Files to create:** `client/src/lib/api.ts`
 - Export `apiUrl(path: string): string` function.
 - Logic: returns `import.meta.env.VITE_API_URL + path` if defined, else `path`.
@@ -29,7 +29,7 @@ This document defines the technical execution of the Phase 7 Polish plan.
 - Replace hardcoded `/api/...` strings with `apiUrl('/api/...')`.
 **Done Criteria:** All client-side fetch calls use the `apiUrl` utility.
 
-### Step 4 — DB seed script
+### Step 4 — DB seed script [x]
 **Files to create:** `server/src/db/seed.ts`
 - Logic: Import `bcrypt`, `db` client, and `users` schema. Upsert a demo user:
   - email: `guest@heritage-odyssey.demo`
@@ -38,7 +38,7 @@ This document defines the technical execution of the Phase 7 Polish plan.
 - Add `"db:seed": "tsx src/db/seed.ts"`
 **Done Criteria:** Running `npm run db:seed -w server` creates the guest user without errors or duplicates.
 
-### Step 5 — Auth state and JWT storage (frontend)
+### Step 5 — Auth state and JWT storage (frontend) [x]
 **Files to create:** `client/src/hooks/useAuth.ts`
 - Logic: Manage auth lifecycle. Check `localStorage` for token on mount. If missing, attempt `POST /api/auth/refresh`. Store access token in state/localStorage on success.
 - Expose: `{ token, isAuthenticated, login, logout }`.
@@ -48,7 +48,7 @@ This document defines the technical execution of the Phase 7 Polish plan.
 - Wrap app in auth context or provide token to `InteractionLayer` and `useAudioStream`.
 **Done Criteria:** Refreshing the page preserves login state via the refresh cookie.
 
-### Step 6 — Login screen component
+### Step 6 — Login screen component [x]
 **Files to create:** `client/src/components/LoginScreen.tsx`
 - Logic: Render a full-centered Victorian "access request" panel on the paper background.
 - UI: Libre Baskerville font, "Enter the Archive" button (guest login), and standard Sign In/Register forms.

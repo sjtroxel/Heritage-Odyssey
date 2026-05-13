@@ -3,6 +3,14 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useAudioStream } from '../../src/hooks/useAudioStream.js';
 
+// Mock useAuthContext
+vi.mock('../../src/context/AuthContext.js', () => ({
+  useAuthContext: () => ({
+    token: 'mock-token',
+    refresh: vi.fn().mockResolvedValue('new-token'),
+  }),
+}));
+
 describe('useAudioStream', () => {
   let mockAudio: any;
 
@@ -42,7 +50,7 @@ describe('useAudioStream', () => {
     expect(result.current.error).toBe(null);
   });
 
-  it('plays audio from stream successfully with a token', async () => {
+  it('plays audio from stream successfully with an override token', async () => {
     const mockBlob = new Blob(['audio data'], { type: 'audio/mpeg' });
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
@@ -52,24 +60,29 @@ describe('useAudioStream', () => {
     const { result } = renderHook(() => useAudioStream());
 
     await act(async () => {
-      await result.current.playStream('test query', 'mock-token');
+      await result.current.playStream('test query', 'override-token');
     });
 
-    expect(global.fetch).toHaveBeenCalledWith('/api/narrative/stream', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer mock-token',
-      },
-      body: JSON.stringify({ query: 'test query' }),
-    });
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/narrative/stream',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ query: 'test query' }),
+      }),
+    );
+
+    // Check that Authorization header was set correctly
+    const fetchCall = (global.fetch as any).mock.calls[0];
+    const headers = fetchCall[1].headers;
+    expect(headers.get('Authorization')).toBe('Bearer override-token');
+
     expect(global.URL.createObjectURL).toHaveBeenCalledWith(mockBlob);
     expect(mockAudio.src).toBe('blob:mock-url');
     expect(mockAudio.play).toHaveBeenCalled();
     expect(result.current.isPlaying).toBe(true);
   });
 
-  it('plays audio from stream successfully without a token', async () => {
+  it('plays audio from stream successfully with context token', async () => {
     const mockBlob = new Blob(['audio data'], { type: 'audio/mpeg' });
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
@@ -82,11 +95,18 @@ describe('useAudioStream', () => {
       await result.current.playStream('test query');
     });
 
-    expect(global.fetch).toHaveBeenCalledWith('/api/narrative/stream', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: 'test query' }),
-    });
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/narrative/stream',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ query: 'test query' }),
+      }),
+    );
+
+    const fetchCall = (global.fetch as any).mock.calls[0];
+    const headers = fetchCall[1].headers;
+    expect(headers.get('Authorization')).toBe('Bearer mock-token');
+
     expect(result.current.isPlaying).toBe(true);
   });
 
@@ -94,7 +114,7 @@ describe('useAudioStream', () => {
     (global.fetch as any).mockResolvedValueOnce({
       ok: false,
       status: 500,
-      json: vi.fn().mockResolvedValue({ error: 'Internal Server Error' }),
+      json: vi.fn().mockResolvedValue({ message: 'Internal Server Error' }),
     });
 
     const { result } = renderHook(() => useAudioStream());
@@ -105,6 +125,34 @@ describe('useAudioStream', () => {
 
     expect(result.current.error).toBe('Internal Server Error');
     expect(result.current.isPlaying).toBe(false);
+  });
+
+  it('handles 401 and retries with new token', async () => {
+    const mockBlob = new Blob(['audio data'], { type: 'audio/mpeg' });
+
+    // First call fails with 401
+    (global.fetch as any).mockResolvedValueOnce({
+      status: 401,
+      ok: false,
+    });
+
+    // Second call succeeds
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      blob: vi.fn().mockResolvedValue(mockBlob),
+    });
+
+    const { result } = renderHook(() => useAudioStream());
+
+    await act(async () => {
+      await result.current.playStream('test query');
+    });
+
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+
+    const retryCall = (global.fetch as any).mock.calls[1];
+    expect(retryCall[1].headers.get('Authorization')).toBe('Bearer new-token');
+    expect(result.current.isPlaying).toBe(true);
   });
 
   it('handles playback errors', async () => {
