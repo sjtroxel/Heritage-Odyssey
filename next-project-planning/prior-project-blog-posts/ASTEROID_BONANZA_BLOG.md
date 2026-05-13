@@ -1,6 +1,6 @@
 # Asteroid Bonanza — LinkedIn Blog Post #3
 
-**Status:** v2 draft 2026-05-13. Not yet published. (v1 drafted 2026-05-12 — superseded; see Draft Notes for what changed.)
+**Status:** v2 prose draft + 5-slide carousel READY 2026-05-13 afternoon. Target publish Thursday 2026-05-14 morning.
 **Series:** Post 3 of 4. See `BLOG_SERIES_PLAN_MAY_2026.md`.
 **Live app:** https://asteroid-bonanza.vercel.app
 **Repo:** [VERIFY: github.com URL — likely sjtroxel/AI-Masterclass-Week-3-AsteroidProject given naming pattern]
@@ -31,26 +31,28 @@
 
 ---
 
-## Visuals — TBD as of 2026-05-12
+## Visuals — DECIDED 2026-05-13: 5-slide LinkedIn image carousel
 
-User signaled on 2026-05-12 that video probably won't work as well for Asteroid Bonanza as it did for ChronoQuizzr and Poster Pilot. Two reasons drive this:
+**Iteration arc 2026-05-13.** Started the morning intending to do another native-video post like the prior two. User recorded ~5 minutes of source material across three screencasts (Cardea full-swarm analysis, Apophis case study + completed analysis, Analyst chat + Orbital Map). Two Cardea recordings ended in confidence-handoff (no clean success), so we couldn't cut a single end-to-end success video. Built a 35-second frankenstein cut (`videos/Asteroid_Bonanza_v1.mp4`) that stitched the Cardea swarm-running middle into the Apophis success ending — watchable but jarring. User's read: "the viewer experience isn't great. It's jarring and anyone who does want to take their time and see it all feels rushed." Pivoted to **carousel of stills** — better fit because (a) most visually striking moments are static compositions, (b) viewer controls pacing, (c) the swarm tool-call text is finally readable when not flying past at 3x speed, (d) carousel swipes are a strong algorithmic engagement signal on LinkedIn.
 
-1. **The 60–90 second analysis runtime is too long for LinkedIn's engagement sweet spot.** ChronoQuizzr's 42s and Poster Pilot's 1:48 were already at the edge of what works algorithmically. An honest Asteroid Bonanza video would either need to be cut/sped-up to 30–45s (loses authenticity) or run real-time at ~90s (loses retention).
-2. **The most visually striking moments are static, not motion.** The completed agent-swarm dashboard with four agent cards, confidence-score bars, and the synthesis card is a strong single-frame composition. The orbital canvas (Three.js asteroid trajectories) is a strong single-frame composition. The handoff/red-button case is a strong single-frame composition. None of these benefit much from motion.
+**Final 5-slide deck (in `carousel/`):**
 
-**Recommended approach: 2–3 stills, posted as a LinkedIn carousel or single image.**
+1. **`slide_1_orbital_hero_square.png`** — Orbital Canvas hero with 20 asteroids plotted, color legend, sidebar visible. **Square format, user-produced manually** (~540x540) after Claude's auto-generated versions kept hitting empty-space / aspect-mismatch issues. Source moment: `videos/Recording 2026-05-13 120224.mp4` ~44s.
+2. **`slide_2_swarm.png`** — Four-agent swarm at peak with rich tool-call text visible (Geologist's "S-type / C-type chondrite composition" queries, Risk Assessor's "PHA classification criteria MOID 0.05 AU planetary defense", Economist's "ISRU water propellant 2050" / "asteroid mining mission cost delta-V"). **1280x800 rectangular.** The architectural money shot. Source: `videos/Recording 2026-05-13 095817.mp4` ~145s. Cardea designation "2164287" visible in page header — accepted as-is per user (the slide is about the architecture, not the specific asteroid).
+3. **`slide_3_analyst_rag.png`** — Analyst chat with the RAG retrieval banner ("RAG retrieved 5 science + 5 scenario in 1048ms · ~4274 tokens") and full markdown answer with academic citations rendering below. **1280x800 rectangular.** Substantiates the `#RAG` hashtag with visible retrieval metrics. Source: `videos/Recording 2026-05-13 120224.mp4` ~23s.
+4. **`slide_4_apophis_countdown_square.png`** — Apophis 2029 case study with "FEATURED CASE STUDY" tag, headline, dramatic "1,065 : 08 : 58 : 30" countdown timer, Raw Dossier / AI Analysis buttons, and full 6-column data table (MISS DISTANCE / DIAMETER / SPECTRAL CLASS / FLYBY DATE / NHATS Δv / MOID). **1080x1080 square.** Sidebar dropped to preserve all 6 table columns. Sets up slide 5 narratively (here's the asteroid → here's our analysis result). Source: `videos/Recording 2026-05-13 100225.mp4` ~11s.
+5. **`slide_5_synthesis.png`** — Apophis completed Agent Swarm Analysis with confidence bars and "Apophis: Synthesis Assessment" rendered text. **1280x800 rectangular.** The success payoff. Source: `videos/Recording 2026-05-13 100225.mp4` ~37s.
 
-Candidate stills (subject to user review):
+**Mixed aspect ratios — known caveat for tomorrow's upload.** Slides 1 and 4 are square (1:1), slides 2/3/5 are rectangular (~1.6:1). Authoritative behavior of LinkedIn carousel display with mixed aspects is not known to me. **Action for upload:** verify in LinkedIn's pre-publish preview; if rectangular slides letterbox awkwardly inside a square container imposed by the hero, fall back to dropping the square hero (slide 1) and going all-rectangular (loses the strongest visual hook but eliminates inconsistency).
 
-- **Still A — The completed dashboard.** A successful analysis showing all four agent cards filled in, confidence-score bars at meaningful levels, synthesis card with rich text. This is the "money shot" — recruiter sees the full architectural depth at a glance.
-- **Still B — The handoff case.** An asteroid where confidence dropped below threshold, showing the structured handoff packet. This is the "knows its limits" visual proof — directly substantiates the hook's claim about surfacing uncertainty.
-- **Still C — The orbital canvas.** Three.js-rendered asteroid orbits with Earth and Sun for scale. Useful for series cohesion (the post needs an "above the fold" visual) but doesn't carry the technical story the way A and B do.
+**Source material — all in `videos/` subfolder** (created 2026-05-13 to clean up the blog folder root):
+- `Recording 2026-05-13 095817.mp4` — 126MB, **gitignored** (exceeds GitHub's 100MB limit). Failed Cardea full-swarm analysis. Source for slide 2.
+- `Recording 2026-05-13 100225.mp4` — Apophis case study tour + completed analysis review. Source for slides 4, 5.
+- `Recording 2026-05-13 120224.mp4` — Analyst chat with RAG + Orbital Map exploration. Source for slides 1, 3.
+- `Asteroid_Bonanza_v1.mp4` — abandoned 35s frankenstein video. Kept as historical artifact, not used.
+- `Recording 2026-05-09 094327.mp4`, `Recording 2026-05-11 103347.mp4` — older ChronoQuizzr and Poster Pilot videos, moved here as part of the cleanup.
 
-Open question: does the live deploy have a known-low-confidence asteroid that produces a clean handoff visual on demand? If not, this needs either (a) finding one in production data, or (b) generating one via a synthetic test asteroid. Worth checking before committing to Still B.
-
-**Alternative path — short looped video (~15s).** If the user wants motion despite the constraints, the strongest 15-second cut would be: click Run → agent cards animate from idle to running to complete in sequence (sped up) → confidence-score bars fill in → synthesis card appears. Loses authenticity (real analysis is 90s) but compresses the architecture story into a feed-friendly duration. Not recommended over the carousel-of-stills approach, but flagging as an option.
-
-**Decision deferred — user to choose between stills carousel, single still, or short video before Thursday publish.**
+**Tooling:** ffmpeg-only. ImageMagick is NOT installed on this system; ffmpeg's `crop` and `scale` filters handled all composition. Slide 1 ended up user-produced manually after multiple iteration rounds with Claude on auto-generated versions — coordinate-precision work from rendered image previews proved unreliable.
 
 ---
 
@@ -111,20 +113,25 @@ Skipped: `#LangGraph` (not used), `#VectorSearch` (used in Poster Pilot; would o
 
 Claude drafted v1 and v2. Per the recalibrated authorship plan, the user is exercising critical-editor responsibility rather than drafting from scratch yet. The v2 revision is itself an example of that responsibility working: user critically read v1, named the specific tonal problem (negative-led opener), and Claude responded with a structural rewrite, not a surface edit.
 
-**v2 user-side verifications still needed before publish:**
+**Pre-publish verifications still needed Thursday morning 2026-05-14:**
 
-- Verify the Vercel URL
-- Verify the GitHub repo URL (still has [VERIFY] placeholder at top of file)
+- Verify the Vercel URL is current (`asteroid-bonanza.vercel.app`)
+- Verify and substitute the GitHub repo URL (still has [VERIFY] placeholder at top of file)
 - Verify the test count (current draft says "220+ tests at 96% statement coverage on the API" — actual is 222 server tests at 96.48% lines as of the rate-limit work; rounded for the post; reasonable as-is)
-- Decide on visual (stills carousel vs single still vs short video) — TBD section above has the trade-offs
-- Critically read v2 for any line that doesn't sound like the user's voice and flag for rewrite
+- ✅ ~~Decide on visual~~ — RESOLVED 2026-05-13: 5-slide carousel, files in `carousel/` subfolder
+- **Upload carousel to LinkedIn and verify mixed-aspect rendering in the pre-publish preview** before clicking Post. If slides 2/3/5 letterbox awkwardly inside the square container set by hero slide 1, fall back to dropping the square hero (use rectangular `slide_1_orbital_hero.png` if you produce one, or just go 4-slide all-rectangular).
+- Critically read v2 prose one more time for any line that doesn't sound like the user's voice and flag for rewrite
 
 ---
 
 ## Publish Log
 
-- **v1 drafted:** 2026-05-12 (immediately after the rate-limit work shipped to Railway, while Railway was deploying the production config). Led with the confidence-aware handoff angle. Superseded by v2.
-- **v2 drafted:** 2026-05-13 morning, responding to user critique that v1's uncertainty-led opener struck the wrong tone for a 200-word recruiter-facing post. v2 cuts the handoff story and leads with the four-agent swarm + four-domain breadth instead. See Draft Notes above for the full diff.
-- **Video / visuals produced:** _TBD — pending user decision per Visuals section above_
-- **Posted:** _TBD — Thursday 2026-05-14 morning is the earliest target per user's 2026-05-12 statement_
+- **v1 prose drafted:** 2026-05-12 (immediately after rate-limit work shipped to Railway). Led with confidence-aware handoff angle. Superseded by v2.
+- **v2 prose drafted:** 2026-05-13 morning, responding to user critique that v1's uncertainty-led opener struck the wrong tone for a 200-word recruiter-facing post. v2 cuts the handoff story and leads with the four-agent swarm + four-domain breadth instead. Plus minor "$0.50 in **me** Anthropic credits" tweak to neutralize fear-of-billing concern for casual readers.
+- **Visuals produced 2026-05-13 afternoon:**
+  - Recorded 3 screencasts as raw source (two failed Cardea analyses, one Apophis case study tour). User burned daily quota twice on Cardea analyses that ended in handoff (no clean end-to-end success captured live).
+  - Built and rejected a 35s frankenstein video (`videos/Asteroid_Bonanza_v1.mp4`) — content stitched from multiple sources to land on success; technically workable but viewer experience too rushed.
+  - Pivoted to 5-slide carousel approach. Produced all 5 slides as PNGs in `carousel/`. See Visuals section above for slide-by-slide breakdown, source material map, and the mixed-aspect-ratio caveat.
+  - Cleanup: created `videos/` and `carousel/` subfolders to organize the blog folder. Moved all 6 .mp4 source files into `videos/`. .gitignore updated for the 126MB Cardea recording.
+- **Posted:** _TBD — Thursday 2026-05-14 morning target_
 - **Inbound notes:** _TBD — fill in after posting if any recruiter inbound or notable engagement_
