@@ -7,4 +7,13 @@
   --color-cast-iron-dark: #1e3329;
   --color-brass: #9a7b2f;
   --color-stone: #5c5651;
+
+  --font-spectral: "Spectral", serif;
+  --font-libre: "Libre Baskerville", serif;
+}
+
+@layer base {
+  body {
+    @apply font-spectral bg-paper text-ink;
+  }
 }

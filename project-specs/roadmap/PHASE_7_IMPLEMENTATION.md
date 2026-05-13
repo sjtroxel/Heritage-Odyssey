@@ -58,19 +58,19 @@ This document defines the technical execution of the Phase 7 Polish plan.
 
 ## TRACK 2: VISUAL OVERHAUL
 
-### Step 7 — Global typography and base styles
+### Step 7 — Global typography and base styles [x]
 **Files to modify:** `client/index.html`
 - Load Google Fonts: `Libre Baskerville` and `Spectral`.
 **Files to modify:** `client/src/index.css`
 - Set base `font-family` to `Spectral` in the `@theme` block.
 **Done Criteria:** All body text renders in the `Spectral` font.
 
-### Step 8 — Header redesign
+### Step 8 — Header redesign [x]
 **Files to modify:** `client/src/App.tsx`
 - Logic: Set background to `#2d4a3e` (cast iron), logo to `#9a7b2f` (brass) in `Libre Baskerville`. Add a subtle brass bottom border.
 **Done Criteria:** Header aesthetic matches a Victorian government office nameplate.
 
-### Step 9 — Hero section redesign
+### Step 9 — Hero section redesign [x]
 **Files to modify:** `client/src/App.tsx`
 - UI: Paper background (`#f4ece1`) with subtle noise texture. Large `Libre Baskerville` H1.
 - Logic: Replace the gradient box with the "Archive Record Sample" panel (double border, cream background, Spectral italic sample text from `golden_set.json`).
