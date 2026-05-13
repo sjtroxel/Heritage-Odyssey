@@ -7,3 +7,6 @@ coverage
 .DS_Store
 *.local
 scripts/data/
+
+# >100MB raw screencast; too large for GitHub. Kept locally as raw asset.
+next-project-planning/prior-project-blog-posts/Recording 2026-05-13 095817.mp4

@@ -1,6 +1,6 @@
 # Asteroid Bonanza — LinkedIn Blog Post #3
 
-**Status:** Draft 2026-05-12. Not yet published.
+**Status:** v2 draft 2026-05-13. Not yet published. (v1 drafted 2026-05-12 — superseded; see Draft Notes for what changed.)
 **Series:** Post 3 of 4. See `BLOG_SERIES_PLAN_MAY_2026.md`.
 **Live app:** https://asteroid-bonanza.vercel.app
 **Repo:** [VERIFY: github.com URL — likely sjtroxel/AI-Masterclass-Week-3-AsteroidProject given naming pattern]
@@ -9,13 +9,13 @@
 
 ## The Post (paste into LinkedIn as-is)
 
-> Asteroid Bonanza is a multi-agent analysis system that surfaces its own uncertainty. Four Claude Sonnet 4.6 agents analyze a near-Earth asteroid in parallel. If their aggregate confidence is too low, the system skips synthesis and emits a handoff packet: what's known, where confidence broke down, what expertise is needed.
+> Asteroid Bonanza is a four-agent swarm. Pick any near-Earth asteroid; the agents analyze its orbit, composition, economic value, and planetary-defense risk in parallel, then synthesize.
 >
-> The four agents specialize: Navigator computes orbital accessibility from NHATS data, Geologist estimates composition from spectral class, Economist separately values terrestrial-export and in-space-utilization, Risk Assessor evaluates planetary-defense and mission-side risk. They run in parallel where the data flow allows, with synthesis last.
+> The four specialists: Navigator computes orbital accessibility from NHATS data, Geologist estimates composition from spectral class, Economist separately values terrestrial-export and in-space-utilization, Risk Assessor evaluates planetary-defense and mission-side risk. Each runs as a Claude Sonnet 4.6 agent calling NASA's catalogs through dedicated tools.
 >
 > Every numeric finding (orbital elements, close-approach dates, mineral percentages, delta-V values) comes from a tool call into NASA's actual datasets: SBDB, CAD, NeoWs, NHATS. Reasoning text is the model's; specific numbers are not.
 >
-> Each full analysis costs about $0.50 in Anthropic credits and runs for 60–90 seconds. To keep curious scrollers from exhausting the demo budget, the live site rate-limits to 2 swarm runs per IP per 24 hours. Cheap reads (dossier, cached analyses, planetary-defense dashboard) stay open.
+> Each full analysis costs me about $0.50 in Anthropic credits and runs for 60–90 seconds. To keep curious scrollers from exhausting the demo budget, the live site rate-limits to 2 swarm runs per IP per 24 hours. Cheap reads (dossier, cached analyses, planetary-defense dashboard) stay open.
 >
 > Built with Angular 21, TypeScript, Tailwind 4, Three.js for the orbital canvas, Express 5, Supabase + pgvector, and the Anthropic SDK. 220+ tests at 96% statement coverage on the API. Live at asteroid-bonanza.vercel.app.
 >
@@ -25,9 +25,9 @@
 
 ## Length Check
 
-- **Word count:** ~213 words (target was ~200 for posts #1–2; on spec for series consistency)
-- **Character count:** ~1,470 chars (well under LinkedIn's 3,000 cap)
-- **Hook line cut-point:** The first sentence ("Asteroid Bonanza is a multi-agent analysis system that surfaces its own uncertainty.") is ~88 characters and visible above the cut on both desktop (~210-char cut) and mobile (~140-char cut). The full first paragraph is dense at ~330 chars, but the first sentence stands cleanly on its own as the visible hook before any expand-click. Reader sees a concrete principled claim ("surfaces its own uncertainty") before being asked to absorb the technical specifics.
+- **Word count:** ~184 words (target was ~200 for posts #1–2; tight but on-spec for the series)
+- **Character count:** ~1,310 chars (well under LinkedIn's 3,000 cap)
+- **Hook line cut-point:** The first sentence ("Asteroid Bonanza is a four-agent swarm.") is ~40 characters and visible above the cut on both desktop (~210-char cut) and mobile (~140-char cut). The second sentence (~158 chars) completes the picture: what gets analyzed, across which four dimensions. Reader sees the product name, the swarm framing, and the four-domain breadth before any expand-click. The opener is a concrete architectural claim, not a vague tease.
 
 ---
 
@@ -56,86 +56,75 @@ Open question: does the live deploy have a known-low-confidence asteroid that pr
 
 ## Draft Notes (why these choices)
 
-**Why lead with the handoff/uncertainty angle vs. other candidate leads?**
+**v2 — what changed from v1 and why.**
 
-Four candidate leads were considered:
+v1 led with "Asteroid Bonanza is a multi-agent analysis system that surfaces its own uncertainty" and developed the confidence-aware handoff story across the entire first paragraph. User pushed back 2026-05-13: leading with "uncertainty" / "confidence broke down" framing reads negatively to the 97% of readers who aren't deep AI-engineering specialists, and at 200 words the post can't do justice to the handoff packet story anyway. Same mistake as the Poster Pilot v1 "Red Button" hook that got cut: leading with a graceful-failure story instead of with what the product does well. v2 cuts the uncertainty thread entirely from the post — not just demotes it. The grounding paragraph ("numbers from NASA tool calls, reasoning from the model") does most of the "this thing won't lie to you" work that v1's uncertainty paragraph was reaching for, and does it more positively. The confidence-aware handoff remains excellent interview material; it's just not load-bearing for a 200-word LinkedIn post.
 
-- **(a) The cost / rate-limit honesty.** "Each analysis costs $0.50 — here's how I rate-limited it." Rejected because it foregrounds a *limitation* of the demo, not the architectural story. Same principle that buried Poster Pilot's "Red Button" handoff mid-list rather than leading with it: the post's job is to advertise the product's value, not its budget constraints. The rate-limit detail still appears in the body where it carries production-engineering signal.
-- **(b) The orbital canvas / Three.js visualization.** "Watch four agents analyze an asteroid in real time over a 3D orbital map." Rejected because it's a UI element, not the architectural story. AI Engineer recruiters scanning #AIEngineering aren't searching for Three.js work.
-- **(c) Pure architecture description.** "Four agents in parallel for orbital, compositional, economic, and defense analysis." Rejected because competent-but-not-novel — many multi-agent demos have parallel agents. The differentiator is what happens when those agents disagree or fail, not the fact that they exist.
-- **(d) Confidence-aware handoff (CHOSEN).** Most multi-agent demos in 2026 always produce a confident synthesis, even when the underlying data doesn't support one. Asteroid Bonanza explicitly refuses to in low-confidence cases and emits a structured handoff packet instead. This is engineering judgment, not just feature surface — the kind of detail recruiters with shipped-product experience will recognize. The line "surfaces its own uncertainty" is the principled framing.
+**v2 lead angle: the swarm itself + the four-domain breadth.**
 
-**Why "surfaces its own uncertainty" instead of "knows when to stop" or "knows its limits"?**
+The genuinely impressive thing about Asteroid Bonanza is that four specialists collaborate across four distinct expertise domains (orbital mechanics, geology, economics, planetary defense) on real NASA data. v2 makes that the headline. Paragraph 1 establishes the swarm and names the four dimensions. Paragraph 2 names the four specialists and what each one does, and slots in the Sonnet 4.6 attribution. The reader meets the architectural ambition before anything else.
 
-Earlier drafts used "knows when to stop" — too anthropomorphizing, edges toward cute when the audience values technical seriousness. "Surfaces its own uncertainty" is the same idea framed without metaphor: it's the actual technical behavior (computing per-agent confidence, aggregating, gating synthesis on threshold) described accurately.
+**Why "four-agent swarm" instead of "multi-agent analysis system":**
 
-**Why a contrast/refusal hook instead of Poster Pilot's "the interesting part" bridge?**
+v1's phrasing was accurate but generic. "Four-agent swarm" is more specific, more visual, and stakes a more confident claim about what the system is. The post's job is to advertise the architectural ambition, not to underspecify it.
 
-Poster Pilot's revision on 2026-05-12 landed on a "[Product] is [X]. The interesting part: [Y]" structure. Reusing that bridge phrase on post #3 would make the series look templated. This post uses a different rhetorical move: declarative principled claim in sentence 1 ("surfaces its own uncertainty"), specific mechanism in sentences 2–3, no bridge phrase. Structural distinctiveness across the four posts matters more than locking in one "best" hook pattern.
+**Why "Claude" appears in paragraph 2 but not the hook:**
 
-**Why no bullets at all?**
+Per `feedback_dont_lead_with_claude.md`. "Claude Sonnet 4.6" carries technical signal where it appears (specifying the model class on which all four specialists run), but the hook leads with the architecture, not the vendor. "Anthropic SDK" appears in the stack list as a recruiter-search anchor. v1 violated this by mentioning "Four Claude Sonnet 4.6 agents" in sentence 2 of the hook paragraph; v2 moves the model attribution to paragraph 2 where it belongs.
 
-ChronoQuizzr had a 3-bullet Generate→Attack→Rewrite loop. Poster Pilot kept ONE 3-bullet section for the vibe-mode pipeline. Asteroid Bonanza has zero bullets. Progression goal: each post in the series deviates structurally from the prior, so the four together read as four different shapes rather than four iterations of one template. The four agents could have been bulleted, but the comma-separated specialization sentence preserves prose density and avoids the visual "this is a list" cue that triggers AI-content pattern recognition.
+**Why no framework name (LangGraph, etc.):**
 
-**Why "Most demos do X; this one doesn't" is NOT in the hook (even though I considered it)?**
+Asteroid Bonanza's orchestrator is hand-rolled. Per `feedback_no_langchain_phrasing.md`, "no LangChain"-style negative framing is rejected as recruiter-facing copy — could read as principled refusal when in fact the user would happily use LangGraph if it fit. Solution: don't mention frameworks at all. The post describes the actual behavior, which is the substance recruiters care about.
 
-Early drafts of the hook used a "Most multi-agent demos always produce a confident synthesis; this one doesn't" contrast device. Workshopped that and removed it because:
+**Why the cost / rate-limit paragraph is preserved verbatim from v1:**
 
-1. It edges toward contrarian-flex territory ("most others are wrong; I'm right"). Risks reading as overclaiming on a small portfolio piece.
-2. The same content is communicated more cleanly via the declarative claim "surfaces its own uncertainty" without throwing shade at any other unnamed projects.
+User explicitly confirmed this paragraph (cost, runtime, rate-limit policy) lands well and belongs roughly two-thirds of the way into the post. Same role that Poster Pilot's "5,000 posters is enough to demonstrate the architecture" paragraph played: signals to recruiters that the author understands production-AI costs and has handled them properly. The specific rate-limit number (2 per IP per 24h) demonstrates a thought-through design decision, not hand-waving.
 
-The principled-claim framing is stronger than the contrast framing. Saved this rationale here so a future post in the series doesn't accidentally re-land on the same contrast move.
+**Why the grounding paragraph is its own paragraph:**
 
-**Why grounding paragraph is a separate paragraph (not embedded in architecture)?**
+Hallucination in this domain has unique stakes: invented orbital elements could mislead a real mission planner, fabricated mineral content could mislead a real investor, fictional close-approach dates could mislead someone evaluating planetary defense. "Reasoning is the model's; specific numbers are not" is the most defensible architectural claim in the post. It earns its own paragraph. If a recruiter only reads three sentences, this is one of them.
 
-Hallucination in this domain has unique stakes: invented orbital elements could mislead a real mission planner, fabricated mineral content could mislead a real investor, fictional close-approach dates could mislead someone evaluating planetary defense. The grounding paragraph is short but earns its own paragraph because "reasoning is the model's; specific numbers are not" is the most defensible architectural claim in the entire post. It substantiates the rest. If a recruiter only reads three sentences, this is one of them.
+**Why zero bullets:**
 
-**Why the 60–90 second / $0.50 cost paragraph is in the body?**
+ChronoQuizzr had a 3-bullet Generate → Attack → Rewrite loop. Poster Pilot kept ONE 3-bullet section. Asteroid Bonanza has zero bullets — max structural deviation from prior posts in the series. The four specialists could have been bulleted, but the comma-separated specialization sentence preserves prose density and avoids the visual "this is a list" cue that triggers AI-content pattern recognition.
 
-This is the honest "production demo budget" framing — same role that Poster Pilot's "5,000 posters is enough to demonstrate the architecture, not enough to cover every long-tail query" paragraph played. It signals to recruiters that the author understands what it costs to run production AI, has actually deployed something that costs real money, and has handled the cost properly. The specific rate-limit number (2 per IP per 24h) demonstrates a thought-through design decision, not just hand-waving.
+**Hashtag choices (unchanged from v1):**
 
-**Why no framework name (LangGraph, etc.) in the post?**
-
-Asteroid Bonanza's orchestrator is hand-rolled (no LangGraph, no AutoGen, no CrewAI). Per existing `feedback_no_langchain_phrasing.md` memory, "no LangChain"-style negative framing is rejected as recruiter-facing copy — could read as principled refusal when in fact the user would happily use LangGraph if it fit. Solution: don't mention frameworks at all. The post describes the actual behavior (four agents, parallel execution, confidence aggregation, handoff trigger) which is the substance recruiters care about. Whether it's framework-orchestrated or hand-rolled is secondary, and silence avoids the framing problem entirely.
-
-**Why "Anthropic SDK" in the stack list but not "Claude" or "Sonnet" in the hook?**
-
-Per `feedback_dont_lead_with_claude.md` memory. "Sonnet 4.6" appears in the body (paragraph 1, "Four Claude Sonnet 4.6 agents") where it carries technical specificity. Doesn't appear in the hook. "Anthropic SDK" appears in the stack list as a recruiter-search anchor. Whole post is consistent with the series-level guidance.
-
-**Hashtag choices:**
-
-5 specific tags, matching Poster Pilot's count. `#AIEngineering` is the broad anchor (consistent across all three posts so far). `#MultiAgent` is the series-differentiator for this post — none of the other posts cover this. `#RAG` is included because the project has a real RAG component (ragService.ts at 100% line coverage in the test suite, used in the analyst-chat follow-up feature) even though the core swarm uses tool calls rather than chunk retrieval; #RAG is a high-volume recruiter-search anchor and worth keeping. `#LLMOps` is the production-engineering signal (rate limiting, cost-aware design, structured failure handling) — rarer than #AIEngineering and rewards recruiters specifically looking for shipped-product experience. `#OpenToWork` is the universal job signal.
+5 specific tags. `#AIEngineering` is the broad anchor (consistent across all three posts). `#MultiAgent` is the series-differentiator for this post — none of the other posts cover this. `#RAG` is included because the project has a real RAG component (ragService.ts at 100% line coverage, used in the analyst-chat follow-up feature) even though the core swarm uses tool calls rather than chunk retrieval; #RAG is a high-volume recruiter-search anchor. `#LLMOps` is the production-engineering signal (rate limiting, cost-aware design). `#OpenToWork` is the universal job signal.
 
 Skipped: `#LangGraph` (not used), `#VectorSearch` (used in Poster Pilot; would overlap), `#AnthropicAPI` (covered by #AIEngineering), `#GenerativeAI` (too broad), `#TypeScript` (already an anchor in the body), `#NASA` (interesting but recruiter-search relevance is low), `#PlanetaryDefense` (cool but niche).
 
 **AI-tells stripped:**
 
-- No em dashes (used periods, semicolons, colons in their place; en dash for the range "60–90" which is correct punctuation)
+- No em dashes (used periods, semicolons, colons; en dash for the range "60–90" which is correct punctuation)
 - No emojis
 - No "I'm thrilled to share / excited to announce" opening
 - No "Selected Projects:" template header
 - No "no LangChain" framing
-- No bullets at all (max structural deviation from prior posts in the series)
+- Zero bullets (max structural deviation from prior posts in the series)
 - Hook is concrete and specific in the first sentence; doesn't lead with abstract claims
-- Vendor name (Claude) does not appear in the hook; "Sonnet 4.6" appears in the body where it carries technical signal
+- Vendor name (Claude) does not appear in the hook
 - Hook does NOT reuse the "the interesting part:" bridge phrase from Poster Pilot
+- Hook does NOT lead with uncertainty / failure-mode framing (v1's miss, corrected in v2)
 
 **Authorship note (per `feedback_blog_post_authorship_progression.md`, recalibrated 2026-05-12):**
 
-Claude drafted this post. Per the recalibrated authorship plan, the user is exercising critical-editor responsibility rather than drafting from scratch yet. Expected user-side edits before publish:
+Claude drafted v1 and v2. Per the recalibrated authorship plan, the user is exercising critical-editor responsibility rather than drafting from scratch yet. The v2 revision is itself an example of that responsibility working: user critically read v1, named the specific tonal problem (negative-led opener), and Claude responded with a structural rewrite, not a surface edit.
 
-- Verify the Vercel URL and substitute for the [VERIFY] placeholder
-- Verify the GitHub repo URL
-- Verify the exact aggregate-confidence threshold for handoff (test fixture suggests 0.35 triggers handoff, 0.82 does not; actual threshold is somewhere between, probably 0.5 — confirm against orchestrator.ts before publishing if specificity matters)
-- Verify the test count (current draft says "220+ tests at 96% statement coverage on the API" — actual is 222 server tests at 96.48% lines as of the rate-limit work earlier today; rounded for the post; reasonable as-is)
+**v2 user-side verifications still needed before publish:**
+
+- Verify the Vercel URL
+- Verify the GitHub repo URL (still has [VERIFY] placeholder at top of file)
+- Verify the test count (current draft says "220+ tests at 96% statement coverage on the API" — actual is 222 server tests at 96.48% lines as of the rate-limit work; rounded for the post; reasonable as-is)
 - Decide on visual (stills carousel vs single still vs short video) — TBD section above has the trade-offs
-- Critically read the prose for any line that doesn't sound like the user's voice and flag for rewrite
+- Critically read v2 for any line that doesn't sound like the user's voice and flag for rewrite
 
 ---
 
 ## Publish Log
 
-- **Drafted:** 2026-05-12 (immediately after the rate-limit work shipped to Railway, while Railway was deploying the production config)
+- **v1 drafted:** 2026-05-12 (immediately after the rate-limit work shipped to Railway, while Railway was deploying the production config). Led with the confidence-aware handoff angle. Superseded by v2.
+- **v2 drafted:** 2026-05-13 morning, responding to user critique that v1's uncertainty-led opener struck the wrong tone for a 200-word recruiter-facing post. v2 cuts the handoff story and leads with the four-agent swarm + four-domain breadth instead. See Draft Notes above for the full diff.
 - **Video / visuals produced:** _TBD — pending user decision per Visuals section above_
 - **Posted:** _TBD — Thursday 2026-05-14 morning is the earliest target per user's 2026-05-12 statement_
 - **Inbound notes:** _TBD — fill in after posting if any recruiter inbound or notable engagement_
