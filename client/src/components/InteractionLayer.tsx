@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Mic, Send, Square, Loader2, Volume2, VolumeX } from 'lucide-react';
 import { useMediaRecorder } from '../hooks/useMediaRecorder';
 import { useAudioStream } from '../hooks/useAudioStream';
+import { apiUrl } from '../lib/api';
 import AudioVisualizer from './AudioVisualizer';
 
 /**
@@ -22,7 +23,7 @@ const InteractionLayer: React.FC = () => {
         // Use a generic name, the server will detect the type
         formData.append('audio', blob, 'recording.audio');
 
-        const response = await fetch('/api/voice/transcribe', {
+        const response = await fetch(apiUrl('/api/voice/transcribe'), {
           method: 'POST',
           body: formData,
         });

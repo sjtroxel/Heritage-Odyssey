@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { apiUrl } from '../lib/api';
 
 /**
  * Hook to handle playback of the streaming audio from the narrative endpoint.
@@ -42,7 +43,7 @@ export const useAudioStream = () => {
           headers['Authorization'] = `Bearer ${token}`;
         }
 
-        const response = await fetch('/api/narrative/stream', {
+        const response = await fetch(apiUrl('/api/narrative/stream'), {
           method: 'POST',
           headers,
           body: JSON.stringify({ query }),
