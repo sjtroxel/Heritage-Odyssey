@@ -1,6 +1,6 @@
 # Asteroid Bonanza — LinkedIn Blog Post #3
 
-**Status:** v2 prose draft + 5-slide carousel READY 2026-05-13 afternoon. Target publish Thursday 2026-05-14 morning.
+**Status:** SHIPPED 2026-05-14 7:50am CT (8:50am ET) on LinkedIn. v3 prose + 5-slide carousel.
 **Series:** Post 3 of 4. See `BLOG_SERIES_PLAN_MAY_2026.md`.
 **Live app:** https://asteroid-bonanza.vercel.app
 **Repo:** [VERIFY: github.com URL — likely sjtroxel/AI-Masterclass-Week-3-AsteroidProject given naming pattern]
@@ -11,13 +11,13 @@
 
 > Asteroid Bonanza is a four-agent swarm. Pick any near-Earth asteroid; the agents analyze its orbit, composition, economic value, and planetary-defense risk in parallel, then synthesize.
 >
-> The four specialists: Navigator computes orbital accessibility from NHATS data, Geologist estimates composition from spectral class, Economist separately values terrestrial-export and in-space-utilization, Risk Assessor evaluates planetary-defense and mission-side risk. Each runs as a Claude Sonnet 4.6 agent calling NASA's catalogs through dedicated tools.
+> The four specialists: Navigator computes orbital accessibility (delta-V, mission duration), Geologist estimates composition from spectral class, Economist separately values terrestrial-export and in-space-utilization, Risk Assessor evaluates planetary-defense and mission-side risk. Each runs as a Claude Sonnet 4.6 agent calling NASA's catalogs through dedicated tools.
 >
 > Every numeric finding (orbital elements, close-approach dates, mineral percentages, delta-V values) comes from a tool call into NASA's actual datasets: SBDB, CAD, NeoWs, NHATS. Reasoning text is the model's; specific numbers are not.
 >
-> Each full analysis costs me about $0.50 in Anthropic credits and runs for 60–90 seconds. To keep curious scrollers from exhausting the demo budget, the live site rate-limits to 2 swarm runs per IP per 24 hours. Cheap reads (dossier, cached analyses, planetary-defense dashboard) stay open.
+> Beyond the swarm, an analyst agent fields follow-ups on any completed analysis. It retrieves from a pgvector index of scientific papers and mission scenarios, renders citations inline with the answer, and exposes its own retrieval metrics (chunks fetched, latency, token cost) directly in the UI.
 >
-> Built with Angular 21, TypeScript, Tailwind 4, Three.js for the orbital canvas, Express 5, Supabase + pgvector, and the Anthropic SDK. 220+ tests at 96% statement coverage on the API. Live at asteroid-bonanza.vercel.app.
+> Built with Angular 21, TypeScript, Tailwind 4, Three.js for the orbital canvas, Express 5, Supabase + pgvector, and the Anthropic SDK. 220+ tests at 96% statement coverage on the API. The deployed demo rate-limits to 2 swarm runs per IP per 24h; cached analyses and read-only views stay open. Live at asteroid-bonanza.vercel.app.
 >
 > #AIEngineering #MultiAgent #RAG #LLMOps #OpenToWork
 
@@ -78,9 +78,13 @@ Per `feedback_dont_lead_with_claude.md`. "Claude Sonnet 4.6" carries technical s
 
 Asteroid Bonanza's orchestrator is hand-rolled. Per `feedback_no_langchain_phrasing.md`, "no LangChain"-style negative framing is rejected as recruiter-facing copy — could read as principled refusal when in fact the user would happily use LangGraph if it fit. Solution: don't mention frameworks at all. The post describes the actual behavior, which is the substance recruiters care about.
 
-**Why the cost / rate-limit paragraph is preserved verbatim from v1:**
+**Why v3 swaps the cost paragraph for an analyst/RAG paragraph:**
 
-User explicitly confirmed this paragraph (cost, runtime, rate-limit policy) lands well and belongs roughly two-thirds of the way into the post. Same role that Poster Pilot's "5,000 posters is enough to demonstrate the architecture" paragraph played: signals to recruiters that the author understands production-AI costs and has handled them properly. The specific rate-limit number (2 per IP per 24h) demonstrates a thought-through design decision, not hand-waving.
+v2's paragraph 4 was the cost+rate-limit graf preserved from v1. User flagged 2026-05-14 morning that "$0.50 in Anthropic credits" reads as "this will cost YOU" to fast readers regardless of the "me" insertion, and that the whole paragraph functioned as defensive copy ("look how responsibly I built this") rather than offensive copy (architectural depth recruiters scan for). Same diagnostic that retired Poster Pilot v1's Red Button hook and Asteroid Bonanza v1's confidence-led opener: defensive framing loses to depth in 200-word recruiter-facing copy.
+
+v3 replaces the paragraph with a description of the analyst/RAG follow-up layer: pgvector-backed retrieval from scientific papers + mission scenarios, citations rendered inline, retrieval metrics (chunks/latency/tokens) surfaced in the UI. This earns the `#RAG` hashtag substantively (v2 only gestured at it), pairs with carousel slide 3 (the RAG retrieval banner), and shows a second distinct AI architectural layer beyond the swarm — strengthening the architecture story instead of pivoting away from it.
+
+The rate-limit fact (2 per IP per 24h, cached analyses unmetered) is preserved as a single sentence buried in the stack paragraph: retains the `#LLMOps` anchor without giving defensive copy its own paragraph. The cost figure ($0.50) is dropped entirely. An alternative replacement angle — featuring the Apophis 2029 case study in prose — was considered and rejected: Apophis already gets two of five carousel slides, and a prose paragraph about a single asteroid would tilt the post from "AI engineer pitch" toward "space enthusiast post." The blog real estate should carry weight the slides can't: architectural substance, not topical color.
 
 **Why the grounding paragraph is its own paragraph:**
 
@@ -128,10 +132,15 @@ Claude drafted v1 and v2. Per the recalibrated authorship plan, the user is exer
 
 - **v1 prose drafted:** 2026-05-12 (immediately after rate-limit work shipped to Railway). Led with confidence-aware handoff angle. Superseded by v2.
 - **v2 prose drafted:** 2026-05-13 morning, responding to user critique that v1's uncertainty-led opener struck the wrong tone for a 200-word recruiter-facing post. v2 cuts the handoff story and leads with the four-agent swarm + four-domain breadth instead. Plus minor "$0.50 in **me** Anthropic credits" tweak to neutralize fear-of-billing concern for casual readers.
+- **v3 prose drafted:** 2026-05-14 morning, just before publish. Three edits on user critique: (1) "NHATS" replaced with concrete physics terms ("delta-V, mission duration") in paragraph 2 — the acronym means nothing to readers, and Googling it returns "National Health and Aging Trends Study" before any NASA result; (2) the cost+rate-limit paragraph swapped out for a paragraph on the analyst/RAG follow-up layer — earns `#RAG` substantively and pairs with carousel slide 3; (3) one-sentence rate-limit clause moved into the stack paragraph to preserve the `#LLMOps` anchor without giving defensive copy its own moment. Cost figure ($0.50) dropped entirely. Apophis-case-study replacement angle considered and rejected (Apophis already covered by slides 4 and 5; prose Apophis would tilt the post toward space content instead of AI-engineer content).
 - **Visuals produced 2026-05-13 afternoon:**
   - Recorded 3 screencasts as raw source (two failed Cardea analyses, one Apophis case study tour). User burned daily quota twice on Cardea analyses that ended in handoff (no clean end-to-end success captured live).
   - Built and rejected a 35s frankenstein video (`videos/Asteroid_Bonanza_v1.mp4`) — content stitched from multiple sources to land on success; technically workable but viewer experience too rushed.
   - Pivoted to 5-slide carousel approach. Produced all 5 slides as PNGs in `carousel/`. See Visuals section above for slide-by-slide breakdown, source material map, and the mixed-aspect-ratio caveat.
   - Cleanup: created `videos/` and `carousel/` subfolders to organize the blog folder. Moved all 6 .mp4 source files into `videos/`. .gitignore updated for the 126MB Cardea recording.
-- **Posted:** _TBD — Thursday 2026-05-14 morning target_
-- **Inbound notes:** _TBD — fill in after posting if any recruiter inbound or notable engagement_
+- **Posted:** 2026-05-14 7:50am CT (8:50am ET) on LinkedIn. v3 prose + 5-slide carousel.
+- **Post-publish notes (2026-05-14):**
+  - User reflected post-publish that the carousel reads less engaging than the native-video format used for posts #1 and #2. Confirms the visual-format tradeoff: carousel was the right call given the two failed Cardea recordings (no clean end-to-end success captured live), but native video remains the stronger engagement format for this series when the source material allows. Lesson for Post #4 (Wildlife Sentinel): plan recording sessions to capture at least one clean end-to-end success before committing to a video format.
+  - Slide 3 shipped with a known visual defect: the analyst response renders as unparsed markdown in the screenshot. The defect is in the live app (analyst chat component not running its response through a markdown processor), not in slide composition. Fix deferred — would have required a codebase change + re-screencap + re-export, which exceeded the publish-day budget. If a recruiter clicks through and asks about the chat rendering, the fix is straightforward (run the markdown through a parser before render). Worth fixing if Asteroid Bonanza is revisited or if this surfaces in any recruiter conversation.
+  - Mixed-aspect-ratio caveat (slides 1, 4 square; slides 2, 3, 5 rectangular) appears to have rendered acceptably in LinkedIn's preview at upload time. Monitor for awkward letterboxing in the live feed; if it impacts engagement noticeably, future posts should standardize aspect ratios across all slides.
+- **Inbound notes:** _TBD — fill in if any recruiter inbound or notable engagement_
