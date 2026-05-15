@@ -2,8 +2,8 @@
 
 **Status:** Planning + decisions locked 2026-05-14. Drafting begins Friday 2026-05-15. Target publish Monday 2026-05-18 morning.
 **Series:** Post 4 of 4. See `BLOG_SERIES_PLAN_MAY_2026.md`.
-**Live app:** https://wildlife-sentinel.vercel.app
-**Repo:** [VERIFY: github.com URL]
+**Live app:** https://wildlife-sentinel.vercel.app/
+**Repo:** https://github.com/sjtroxel/Wildlife-Sentinel
 
 ---
 
@@ -225,16 +225,149 @@ Sleep cycles between days are deliberate per user's working pattern — same app
 
 ---
 
-## Draft Notes (will fill in during drafting)
+## Draft Notes
 
-_To be populated Friday onward, mirroring the structure of `ASTEROID_BONANZA_BLOG.md` Draft Notes section: hook rationale, what got cut and why, AI-tells audit, hashtag rationale check, pre-publish verifications list._
+### v1 Draft (2026-05-15 Friday morning)
+
+**Resolution of open prose decisions (user input 2026-05-15):**
+
+- **Hook species:** Sumatran orangutan + wildfire. User asked for a sympathy-triggering species; orangutan sits in the charismatic-primate tier (big eyes, "old man of the forest"). Also the README's canonical case, so the technical claims earn authenticity. Koala+wildfire is the maximum-sympathy alternative thanks to 2019–20 Australian bushfire memory — swap candidate for v2 if user wants to dial up emotional pull at the cost of "designed-around-this-case" authenticity.
+- **Refiner sentence:** one sentence with the deterministic 0.6/0.4 composite-score detail, per user request for "sufficient sophistication and detail."
+- **Charity CTA:** tried `"Every public alert ends with /donate links to vetted charities for the species at risk."` — concrete (names the slash command), ties back to the hook species, lands at end-of-scroll. User undecided; will see if it sticks in review.
+
+**Structural choices:**
+
+- 8 paragraphs of pure prose, no bullets, no section headers. One paragraph per architectural story (message bus, pre-filter, Discord, dashboard, refiner, routing+grounding, stack+close), plus the hook. Follows the planning-doc "paragraph-as-section" structural deviation principle.
+- Agent names not enumerated in the message-bus paragraph. The planning doc confirms 5 intelligence agents and explicitly names Species Context, Threat, and Synthesis; the other two are inferable but not verified. Defer naming to v2 if user wants — current prose says "Five intelligence agents read those streams as consumer groups" and moves on.
+- `ThreatAssembler` fan-in pattern omitted from v1 to stay under the word budget. Candidate addition for v2 if there's room — would slot into the message-bus paragraph as a one-clause aside.
+
+**Word count:** ~339 (planning doc allows 350–400 for posts #3–4; finalist after edits).
+
+**AI-tells audit:** zero em dashes. No "Selected Projects:" or "Under the hood" type tells. "Human checkmark reaction" instead of literal ✅ emoji in body (per `feedback_no_ai_writing_tells.md`). Did not lead with "Claude" (per `feedback_dont_lead_with_claude.md`) — lead is the orangutan/wildfire vignette. No defensive paragraphs about cost, rate limits, or failure modes (per `feedback_blog_depth_over_defense.md`).
+
+**Open items flagged for v2:**
+
+1. Whether to swap orangutan → koala for max-sympathy hook
+2. Whether to name the 5 agents explicitly
+3. Whether to surface the `ThreatAssembler` fan-in pattern
+4. Whether the `/donate` CTA phrasing lands or needs to be more direct (named-charity callout)
+5. Pre-publish: verify the GitHub repo URL (`[VERIFY: github.com URL]` at top of doc still pending)
+
+---
+
+**v1 prose:**
+
+When a wildfire crosses within 75km of critically endangered Sumatran orangutan habitat, Wildlife Sentinel fires an alert within 10 minutes. It runs 24/7 against 12 global disaster streams.
+
+Twelve disaster scouts (NASA FIRMS, USGS, NOAA, and nine others) push events into four Redis Streams. Five intelligence agents read those streams as consumer groups. Agents never call each other directly; they communicate only through the bus. If one crashes, messages queue and replay on the next read. If one is slow, the others don't block. XADD, XREADGROUP, XACK.
+
+Before any LLM touches an event, PostGIS runs ST_DWithin against 1,372 species habitat polygons. Seventy to eighty percent of incoming events drop here, outside any monitored range. The cheapest model is no model. A GIST index keeps the filter cheap enough to run on every event.
+
+The primary interface is a Discord bot. Alerts render as rich embeds: species and IUCN status, threat level, distance from habitat, wind and weather context, and matched conservation charities. Critical alerts require a human checkmark reaction before going public. Nine slash commands cover pipeline ops: /status, /pause, /trends, /refiner, /donate.
+
+A secondary Next.js dashboard at wildlife-sentinel.vercel.app shows a Leaflet map color-coded by nine event types, a live alerts feed, a real-time agent activity stream, and a Refiner accuracy chart.
+
+Twenty-four hours after each alert, a Refiner scores predictions against observed NASA and NOAA outcomes via a deterministic composite of direction accuracy (0.6) and magnitude accuracy (0.4), and rewrites the Threat Agent's system prompt when accuracy drops below threshold.
+
+Routing is cost-aware: Gemini Flash-Lite for volume, Gemini Flash for RAG synthesis, Claude Haiku for reasoning. Per-call cost is logged. The RAG agents are bound by retrieval score; if no chunk scores above 0.40 cosine, they say "insufficient context" rather than fabricate biology.
+
+Stack: TypeScript, Express, Next.js, Redis, Neon with PostGIS and pgvector, Discord.js, Gemini SDK, Anthropic SDK. 470 unit and integration tests plus 43 Playwright E2E at 91.4% coverage. Live at wildlife-sentinel.vercel.app. Every public alert ends with /donate links to vetted charities for the species at risk.
+
+#AIEngineering #MultiAgentSystems #DistributedSystems #DiscordBot #OpenToWork
+
+---
+
+### v2 Preparation Notes (2026-05-15 Friday afternoon)
+
+Research and decisions documented Friday so v2 drafting Saturday morning can happen cleanly. User reviewing v1 overnight; may bring additional considerations before v2 prose is written.
+
+#### Item 1 — Koala hook alternative (for v2 comparison)
+
+User wants a look at swapping `Sumatran orangutan` → `koala` to test maximum-sympathy hook, anchored to the 2019–20 Australian bushfire memory. Final decision deferred to v2 review. Two koala draftings to compare against the existing orangutan hook:
+
+**Variant A (longer, ~53 words — full historical anchor):**
+
+> During the 2019–20 Australian bushfires, an estimated three billion animals were killed or displaced; koalas became the symbol of climate-disaster wildlife loss. When a wildfire now crosses within 75km of critically endangered koala habitat, Wildlife Sentinel fires an alert within 10 minutes. It runs 24/7 against 12 global disaster streams.
+
+**Variant B (tighter, ~41 words — historical anchor without the statistic):**
+
+> Koalas became the symbol of the 2019–20 Australian bushfire crisis. When a wildfire now crosses within 75km of critically endangered koala habitat, Wildlife Sentinel fires an alert within 10 minutes. It runs 24/7 against 12 global disaster streams.
+
+**Current v1 orangutan hook (~28 words, for reference):**
+
+> When a wildfire crosses within 75km of critically endangered Sumatran orangutan habitat, Wildlife Sentinel fires an alert within 10 minutes. It runs 24/7 against 12 global disaster streams.
+
+**Tonal risk assessment (per user guidance):** Variant A pushes hardest on emotional anchor and adds ~25 words to the total post (lands at ~365, still under the 400 ceiling). Variant B keeps the koala/bushfire anchor but lets paragraph 2 (Redis Streams) hard-pivot to architecture sooner, reducing the risk that a skimming reader pegs the post as "about koalas and fires" rather than "about multi-agent systems." Variant B is the safer koala play; A is the higher-impact one.
+
+**Verification flag:** koala habitat polygons need to exist in the system's 1,372-polygon set for the koala hook to be technically truthful. Worth confirming in the codebase before locking v2, since the system can't actually fire a koala alert if there's no koala polygon. Easy check by grepping the species seed data.
+
+#### Item 2 — The 5 intelligence agents (confirmed from codebase)
+
+Pulled from `wildlife-sentinel/server/src/agents/`. The five files map 1:1 to the five intelligence agents:
+
+| Agent (codebase class) | Role |
+|---|---|
+| `EnrichmentAgent` | First-stage enrichment of raw scout events (geocoding, normalization, IUCN status lookup) |
+| `HabitatAgent` | PostGIS spatial filter (ST_DWithin against 1,372 polygons) + GBIF recent-sightings lookup |
+| `SpeciesContextAgent` | RAG-grounded species briefs from the `species_facts` pgvector index |
+| `ThreatAssessmentAgent` | LLM-scored threat level, distance, direction, magnitude prediction |
+| `SynthesisAgent` | RAG-grounded final alert composition (conservation context + charity matches + write-up) |
+
+For v2 prose: the message-bus paragraph can name them explicitly. Suggested phrasing:
+
+> Twelve disaster scouts (NASA FIRMS, USGS, NOAA, and nine others) push events into four Redis Streams. Five intelligence agents read those streams as consumer groups: Enrichment, Habitat, Species Context, Threat Assessment, Synthesis. Agents never call each other directly; they communicate only through the bus.
+
+**Note: there is no standalone "Charity Matching" agent.** Charity matching is a function inside the Synthesis stage, not a sixth agent. The v1 phrasing "matched conservation charities" in the Discord bot paragraph remains accurate — but if you ever want to name a "Charity Agent," that's not the codebase reality.
+
+#### Item 3 — ThreatAssembler fan-in pattern (read from `server/src/pipeline/ThreatAssembler.ts`)
+
+**What it is:** a scatter-gather coordinator between HabitatAgent and SpeciesContextAgent. It is not a sixth agent and not itself an LLM caller — it's a pure pipeline-coordination component sitting on Redis.
+
+**How the flow works:**
+
+1. **Scatter (fork):** the upstream `disaster:enriched` Redis Stream is consumed by HabitatAgent and SpeciesContextAgent in parallel. Both run simultaneously on the same event.
+2. **Partial-result storage:** each agent writes its result into a Redis hash keyed by event ID (`assembly:<eventId>`). The event itself is also stored in the same hash by an upstream call to `storeEventForAssembly`. So the hash builds up three fields: `event`, `habitat`, `species`.
+3. **Gather (join):** every time a partial result lands, `tryAssemble` checks the hash. If all three fields are present, it atomically claims the publish-right via `SETNX` on `assembly:publishing:<eventId>` (60s TTL). This prevents double-publish when both agents finish concurrently.
+4. **Publish:** assembler merges event + habitat + species into a `FullyEnrichedEvent`, writes to the `alerts:assessed` Redis Stream, then deletes the assembly hash. Downstream consumers (ThreatAssessmentAgent, SynthesisAgent) read from `alerts:assessed`.
+5. **Backlog tolerance:** 24-hour TTL on the assembly hash (`ASSEMBLY_TTL_SECONDS = 86_400`). Lets SpeciesContextAgent grind through deep species backlogs (17–20 species per event × ~90s = ~30 min per event in the worst case) without losing the partial habitat result.
+6. **Failure-mode handling:** if both habitat and species arrive but no event field exists (orphaned hash from an old backlog message processed without the upstream store call), the assembler logs a warning to the Discord `#war-room` channel and abandons assembly rather than emitting a corrupt event.
+
+**Why it matters for the post (a "production-systems judgment call" signal):**
+
+- It's a classic distributed-systems fork-join pattern implemented at the Redis layer, not in application memory. That means it survives process restarts: if the assembler process crashes mid-event, the partial state is durably stored in Redis and assembly resumes when the process comes back.
+- The atomic `SETNX` claim handles the concurrency edge case (both agents finishing at the same instant) without needing a distributed lock or a transaction.
+- The 24h TTL is a deliberate operational choice driven by measured backlog timing, not a default value — that's the kind of detail that reads as production-experience signal.
+
+**Suggested v2 prose (~38 words; slots into the message-bus paragraph as a closing sentence, or stands alone as a 9th paragraph):**
+
+> A ThreatAssembler fans the two parallel agents back in: it gathers habitat and species-context results in a Redis hash keyed by event ID, claims publish-rights atomically with SETNX to handle concurrent completion, and emits the assembled event downstream.
+
+**Recommendation:** add it as the closing sentence of the message-bus paragraph rather than its own paragraph. That keeps the 8-paragraph rhythm and avoids fragmenting the architecture story. The sentence carries enough density on its own — readers who know fork-join will recognize it instantly; readers who don't will move on without losing the thread.
+
+#### Item 4 — `/donate` CTA
+
+Locked as written in v1. No change for v2.
+
+#### Item 5 — URLs
+
+Updated at top of doc:
+
+- `Live app:` https://wildlife-sentinel.vercel.app/
+- `Repo:` https://github.com/sjtroxel/Wildlife-Sentinel
+
+#### Open before v2 drafting Saturday
+
+1. User overnight review of v1 — any tonal/structural concerns to incorporate
+2. User's call on koala (Variant A vs B) vs orangutan
+3. User's call on whether to include the ThreatAssembler sentence in v2
+4. If koala wins: confirm koala polygon exists in the 1,372-polygon species set
 
 ---
 
 ## Publish Log
 
 - **Planning locked:** 2026-05-14 Thursday morning, immediately after Asteroid Bonanza shipped.
-- **v1 prose drafted:** _TBD Friday 2026-05-15_
+- **v1 prose drafted:** 2026-05-15 Friday morning
 - **Visuals decided:** _TBD_
 - **Posted:** _TBD — Monday 2026-05-18 morning target_
 - **Inbound notes:** _TBD — fill in after posting if any recruiter inbound or notable engagement_
