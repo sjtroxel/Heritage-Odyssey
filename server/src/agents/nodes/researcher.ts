@@ -3,6 +3,7 @@ import { ModelRouter } from '../../services/modelRouter.js';
 import { query as vectorStoreQuery } from '../../services/vectorStore.js';
 import { MODELS } from '@heritage-odyssey/shared/models';
 import { HandoffPackage } from '@heritage-odyssey/shared/types';
+import { logger } from '../../services/logger.js';
 
 /**
  * Researcher agent node: Generates targeted search phrases and retrieves
@@ -63,9 +64,13 @@ export async function researcherNode(
 
     const uniqueResults = Array.from(uniqueResultsMap.values());
 
-    // 3. Count results with score >= 0.75
+    logger.info('Pinecone scores', {
+      scores: uniqueResults.map((r) => r.score),
+    });
+
+    // 3. Count results with score >= 0.5
     const qualifyingResults = uniqueResults.filter(
-      (result) => result.score !== undefined && result.score >= 0.75,
+      (result) => result.score !== undefined && result.score >= 0.5,
     );
     const count = qualifyingResults.length;
 

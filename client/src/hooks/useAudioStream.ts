@@ -50,6 +50,14 @@ export const useAudioStream = () => {
           refresh,
         );
 
+        const contentType = response.headers.get('Content-Type') ?? '';
+
+        if (contentType.includes('application/json')) {
+          const data = await response.json();
+          const msg = data.suggestion ?? 'The archive has no records for this query.';
+          throw new Error(msg);
+        }
+
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         objectUrlRef.current = url;

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Mic, Send, Square, Loader2, Volume2, VolumeX } from 'lucide-react';
+import { Mic, Send, Square, Loader2, Volume2 } from 'lucide-react';
 import { useMediaRecorder } from '../hooks/useMediaRecorder.js';
 import { useAudioStream } from '../hooks/useAudioStream.js';
 import { apiUrl, authFetch } from '../lib/api.js';
@@ -60,49 +60,60 @@ const InteractionLayer: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-4 md:p-6 bg-linear-to-t from-slate-50 via-slate-50/90 to-transparent pointer-events-none">
-      <div className="max-w-xl mx-auto pointer-events-auto">
+    <div className="fixed bottom-0 left-0 right-0 bg-cast-iron-dark border-t border-brass p-4 md:px-6 md:py-8 pointer-events-auto z-40">
+      <div className="max-w-2xl mx-auto">
         {/* Status / Visualizer Area */}
-        <div className="flex flex-col items-center mb-4">
+        <div className="flex flex-col items-center mb-6 h-10 justify-center">
           <AudioVisualizer isActive={isRecording} mode="recording" />
           <AudioVisualizer isActive={isPlaying} mode="playing" />
 
           {isProcessing && (
-            <div className="flex items-center gap-2 text-indigo-600 text-sm font-medium bg-white px-3 py-1 rounded-full shadow-xs border border-indigo-100 animate-in fade-in slide-in-from-bottom-2">
-              <Loader2 size={14} className="animate-spin" />
-              <span>Synthesizing History...</span>
+            <div className="flex items-center gap-2 text-paper/80 text-xs font-spectral italic animate-in fade-in slide-in-from-bottom-2">
+              <Loader2 size={14} className="animate-spin text-brass" />
+              <span>Transcribing the Record...</span>
+            </div>
+          )}
+
+          {isPlaying && !isProcessing && (
+            <div className="flex items-center gap-2 text-paper/80 text-xs font-spectral italic animate-in fade-in">
+              <Volume2 size={14} className="animate-pulse text-brass" />
+              <span>Consulting the Registry...</span>
             </div>
           )}
 
           {audioError && (
-            <div className="text-red-500 text-xs bg-red-50 px-3 py-1 rounded-full border border-red-100">
+            <div className="text-paper/90 text-xs font-spectral bg-red-950/30 px-3 py-1 border border-red-900/50">
               {audioError}
             </div>
           )}
 
           {permissionDenied && (
-            <div className="text-amber-600 text-xs bg-amber-50 px-3 py-1 rounded-full border border-amber-100">
+            <div className="text-paper/90 text-xs font-spectral bg-amber-950/30 px-3 py-1 border border-amber-900/50">
               Microphone access denied.
             </div>
           )}
         </div>
 
         {/* Interaction Bar */}
-        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-2 flex items-center gap-2">
+        <div className="bg-cast-iron-dark/50 border border-brass/30 p-2 flex items-center gap-3">
           {isSupported && (
             <button
               onMouseDown={startRecording}
               onMouseUp={stopRecording}
               onTouchStart={startRecording}
               onTouchEnd={stopRecording}
-              className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
+              className={`shrink-0 w-14 h-14 rounded-full flex items-center justify-center transition-all border-2 ${
                 isRecording
-                  ? 'bg-red-500 text-white scale-95 shadow-inner'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-brass text-cast-iron-dark scale-95 shadow-inner border-brass'
+                  : 'bg-brass/10 text-brass hover:bg-brass/20 border-brass/40'
               }`}
               title="Hold to speak"
             >
-              {isRecording ? <Square size={20} fill="currentColor" /> : <Mic size={20} />}
+              {isRecording ? (
+                <Square size={24} fill="currentColor" />
+              ) : (
+                <Mic size={24} strokeWidth={1.5} />
+              )}
             </button>
           )}
 
@@ -111,35 +122,27 @@ const InteractionLayer: React.FC = () => {
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Ask about your ancestors..."
-              className="grow bg-transparent border-none focus:ring-0 text-slate-900 placeholder:text-slate-400 text-base py-2 px-1"
+              placeholder="Press & Hold Mic or Type to Search the Archive"
+              className="grow bg-cast-iron border-none focus:ring-1 focus:ring-brass/30 text-paper placeholder:text-paper/20 text-base py-3 px-4 font-spectral"
               disabled={isProcessing || isRecording}
             />
 
-            <div className="flex items-center gap-1 pr-1">
-              {isPlaying ? (
-                <div className="text-indigo-600 p-2">
-                  <Volume2 size={20} className="animate-pulse" />
-                </div>
-              ) : (
-                <div className="text-slate-300 p-2">
-                  <VolumeX size={20} />
-                </div>
-              )}
-
+            <div className="flex items-center gap-2 pr-1">
               <button
                 type="submit"
                 disabled={!inputValue.trim() || isProcessing || isRecording}
-                className="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-700 disabled:opacity-30 disabled:hover:bg-indigo-600 transition-colors"
+                className="w-12 h-12 bg-brass text-cast-iron-dark flex items-center justify-center hover:bg-brass/90 disabled:opacity-20 transition-all"
               >
-                <Send size={18} />
+                <Send size={20} strokeWidth={1.5} />
               </button>
             </div>
           </form>
         </div>
 
-        <p className="text-[10px] text-center text-slate-400 mt-2 uppercase tracking-widest font-semibold">
-          {isRecording ? 'Release to Send' : 'Press & Hold Mic or Type to Search'}
+        <p className="text-[10px] text-center text-paper/30 mt-4 uppercase tracking-[0.2em] font-spectral font-bold">
+          {isRecording
+            ? 'Capturing Oral History...'
+            : 'Authorized Personnel Only // Archive Access'}
         </p>
       </div>
     </div>

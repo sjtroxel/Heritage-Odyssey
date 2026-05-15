@@ -54,6 +54,7 @@ describe('useAudioStream', () => {
     const mockBlob = new Blob(['audio data'], { type: 'audio/mpeg' });
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
+      headers: new Headers({ 'Content-Type': 'audio/mpeg' }),
       blob: vi.fn().mockResolvedValue(mockBlob),
     });
 
@@ -86,6 +87,7 @@ describe('useAudioStream', () => {
     const mockBlob = new Blob(['audio data'], { type: 'audio/mpeg' });
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
+      headers: new Headers({ 'Content-Type': 'audio/mpeg' }),
       blob: vi.fn().mockResolvedValue(mockBlob),
     });
 
@@ -114,6 +116,7 @@ describe('useAudioStream', () => {
     (global.fetch as any).mockResolvedValueOnce({
       ok: false,
       status: 500,
+      headers: new Headers(),
       json: vi.fn().mockResolvedValue({ message: 'Internal Server Error' }),
     });
 
@@ -134,11 +137,13 @@ describe('useAudioStream', () => {
     (global.fetch as any).mockResolvedValueOnce({
       status: 401,
       ok: false,
+      headers: new Headers(),
     });
 
     // Second call succeeds
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
+      headers: new Headers({ 'Content-Type': 'audio/mpeg' }),
       blob: vi.fn().mockResolvedValue(mockBlob),
     });
 
@@ -158,6 +163,7 @@ describe('useAudioStream', () => {
   it('handles playback errors', async () => {
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
+      headers: new Headers({ 'Content-Type': 'audio/mpeg' }),
       blob: vi.fn().mockResolvedValue(new Blob()),
     });
 
@@ -179,6 +185,7 @@ describe('useAudioStream', () => {
   it('updates state when audio starts playing and ends', async () => {
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
+      headers: new Headers({ 'Content-Type': 'audio/mpeg' }),
       blob: vi.fn().mockResolvedValue(new Blob()),
     });
 
@@ -216,6 +223,7 @@ describe('useAudioStream', () => {
     // Trigger audio creation
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
+      headers: new Headers({ 'Content-Type': 'audio/mpeg' }),
       blob: vi.fn().mockResolvedValue(new Blob()),
     });
 

@@ -76,19 +76,19 @@ This document defines the technical execution of the Phase 7 Polish plan.
 - Logic: Replace the gradient box with the "Archive Record Sample" panel (double border, cream background, Spectral italic sample text from `golden_set.json`).
 **Done Criteria:** Hero section resembles a Victorian naturalist journal page.
 
-### Step 10 — Interaction bar redesign
+### Step 10 — Interaction bar redesign [x]
 **Files to modify:** `client/src/components/InteractionLayer.tsx`
 - UI: Cast-iron-dark background with brass top border. Cream text input.
 - Status strings: Update "Processing", "Transcribing", etc., to match the Victorian theme.
 - Hint text: "Press & Hold Mic or Type to Search the Archive" (small caps Spectral).
 **Done Criteria:** Interaction bar looks like an archivist's desk terminal.
 
-### Step 11 — AudioVisualizer redesign
+### Step 11 — AudioVisualizer redesign [x]
 **Files to modify:** `client/src/components/AudioVisualizer.tsx`
 - Logic: Replace blue/gray colors with brass (`#9a7b2f`) for recording and cast-iron green (`#2d4a3e`) for playback.
 **Done Criteria:** Visualizer colors align with the Victorian palette.
 
-### Step 12 — Footer redesign
+### Step 12 — Footer redesign [x]
 **Files to modify:** `client/src/App.tsx`
 - UI: Cast-iron background, paper text (60% opacity), brass logo.
 - Copyright: "© 2026 Heritage Odyssey. Built for the AI Masterclass."

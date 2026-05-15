@@ -56,7 +56,7 @@ const App: React.FC = () => {
         {/* Hero Section */}
         <section className="relative py-24 px-4 overflow-hidden border-b border-stone/10">
           {/* Noise overlay */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[repeating-conic-gradient(#000_0%_25%,transparent_0%_50%)] bg-[length:2px_2px]"></div>
+          <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[repeating-conic-gradient(#000_0%_25%,transparent_0%_50%)] bg-size-[2px_2px]"></div>
 
           <div className="max-w-4xl mx-auto text-center relative z-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-stone/5 border border-stone/10 text-stone text-[10px] font-libre font-bold uppercase tracking-[0.2em] mb-8">
@@ -105,17 +105,22 @@ const App: React.FC = () => {
         </section>
       </main>
 
-      <footer className="border-t border-brass/20 py-16 px-4 bg-cast-iron text-paper/60">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
-          <div className="flex items-center gap-3 opacity-90">
-            <History size={20} className="text-brass" />
-            <span className="font-libre font-bold text-brass uppercase tracking-[0.2em] text-lg">
-              Heritage Odyssey
-            </span>
-          </div>
-          <div className="text-paper/40 text-xs font-spectral italic tracking-wide">
-            © 2026 Heritage Odyssey. Authorized by the Department of Digital Ancestry.
-          </div>
+      <footer className="border-t border-brass/30 py-8 px-4 bg-cast-iron text-paper/60 font-spectral">
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 text-xs">
+          <span>© 2026</span>
+          <a
+            href="https://github.com/sjtroxel/Heritage-Odyssey"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub repository (opens in new tab)"
+            className="flex items-center gap-1.5 text-brass hover:text-paper transition-colors"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+            <span className="font-libre font-bold uppercase tracking-wider">sjtroxel</span>
+          </a>
+          <span>. All rights reserved.</span>
         </div>
       </footer>
 

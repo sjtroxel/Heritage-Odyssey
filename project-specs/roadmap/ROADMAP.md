@@ -81,7 +81,7 @@
 *   **Risks:** Defining "ground truth" for subjective oral-history-style narratives.
 *   **Done:** Python evaluation environment initialized with `ragas` and `trulens-eval`. Golden dataset (`golden_set.json`) populated. Backend trace capture (`evalService`) implemented. Ragas scoring script (`evaluation/main.py`) successfully executed against captured traces, generating automated reports in `evaluation/reports/summary.json`.
 
-### Phase 7: UI Overhaul & Pre-Deployment Polish
+### Phase 7: UI Overhaul & Pre-Deployment Polish [COMPLETE]
 *   **Deliverables:**
     1. Visual redesign of the frontend to match a "historical archive" aesthetic.
     2. Implementation of a global error handling system for the voice/narrative pipeline.
@@ -89,7 +89,7 @@
     4. Manual bug bash covering edge cases in agent handoffs.
     5. Local E2E verification of the full user flow.
 *   **Risks:** UI redesign introducing regressions in existing mobile-responsive layouts.
-*   **Done:** (Planned)
+*   **Done:** UI transformed to "Victorian Record Office" aesthetic. Bug fixes for Vite proxy, CSS conflicts, and Auth UI completed. Retrieval threshold tuned to 0.5 with active score logging. All tests passing (51/51).
 
 ### Phase 8: Deployment & Launch
 *   **Deliverables:**

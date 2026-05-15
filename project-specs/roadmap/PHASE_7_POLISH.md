@@ -74,7 +74,7 @@ Telegraph ticker style with simple CSS opacity fade-in animations:
 - [x] Vite dev proxy successfully routes `/api` calls to the local backend.
 - [x] All boilerplate Vite/CSS conflicts are removed; UI is 100% Tailwind-controlled.
 - [x] Authentication flow exists and allows users to access voice/narrative routes.
-- [ ] The "Victorian Record Office" UI is fully implemented and responsive (375px to Desktop).
+- [x] The "Victorian Record Office" UI is fully implemented and responsive (375px to Desktop).
 - [x] API calls use the `VITE_API_URL` environment variable logic.
-- [ ] `AudioVisualizer` and interaction states match the new historical theme.
-- [ ] Full local user flow (Auth -> Input -> Synthesis -> Audio) is functional and bug-free.
+- [x] `AudioVisualizer` and interaction states match the new historical theme.
+- [x] Full local user flow (Auth -> Input -> Synthesis -> Audio) is functional and bug-free.

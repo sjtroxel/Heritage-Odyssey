@@ -8,7 +8,7 @@ interface AudioVisualizerProps {
 const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ isActive, mode }) => {
   if (!isActive) return null;
 
-  const pulseColor = mode === 'recording' ? 'bg-red-500' : 'bg-indigo-500';
+  const pulseColor = mode === 'recording' ? 'bg-brass' : 'bg-cast-iron';
 
   const heights = ['60%', '85%', '45%', '75%'];
 

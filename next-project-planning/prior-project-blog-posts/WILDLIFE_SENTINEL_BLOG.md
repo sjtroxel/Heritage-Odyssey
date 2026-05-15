@@ -134,10 +134,62 @@ Total: ~315 words.
 
 **Execution notes / known constraints:**
 
-- **GIF size budget.** Animated GIFs at 1080p can balloon to 50–100MB for even short clips, which would exceed LinkedIn's per-image upload size. Realistic targets: 720p resolution, 10–15fps, ≤15 seconds, optimized via ffmpeg's palettegen + paletteuse pipeline. Total GIF size goal: ≤8MB to stay safely under LinkedIn's limits. Will need iteration to hit this.
+- **GIF size budget (confirmed 2026-05-14 via LinkedIn AI Overview).** LinkedIn actually allows GIFs up to **100 MB and 500 frames** — much more generous than initially assumed. For screen-recorded Discord content at 720p, 30 seconds @ 10–12 fps lands at 6–15 MB, well under both caps. Two-stage ffmpeg conversion (palettegen + paletteuse with bayer dithering) produces dramatically smaller files than direct conversion with no visible quality loss for UI content. See `linkedin-gif-conversion-reference` memory for the canonical command pattern.
 - **Live-alert capture plan.** User will capture screenshots and short screencasts whenever a real alert posts to Discord during normal pipeline operation — no staged test, no codebase changes. The system runs 24/7 against 12 disaster streams, so naturally-occurring captures over the next few days should produce enough source material. User will share preliminary captures with Claude mid-weekend; final image/GIF/video selections targeted Sunday during the production pass.
 - **HITL approval visual.** The ✅ reaction approval gate on critical alerts is a unique-to-this-app interaction worth capturing if possible — even just a single still showing both the `#sentinel-ops` review post and the `#wildlife-alerts` public post would tell the HITL story without prose having to spell it out.
 - **Aspect ratio discipline.** Post #3 mixed square and rectangular slides and the carousel rendering was acceptable but inconsistent. For Post #4, standardize on one aspect ratio across all 5 slides — probably 1280×720 rectangular for video-style content, but verify what LinkedIn currently displays cleanest.
+
+**Recording plan + GIF conversion workflow (locked 2026-05-14 PM):**
+
+User's plan for the Discord motion slide:
+
+- **Target duration:** ≤30 seconds total
+- **First 10–15 sec:** scroll through `#sentinel-ops` channel showing bot alerts and logs, pausing strategically at key moments to let the viewer read embed details
+- **Final 5–10 sec:** open various slash commands and hold each response visible long enough to read
+
+Frame count math at 30 seconds (all fit LinkedIn's 500-frame cap):
+
+| FPS | Frames | Typical file size for screen-recorded content |
+|---|---|---|
+| 10 fps | 300 ✅ | 6–12 MB |
+| 12 fps | 360 ✅ | 8–15 MB |
+| 15 fps | 450 ✅ | 10–18 MB |
+| 24 fps | 720 ❌ | over frame cap |
+
+Discord UI has no fast motion, so 10–12 fps is plenty smooth. Higher fps would push past 500 frames at 30s without visual benefit.
+
+**MP4 → GIF conversion workflow:**
+
+1. User records at any resolution/fps via screen recorder of choice, saves as `.mp4`
+2. User shares the `.mp4` path with Claude in chat
+3. Claude runs two-stage ffmpeg conversion targeting 720p, 10–12 fps, optimized palette (see `linkedin-gif-conversion-reference` memory for canonical command)
+4. Verify output: size ≤15 MB, frames ≤450, visual quality intact
+5. User uploads GIF as one slide in the LinkedIn multi-image carousel
+
+**Composition decision (Claude's recommendation, awaiting user lock):**
+
+Leaning toward **1 GIF (Discord) + 4 stills (Next.js)** rather than 2 GIFs + 3 stills:
+
+- Honors user's original architectural framing — Discord motion, Next.js static. Matches the project's actual UX hierarchy (Discord is primary, dashboard is secondary).
+- One strong motion anchor (the 30-second purposeful Discord scroll) outperforms two weaker ones.
+- Production simplicity: one screen recording session, one conversion pass.
+- Open to 2 GIFs + 3 stills if weekend captures reveal a Next.js moment that *really* benefits from motion (live agent activity SSE panel firing, Leaflet map populating as events arrive). At ~25 MB total carousel that's still well within budget.
+
+**Reminder of the AI-Overview "convert to MP4" caveat:** that tip from LinkedIn help docs applies to single-video posts, NOT carousel slides. LinkedIn multi-image carousels do not accept MP4 slides. So if a GIF doesn't animate cleanly in feed preview, the fix is to re-encode the GIF (lower fps, smaller resolution, optimize palette), not swap to MP4.
+
+**OPEN QUESTION — RESOLVED 2026-05-14 PM via dedicated research agent:** GIFs DO animate in LinkedIn multi-image feed posts. Confirmed via LinkedIn's official help docs (https://www.linkedin.com/help/linkedin/answer/a564109) and operational guidance from B2H Agency / Designlogic, who run animated multi-image post production for clients. The earlier AI Overview that triggered the panic was conflating LinkedIn's PDF document carousel format (where GIFs freeze) with the multi-image-attachment feed post format (where they animate). Different upload paths, different behavior. No test required.
+
+**Critical new constraint surfaced by the research — must shape production:** LinkedIn's in-post upload tool enforces a **~6 MB practical ceiling per tile**, much tighter than the 100 MB official format-spec ceiling. Animation duration operational recommendation: under ~5 seconds per tile.
+
+**What this means for the Discord screencast plan:**
+
+A 30-second 720p / 12 fps GIF would land at 8–15 MB and be rejected by LinkedIn's upload tool. Three workable strategies to fit under 6 MB:
+
+1. **Shorter duration** — trim Discord screencast to ~15–20 seconds total instead of 30. Keeps 720p quality.
+2. **Lower resolution** — 540p or 480p instead of 720p (likely 3–6 MB at 30s / 10 fps). Loses some sharpness but keeps full 30-second narrative.
+3. **Split into 2–3 shorter GIFs** of 3–5 seconds each, one per Discord moment (alert appearing, slash command response, HITL approval flow). This also aligns with the "under ~5 sec per tile" operational guidance AND changes the composition to 2–3 short GIFs + 2–3 stills, which may actually be stronger than 1 long GIF + 4 stills.
+
+**Action item for user when resuming work:** decide which compression/duration/composition strategy fits the desired narrative. The strongest play is probably Strategy 3 (multiple short focused GIFs) — but defer the final composition call to recording day when you can see which Discord moments actually got captured cleanly.
 
 ### Hook vignette — which species + which disaster?
 
