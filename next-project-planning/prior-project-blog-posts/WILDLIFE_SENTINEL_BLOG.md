@@ -364,10 +364,70 @@ Updated at top of doc:
 
 ---
 
+### v2 Draft (2026-05-16 Saturday morning)
+
+**Decisions resolved Saturday:**
+
+- **Hook:** orangutan stays. Both koala variants reviewed; user preferred the original brief/simple orangutan opener over the longer historical-anchor koala alternatives.
+- **5 agents named explicitly** in the message-bus paragraph (Enrichment, Habitat, Species Context, Threat Assessment, Synthesis), per the prep-doc Item 2 phrasing.
+- **ThreatAssembler sentence added** as the closing of the message-bus paragraph, lightly adjusted from prep-doc Item 3 phrasing: names Habitat and Species Context explicitly so the fork-join reads without the reader having to mentally backfill which two agents are being joined.
+- **Dropped:** "Per-call cost is logged." sentence from para 7. The three-tier model mapping (Flash-Lite for volume, Flash for RAG, Haiku for reasoning) already proves cost-awareness; the logging clause was dangling.
+- **Charity CTA carried forward** from v1 unchanged.
+
+**Word count:** ~356 (vs. v1's 339; under the 400 ceiling).
+
+**AI-tells audit:** zero em dashes, no bullet headers in prose, no emoji ("human checkmark reaction" instead of literal ✅). Did not lead with "Claude" (orangutan vignette is the hook). No defensive paragraphs (no cost-per-call hedge, no rate-limit clause, no failure-mode hand-wave). Per `feedback_blog_depth_over_defense.md` and `feedback_no_ai_writing_tells.md`.
+
+**Carousel state (locked 2026-05-16):**
+
+6-tile carousel, 3 stills + 3 GIFs, native aspects preserved (no square-padding per user's preference after Asteroid Bonanza mixed-aspect experience):
+
+1. `01_hero_dashboard.png` — world-globe Leaflet view, refiner accuracy + alert frequency charts visible
+2. `02_discord_alerts.gif` — `#sentinel-ops` feed scroll, 480×640 portrait, 16.3s, ~6.84 MB
+3. `03_discord_slash.gif` — slash command demo, 1920×1080 landscape, 20.7s, ~5.52 MB
+4. `04_dashboard_depth.png` — SE Asia/Oceania zoom with event-type filter pills, severity-coded alerts, agent activity stream
+5. `05_species_tiger.png` — Panthera tigris species profile with habitat polygons + recent alerts (substantiates the 1,372-polygon claim)
+6. `06_event_journey.gif` — full event detail page: agentic threat assessment + original event stats + Refiner 24h/48h drift + matched charities (elephant + wild dog specific), 1272×826, 14.7s, ~3.13 MB
+
+GIF conversion: ffmpeg two-stage palettegen+paletteuse with bayer dither, then `gifsicle -O3 --lossy=30`. Source video files preserved alongside GIFs.
+
+---
+
+**v2 prose:**
+
+When a wildfire crosses within 75km of critically endangered Sumatran orangutan habitat, Wildlife Sentinel fires an alert within 10 minutes. It runs 24/7 against 12 global disaster streams.
+
+Twelve disaster scouts (NASA FIRMS, USGS, NOAA, and nine others) push events into four Redis Streams. Five intelligence agents read those streams as consumer groups: Enrichment, Habitat, Species Context, Threat Assessment, Synthesis. Agents never call each other directly; they communicate only through the bus. If one crashes, messages queue and replay on the next read. If one is slow, the others don't block. XADD, XREADGROUP, XACK. A ThreatAssembler joins Habitat and Species Context back together: it gathers their parallel results in a Redis hash keyed by event ID, claims publish-rights atomically with SETNX to handle concurrent completion, and emits the assembled event downstream.
+
+Before any LLM touches an event, PostGIS runs ST_DWithin against 1,372 species habitat polygons. Seventy to eighty percent of incoming events drop here, outside any monitored range. The cheapest model is no model. A GIST index keeps the filter cheap enough to run on every event.
+
+The primary interface is a Discord bot. Alerts render as rich embeds: species and IUCN status, threat level, distance from habitat, wind and weather context, and matched conservation charities. Critical alerts require a human checkmark reaction before going public. Nine slash commands cover pipeline ops: /status, /pause, /trends, /refiner, /donate.
+
+A secondary Next.js dashboard at wildlife-sentinel.vercel.app shows a Leaflet map color-coded by nine event types, a live alerts feed, a real-time agent activity stream, and a Refiner accuracy chart.
+
+Twenty-four hours after each alert, a Refiner scores predictions against observed NASA and NOAA outcomes via a deterministic composite of direction accuracy (0.6) and magnitude accuracy (0.4), and rewrites the Threat Agent's system prompt when accuracy drops below threshold.
+
+Routing is cost-aware: Gemini Flash-Lite for volume, Gemini Flash for RAG synthesis, Claude Haiku for reasoning. The RAG agents are bound by retrieval score; if no chunk scores above 0.40 cosine, they say "insufficient context" rather than fabricate biology.
+
+Stack: TypeScript, Express, Next.js, Redis, Neon with PostGIS and pgvector, Discord.js, Gemini SDK, Anthropic SDK. 470 unit and integration tests plus 43 Playwright E2E at 91.4% coverage. Live at wildlife-sentinel.vercel.app. Every public alert ends with /donate links to vetted charities for the species at risk.
+
+#AIEngineering #MultiAgentSystems #DistributedSystems #DiscordBot #OpenToWork
+
+**v3 open items — all closed 2026-05-16 Saturday morning:**
+
+1. ✅ GIFs eyeballed — all three look decent at `--lossy=30`. No further compression/quality work needed.
+2. ✅ Para 2 density accepted. User's read: dense but justified because it completes the "how the event is made" story; para 3 then picks up cleanly with "where the event, now made, is going next." Narrative bridge between paras 2 and 3 earns the density.
+3. ✅ Per-species page reference NOT added to body. Slide 5 stands alone as visual proof of paragraph 3's "1,372 species polygons" claim — the carousel does the work that prose doesn't need to.
+
+**Status: v2 is the final prose. No v3 needed unless something surfaces on a Sunday re-read.**
+
+---
+
 ## Publish Log
 
 - **Planning locked:** 2026-05-14 Thursday morning, immediately after Asteroid Bonanza shipped.
 - **v1 prose drafted:** 2026-05-15 Friday morning
-- **Visuals decided:** _TBD_
+- **v2 prose drafted:** 2026-05-16 Saturday morning
+- **Visuals locked:** 2026-05-16 — 6-tile carousel (3 stills + 3 GIFs), files renamed in upload order 01–06, GIFs converted via ffmpeg two-stage palette + gifsicle --lossy=30, all under or near LinkedIn's ~6 MB practical per-tile ceiling
 - **Posted:** _TBD — Monday 2026-05-18 morning target_
 - **Inbound notes:** _TBD — fill in after posting if any recruiter inbound or notable engagement_
