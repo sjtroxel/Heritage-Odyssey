@@ -429,5 +429,5 @@ Stack: TypeScript, Express, Next.js, Redis, Neon with PostGIS and pgvector, Disc
 - **v1 prose drafted:** 2026-05-15 Friday morning
 - **v2 prose drafted:** 2026-05-16 Saturday morning
 - **Visuals locked:** 2026-05-16 — 6-tile carousel (3 stills + 3 GIFs), files renamed in upload order 01–06, GIFs converted via ffmpeg two-stage palette + gifsicle --lossy=30, all under or near LinkedIn's ~6 MB practical per-tile ceiling
-- **Posted:** _TBD — Monday 2026-05-18 morning target_
+- **Posted:** 2026-05-18 Monday — assembled in LinkedIn at 8:53am CT, published 8:54am CT. Series finale.
 - **Inbound notes:** _TBD — fill in after posting if any recruiter inbound or notable engagement_

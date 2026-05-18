@@ -783,13 +783,26 @@ The harder post in the series, anticipated as such. Multiple strategic decisions
 
 Codefi instructor's side-suggestion ("Comment meaningfully on 2–3 posts from people doing AI work") still not executed. Not blocking; worth folding in during the blog-series-window if user has bandwidth.
 
+### May 18, 2026
+
+Four-post blog series **COMPLETE**. Post #4 (Wildlife Sentinel) shipped 2026-05-18 8:54am CT. Whole-series window: 8 days (5/11 → 5/18), under the 10-day target from the macro plan.
+
+Per-post publish log:
+
+| # | Project | Published | Format |
+|---|---|---|---|
+| 1 | ChronoQuizzr | 2026-05-11 morning | native video (42s) |
+| 2 | Poster Pilot | 2026-05-12 ~9am CT | native video (1:48) |
+| 3 | Asteroid Bonanza | 2026-05-14 7:50am CT | 5-slide image carousel |
+| 4 | Wildlife Sentinel | 2026-05-18 8:54am CT | 6-tile carousel (3 stills + 3 GIFs) |
+
+**Planned Heritage Odyssey hiatus 2026-05-18 → ~2026-05-23/24.** User heads-down on the Cape Vibeathon (May 18–22) — brief reveals Mon 4pm CT today, build window Mon evening → Fri morning, demo video due Fri. Return to Heritage Odyssey expected this coming weekend at the earliest (Sat 2026-05-23 or Sun 2026-05-24).
+
+24h-metrics check on Wildlife Sentinel post natural to record Tue 2026-05-19 ~8:54am CT if continuing the pattern set by posts #1–3.
+
 ### Pending changes (in priority order)
 
-1. **Four technical blog post series — IN PROGRESS as of 2026-05-11.** Macro plan locked in `BLOG_SERIES_PLAN_MAY_2026.md`. Order: ChronoQuizzr → Poster Pilot → Asteroid Bonanza → Wildlife Sentinel.
-   - **Post #1 (ChronoQuizzr): PUBLISHED 2026-05-11 morning.** Native video. Engagement data still accumulating.
-   - **Post #2 (Poster Pilot): DRAFTED 2026-05-11, video produced (`Recording 2026-05-11 103347.mp4`), awaiting publish.** Target window: Tuesday 2026-05-12 or Wednesday 2026-05-13 morning. Lead angle: vibe mode + RRF (NOT Claude in the hook, NOT the Red Button). Source: `prior-project-blog-posts/POSTER_PILOT_BLOG.md`.
-   - **Post #3 (Asteroid Bonanza): blocked on rate-limit work** in a separate Claude session opened at the asteroid-bonanza repo. ~30–60 min of work. Must ship before post #3 publishes (~6 days post-#1, give or take). Lead angle should be "swarm" not "Sonnet" per the don't-lead-with-Claude feedback principle.
-   - **Post #4 (Wildlife Sentinel): not yet drafted.** Lead angle should be "Refiner/Evaluator loop" not the model. Series finale — most ambitious post lands when the audience is warmest.
+1. **Four technical blog post series — COMPLETE 2026-05-18.** All 4 posts shipped on cadence per `BLOG_SERIES_PLAN_MAY_2026.md`. See May 18, 2026 entry above for per-post publish log. Section moves out of active workstream.
 
 2. **Deferred LinkedIn privacy decision: `Visibility when viewing other profiles`.** Currently `Private mode`. User asked to be re-prompted later about switching to the middle option (`Private profile characteristics`). Re-raise gently in a future session, not pushy. See `project_linkedin_privacy_audit_2026_05_11.md`.
 
@@ -809,7 +822,9 @@ Phase shift now: from profile-building (recruiter-facing static content) to visi
 
 ---
 
-*Last updated: May 11, 2026 (added Section 10 May 11 entry — ChronoQuizzr post #1 PUBLISHED to LinkedIn as native video; LinkedIn privacy/visibility audit completed with one major finding (Public profile visibility was OFF, flipped on) and six smaller settings changes; one privacy decision deferred (Visibility when viewing other profiles) with user request to be re-prompted later; Poster Pilot post #2 fully drafted at `prior-project-blog-posts/POSTER_PILOT_BLOG.md` with lead-angle strategy pivoted from Red Button to vibe + RRF after user pushback; "don't lead with Claude" feedback principle adopted and applied; native screencast video produced (`Recording 2026-05-11 103347.mp4`, 1:48, 62 MB) and frame-reviewed via ffmpeg; post #2 sitting unpublished pending Tue/Wed morning publish window; Pending changes list updated to reflect post #1 SHIPPED and post #2 READY-TO-PUBLISH; deferred profile-view visibility decision added as new pending item)*
+*Last updated: May 18, 2026 (added Section 10 May 18 entry — four-post blog series COMPLETE; Wildlife Sentinel post #4 shipped 8:54am CT as 6-tile carousel (3 stills + 3 GIFs); per-post publish log table added covering all 4; Heritage Odyssey hiatus 5/18 → ~5/23-24 noted for Cape Vibeathon week; Pending change #1 moves to COMPLETE.)*
+
+*Previous update: May 11, 2026 (added Section 10 May 11 entry — ChronoQuizzr post #1 PUBLISHED to LinkedIn as native video; LinkedIn privacy/visibility audit completed with one major finding (Public profile visibility was OFF, flipped on) and six smaller settings changes; one privacy decision deferred (Visibility when viewing other profiles) with user request to be re-prompted later; Poster Pilot post #2 fully drafted at `prior-project-blog-posts/POSTER_PILOT_BLOG.md` with lead-angle strategy pivoted from Red Button to vibe + RRF after user pushback; "don't lead with Claude" feedback principle adopted and applied; native screencast video produced (`Recording 2026-05-11 103347.mp4`, 1:48, 62 MB) and frame-reviewed via ffmpeg; post #2 sitting unpublished pending Tue/Wed morning publish window; Pending changes list updated to reflect post #1 SHIPPED and post #2 READY-TO-PUBLISH; deferred profile-view visibility decision added as new pending item)*
 *Previous update: May 8, 2026 (added Section 10 May 8 entry — Education section completed with two minimal Codefi entries; IU and SMU graduation dates removed for age-signaling reasons; Profile URL confirmed clean; About / Summary section drafted across multiple iterations and posted as the ~725-char "two flavor details" variant with 5 skill tags; Open to Work activated with public green frame and 4 AI-tilted job titles; Pending Change #1 from May 7 resolved; three of four May 7 optional polish items resolved (only Certifications remains); Pending changes list rewritten with the four-post blog series as new top item)*
 *Previous update: May 7, 2026 (added Section 10 May 7 entry — Featured/Projects section completed with all 4 live deployments in correct display order; Headline revised to swap "Building production LLM applications" tagline for github.com/sjtroxel URL since Creator Mode is no longer available on free tier and Custom Button is Premium-only; Cover image custom-generated via Adobe Firefly Flux 2 and uploaded — first custom banner replacing the default; Pending Change #1 from May 6 resolved; Pending Changes list re-numbered; Optional polish items section added)*
 *Earlier: May 6, 2026 (added Section 10 May 6 entry — Codefi Experience entry refined with "Student Software Engineer" title and full-arc description; new self-directed "AI Software Engineer" Experience entry added with all locked-in fields, 5 tagged skills, final description, and 4 media cards; Pending Changes #3 and #5 from May 5 resolved; Pending Changes list re-numbered)*
