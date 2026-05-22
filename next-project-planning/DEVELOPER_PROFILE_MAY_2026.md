@@ -239,7 +239,32 @@ NASA FIRMS, NOAA NHC, USGS NWIS, US Drought Monitor, NOAA Coral Reef Watch, GDAC
 
 ---
 
-### Project 7: Heritage Odyssey (In Progress — Phase 1 Complete May 2026)
+### Project 7: SoilProve (Cape Vibeathon, May 2026 — Submitted)
+**Type:** Precision nutrient management & fertilizer prescription system for Iowa / Illinois / Indiana corn farmers — solo-built competitive submission for the Codefi Cape Vibeathon (May 18–22, 2026)
+**Stack:** Angular 21 (signals-first), TypeScript strict, Tailwind CSS v4 (`@theme` CSS-first), Express 5, NodeNext, Neon Postgres, Better Auth, Leaflet.js, Claude Haiku 4.5 / Claude Sonnet 4.6 / OpenAI gpt-5.4-nano / Google Gemini 2.5 Flash, Railway, Vercel
+**Test suite:** 101 Vitest server tests + 5 client tests, all green; typecheck + lint clean
+**Status:** Submitted to Codefi Vibeathon 2026-05-21 (code by 10am CT, demo video by 1pm CT). Live at https://soil-prove.vercel.app. Judging pending at time of writing.
+
+**What makes it real:**
+- RAG corpus of 51 chunks from Iowa State + U Illinois + Purdue MRTN (Maximum Return To Nitrogen) joint methodology, embedded with OpenAI text-embedding-3-small (1536-dim)
+- Three-provider model fallback chain with explicit cost tiering: Claude Haiku 4.5 → OpenAI gpt-5.4-nano → Google Gemini 2.5 Flash → rule-based agronomic tables. Different from Wildlife Sentinel's multi-model routing in that it fails over on provider outage, not just chooses by cost — hardened after a sustained Anthropic Haiku 4.5 529-overload incident during build week.
+- Hero call uses Claude Sonnet 4.6 for full recommendation synthesis (MRTN reasoning + peer evidence + ROI narrative) in a single structured pass — Tier-3 AI architecture per past-winner pattern analysis
+- Live USDA SSURGO API integration (`SDMDataAccess.nrcs.usda.gov/Tabular/post.rest`) for soil series lookup with caching layer
+- Leaflet field-boundary polygon drawing + SSURGO soil-series overlay + variable-rate prescription choropleth (5-zone gradient, CSV export with WKT geometry for sprayer rig consumption)
+- Farm-aware Virtual Agronomist chatbot grounded in the RAG corpus (k=8, markdown-rendered, refusal-softened to attempt partial synthesis rather than flat refuse)
+- Working auth in production via Better Auth — including the TRUSTED_ORIGINS gotcha for cross-origin Sec-Fetch headers (a real production debug, not a tutorial follow)
+- Three-confidence-axis design: MRTN methodology (institutional proof) + peer testimonials from neighboring farms on the same soil series (social proof) + multi-year ROI dashboard (personal proof)
+
+**What this proves beyond prior portfolio:**
+- Can ship a deployed full-stack AI application under public competitive deadline pressure, solo, in five days
+- Better Auth in production — first non-hand-rolled auth solution that actually shipped to prod
+- Live external public-API integration with caching layer — first project of this kind (SSURGO is not a managed SDK, it's raw POST to a SOAP-era REST shim)
+- Multi-provider AI fallback with overload-driven failover — new pattern beyond Wildlife Sentinel's cost-based routing
+- Rapid domain ingestion — picked up MRTN nitrogen agronomy + Iowa/Illinois/Indiana corn-belt economics in five days, including translating land-grant university research into a working RAG corpus and prescription system
+
+---
+
+### Project 8: Heritage Odyssey (In Progress — Phase 1 Complete May 2026)
 **Type:** Family migration & history intelligence system with voice-narrated output
 **Planned stack:** TypeScript strict, LangGraph agent swarm, Pinecone vector store, ElevenLabs Voice AI for narration
 **Status:** Phase 1 (foundation) complete and CI passing as of May 4, 2026. Repo structure, package versions, husky + lint-staged, and GitHub Actions CI all in place. Gemini CLI is the primary coding agent on this project; Claude Code is in advisory role only.
