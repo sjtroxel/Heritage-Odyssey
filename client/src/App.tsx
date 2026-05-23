@@ -2,6 +2,8 @@ import React from 'react';
 import { History, MapPin, Mic, Wind, Loader2 } from 'lucide-react';
 import InteractionLayer from './components/InteractionLayer.js';
 import LoginScreen from './components/LoginScreen.js';
+import Methodology from './components/Methodology.js';
+import OurStory from './components/OurStory.js';
 import { useAuthContext } from './context/AuthContext.js';
 
 const App: React.FC = () => {
@@ -36,14 +38,14 @@ const App: React.FC = () => {
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-8 text-xs font-libre font-bold tracking-widest text-paper/70 uppercase">
-            <a href="#" className="hover:text-brass transition-colors">
+            <a href="#story" className="hover:text-brass transition-colors">
               Our Story
             </a>
-            <a href="#" className="hover:text-brass transition-colors">
+            <a href="#methodology" className="hover:text-brass transition-colors">
               Methodology
             </a>
             <a
-              href="#"
+              href="#odyssey"
               className="px-6 py-2 border border-brass/40 bg-brass/10 text-brass rounded-sm hover:bg-brass/20 transition-all"
             >
               Get Started
@@ -54,7 +56,10 @@ const App: React.FC = () => {
 
       <main>
         {/* Hero Section */}
-        <section className="relative py-24 px-4 overflow-hidden border-b border-stone/10">
+        <section
+          id="odyssey"
+          className="relative py-24 px-4 overflow-hidden border-b border-stone/10"
+        >
           {/* Noise overlay */}
           <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[repeating-conic-gradient(#000_0%_25%,transparent_0%_50%)] bg-size-[2px_2px]"></div>
 
@@ -92,7 +97,10 @@ const App: React.FC = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <button className="w-full sm:w-auto px-10 py-4 bg-cast-iron text-paper border border-brass/30 rounded-sm font-libre font-bold text-sm tracking-widest uppercase hover:bg-cast-iron-dark hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3">
+              <button
+                onClick={() => document.querySelector('input')?.focus()}
+                className="w-full sm:w-auto px-10 py-4 bg-cast-iron text-paper border border-brass/30 rounded-sm font-libre font-bold text-sm tracking-widest uppercase hover:bg-cast-iron-dark hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3"
+              >
                 <Mic size={18} className="text-brass" />
                 Start My Odyssey
               </button>
@@ -103,6 +111,9 @@ const App: React.FC = () => {
             </div>
           </div>
         </section>
+
+        <OurStory />
+        <Methodology />
       </main>
 
       <footer className="border-t border-brass/30 py-8 px-4 bg-cast-iron text-paper/60 font-spectral">
