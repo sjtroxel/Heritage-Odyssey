@@ -96,11 +96,11 @@ This document defines the technical execution of the Phase 7 Polish plan.
 
 ## TRACK 3: VERIFICATION
 
-### Step 13 — Local end-to-end test
+### Step 13 — Local end-to-end test [x]
 - Run `npm run dev`.
 - Flow: LoginScreen -> Guest Login -> Main App -> Query -> Audio Playback.
 - Document any failures.
 
-### Step 14 — CI gate
+### Step 14 — CI gate [x]
 - Run: `typecheck`, `lint`, `test`, `coverage`, `build`.
 - All must pass before declaring Phase 7 complete.

@@ -83,29 +83,29 @@ const InteractionLayer: React.FC = () => {
 
           {audioError && (
             <div className="text-paper/90 text-xs font-spectral bg-red-950/30 px-3 py-1 border border-red-900/50">
-              {audioError}
+              Record Unreadable — Please Retry
             </div>
           )}
 
           {permissionDenied && (
             <div className="text-paper/90 text-xs font-spectral bg-amber-950/30 px-3 py-1 border border-amber-900/50">
-              Microphone access denied.
+              Access Denied: Microphone Restricted
             </div>
           )}
         </div>
 
         {/* Interaction Bar */}
-        <div className="bg-cast-iron-dark/50 border border-brass/30 p-2 flex items-center gap-3">
+        <div className="bg-cast-iron-dark/80 border border-brass p-2 flex items-center gap-3 shadow-2xl backdrop-blur-sm">
           {isSupported && (
             <button
               onMouseDown={startRecording}
               onMouseUp={stopRecording}
               onTouchStart={startRecording}
               onTouchEnd={stopRecording}
-              className={`shrink-0 w-14 h-14 rounded-full flex items-center justify-center transition-all border-2 ${
+              className={`shrink-0 w-14 h-14 rounded-sm flex items-center justify-center transition-all border-2 shadow-lg ${
                 isRecording
                   ? 'bg-brass text-cast-iron-dark scale-95 shadow-inner border-brass'
-                  : 'bg-brass/10 text-brass hover:bg-brass/20 border-brass/40'
+                  : 'bg-brass/20 text-brass hover:bg-brass/30 border-brass/60 shadow-black/40'
               }`}
               title="Hold to speak"
             >
@@ -123,7 +123,7 @@ const InteractionLayer: React.FC = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Press & Hold Mic or Type to Search the Archive"
-              className="grow bg-cast-iron border-none focus:ring-1 focus:ring-brass/30 text-paper placeholder:text-paper/20 text-base py-3 px-4 font-spectral"
+              className="grow bg-cast-iron-dark border border-brass/20 focus:border-brass/50 focus:ring-0 text-paper placeholder:text-paper/30 placeholder:uppercase placeholder:tracking-widest placeholder:text-[10px] text-base py-3 px-4 font-spectral"
               disabled={isProcessing || isRecording}
             />
 
@@ -131,7 +131,7 @@ const InteractionLayer: React.FC = () => {
               <button
                 type="submit"
                 disabled={!inputValue.trim() || isProcessing || isRecording}
-                className="w-12 h-12 bg-brass text-cast-iron-dark flex items-center justify-center hover:bg-brass/90 disabled:opacity-20 transition-all"
+                className="w-12 h-12 bg-brass text-cast-iron-dark flex items-center justify-center hover:bg-brass/90 disabled:opacity-20 transition-all rounded-sm shadow-md"
               >
                 <Send size={20} strokeWidth={1.5} />
               </button>
@@ -142,7 +142,7 @@ const InteractionLayer: React.FC = () => {
         <p className="text-[10px] text-center text-paper/30 mt-4 uppercase tracking-[0.2em] font-spectral font-bold">
           {isRecording
             ? 'Capturing Oral History...'
-            : 'Authorized Personnel Only // Archive Access'}
+            : 'Authorized Personnel Only // Historical Registry Access'}
         </p>
       </div>
     </div>
