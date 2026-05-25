@@ -83,13 +83,15 @@
 
 ### Phase 7: UI Overhaul & Pre-Deployment Polish [COMPLETE]
 *   **Deliverables:**
-    1. Visual redesign of the frontend to match a "historical archive" aesthetic.
-    2. Implementation of a global error handling system for the voice/narrative pipeline.
-    3. Refinement of the `AudioVisualizer` component for smoother animations.
-    4. Manual bug bash covering edge cases in agent handoffs.
-    5. Local E2E verification of the full user flow.
+    1. Visual redesign of the frontend to match a "historical archive" aesthetic. [DONE]
+    2. Implementation of a global error handling system for the voice/narrative pipeline. [DONE]
+    3. Refinement of the `AudioVisualizer` component for smoother animations. [DONE]
+    4. Integration of Framer Motion scroll animations for marketing feel. [DONE]
+    5. Integration of historical photo/video assets for grounded aesthetics. [DONE]
+    6. Manual bug bash covering edge cases in agent handoffs. [DONE]
+    7. Local E2E verification of the full user flow. [DONE]
 *   **Risks:** UI redesign introducing regressions in existing mobile-responsive layouts.
-*   **Done:** UI transformed to "Victorian Record Office" aesthetic. Bug fixes for Vite proxy, CSS conflicts, and Auth UI completed. Retrieval threshold tuned to 0.5 with active score logging. All tests passing (51/51).
+*   **Done:** UI transformed to "Victorian Record Office" aesthetic with Framer Motion animations and historical media. Bug fixes for Vite proxy, CSS conflicts, and Auth UI completed. Retrieval threshold tuned to 0.5 with active score logging. All tests passing (51/51).
 
 ### Phase 8: Deployment & Launch
 *   **Deliverables:**

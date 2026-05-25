@@ -104,3 +104,27 @@ This document defines the technical execution of the Phase 7 Polish plan.
 ### Step 14 — CI gate [x]
 - Run: `typecheck`, `lint`, `test`, `coverage`, `build`.
 - All must pass before declaring Phase 7 complete.
+
+## TRACK 4: AESTHETIC POLISH (ANIMATIONS & ASSETS)
+
+### Step 15 — Scroll Animations [x]
+**Files to modify:** `client/src/App.tsx`, `client/src/components/OurStory.tsx`, `client/src/components/Methodology.tsx`
+**Logic:** Integrate `framer-motion` for scroll-triggered animations.
+- **Hero:** Staggered fade-in/up for badge, H1, record box, and CTA buttons.
+- **Sections:** Slide-in animations (X-axis) for story blocks and vertical fade-ins (Y-axis) for methodology cards.
+- **Settings:** `initial={{ opacity: 0, y: 40 }}`, `whileInView={{ opacity: 1, y: 0 }}`, `viewport={{ once: true }}`.
+**Done Criteria:** Elements animate smoothly into view as the user scrolls, creating a polished marketing feel.
+
+### Step 16 — Historical Video & Photo Assets [x]
+**Files to modify:** `client/src/App.tsx`, `client/src/components/OurStory.tsx`, `client/src/components/Methodology.tsx`
+**Logic:** Add evocative historical media to ground the UI in history.
+- **Hero Background:** Absolute-positioned video (`/hero-bg.webm` / `/hero-bg.mp4`) at 20% opacity and grayscale.
+- **Story Photos:** `photo-1.jpg` (header) and `photo-3.jpg` (postcard-style inline document with caption).
+- **Methodology Photo:** `photo-2.jpg` (header) at 80% opacity and grayscale.
+**Done Criteria:** The application feels "alive" with historical context, matching the "MyHeritage" style marketing vision.
+
+## TRACK 5: VERIFICATION (POST-POLISH)
+
+### Step 17 — Post-Polish CI Gate [x]
+- Run: `npm run typecheck`, `npm run lint` in `client/`.
+**Done Criteria:** All enhancements pass strict type and linting checks.

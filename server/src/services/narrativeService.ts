@@ -70,7 +70,7 @@ export async function generateNarrative(
 
     throw new Error(errorMsg);
   } catch (error) {
-    logger.error('Failed to generate narrative:', error);
+    logger.error({ err: error }, 'Failed to generate narrative');
     throw error;
   }
 }

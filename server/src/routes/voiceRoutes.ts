@@ -66,7 +66,7 @@ router.post('/narrative/stream', authenticate, async (req: Request, res: Respons
     const audioStream = await streamNarrative(result);
     audioStream.pipe(res);
   } catch (error) {
-    logger.error('Narrative streaming error:', error);
+    logger.error({ err: error }, 'Narrative streaming error');
     // Only send JSON error if headers haven't been sent
     if (!res.headersSent) {
       res.status(500).json({ error: 'Narrative generation failed' });

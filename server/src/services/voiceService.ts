@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { ElevenLabsClient } from 'elevenlabs';
 import { env } from '../config/env.js';
-import type stream from 'stream';
+import { Readable } from 'stream';
 
 const openai = new OpenAI({
   apiKey: env.OPENAI_API_KEY,
@@ -32,13 +32,13 @@ export async function transcribeAudio(fileBuffer: Buffer, mimeType: string): Pro
 /**
  * Streams narrative text to speech using ElevenLabs.
  */
-export async function streamNarrative(text: string): Promise<stream.Readable> {
+export async function streamNarrative(text: string): Promise<Readable> {
   const audioStream = await elevenlabs.textToSpeech.convertAsStream(env.ELEVENLABS_VOICE_ID, {
     text,
     model_id: 'eleven_multilingual_v2',
     output_format: 'mp3_44100_128',
   });
 
-  // The ElevenLabs SDK returns a readable stream that can be piped to Express res
-  return audioStream as unknown as stream.Readable;
+  // The ElevenLabs SDK returns an async generator in v1.59.0+, wrap it for pipe support
+  return Readable.from(audioStream);
 }
