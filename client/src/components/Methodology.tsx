@@ -1,11 +1,28 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const Methodology: React.FC = () => {
   return (
     <section id="methodology" className="py-24 px-4 bg-stone/5 border-b border-stone/10">
       <div className="max-w-5xl mx-auto">
+        <motion.img
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          src="/photo-2.jpg"
+          alt="Historical research"
+          className="w-full max-h-64 object-cover grayscale opacity-80 rounded-sm mb-16 shadow-inner"
+        />
+
         <div className="flex flex-col md:flex-row gap-16 items-start">
-          <div className="md:w-1/3 sticky top-32">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="md:w-1/3 sticky top-32"
+          >
             <h2 className="text-4xl font-libre font-bold text-ink mb-6">Our Methodology</h2>
             <div className="w-12 h-1 bg-brass mb-8"></div>
             <p className="font-spectral text-lg text-stone leading-relaxed mb-6">
@@ -13,17 +30,29 @@ const Methodology: React.FC = () => {
               orchestration grounded in the <span className="italic">Push, Liminal, and Pull</span>{' '}
               narrative arc.
             </p>
-          </div>
+          </motion.div>
 
           <div className="md:w-2/3 space-y-12">
             {/* Agent Swarm */}
-            <div className="p-8 border border-brass/20 bg-paper shadow-sm">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="p-8 border border-brass/20 bg-paper shadow-sm"
+            >
               <h3 className="text-xs font-libre font-bold tracking-[0.2em] text-brass uppercase mb-6 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-brass"></span>
                 The Agent Swarm
               </h3>
               <div className="grid grid-cols-1 gap-8">
-                <div className="flex gap-4">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
+                  viewport={{ once: true }}
+                  className="flex gap-4"
+                >
                   <div className="shrink-0 w-10 h-10 border border-stone/20 flex items-center justify-center font-libre text-stone font-bold text-sm">
                     01
                   </div>
@@ -34,8 +63,14 @@ const Methodology: React.FC = () => {
                       records, regional economic pressures, and period-specific accounts.
                     </p>
                   </div>
-                </div>
-                <div className="flex gap-4">
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                  viewport={{ once: true }}
+                  className="flex gap-4"
+                >
                   <div className="shrink-0 w-10 h-10 border border-stone/20 flex items-center justify-center font-libre text-stone font-bold text-sm">
                     02
                   </div>
@@ -46,8 +81,14 @@ const Methodology: React.FC = () => {
                       data onto a human emotional arc, drafting a story written for the ear.
                     </p>
                   </div>
-                </div>
-                <div className="flex gap-4">
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.3 }}
+                  viewport={{ once: true }}
+                  className="flex gap-4"
+                >
                   <div className="shrink-0 w-10 h-10 border border-stone/20 flex items-center justify-center font-libre text-stone font-bold text-sm">
                     03
                   </div>
@@ -58,13 +99,19 @@ const Methodology: React.FC = () => {
                       warmth, cadence, and historical gravity.
                     </p>
                   </div>
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Narrative Rubric */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-6 border-l-2 border-brass bg-paper">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.4 }}
+                viewport={{ once: true }}
+                className="p-6 border-l-2 border-brass bg-paper"
+              >
                 <h4 className="font-libre font-bold text-xs tracking-widest uppercase text-stone mb-4">
                   The Push
                 </h4>
@@ -72,8 +119,14 @@ const Methodology: React.FC = () => {
                   The world left behind—the famine, the war, or the simple hunger for a better
                   horizon.
                 </p>
-              </div>
-              <div className="p-6 border-l-2 border-brass bg-paper">
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.5 }}
+                viewport={{ once: true }}
+                className="p-6 border-l-2 border-brass bg-paper"
+              >
                 <h4 className="font-libre font-bold text-xs tracking-widest uppercase text-stone mb-4">
                   The Liminal
                 </h4>
@@ -81,8 +134,14 @@ const Methodology: React.FC = () => {
                   The crossing—steerage bunks, the salt-sting of the Atlantic, and the shedding of
                   an old life.
                 </p>
-              </div>
-              <div className="p-6 border-l-2 border-brass bg-paper">
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.6 }}
+                viewport={{ once: true }}
+                className="p-6 border-l-2 border-brass bg-paper"
+              >
                 <h4 className="font-libre font-bold text-xs tracking-widest uppercase text-stone mb-4">
                   The Pull
                 </h4>
@@ -90,7 +149,7 @@ const Methodology: React.FC = () => {
                   The arrival—the roar of New York, the chalk mark on a coat, and the first word of
                   a new story.
                 </p>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>

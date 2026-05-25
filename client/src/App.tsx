@@ -1,5 +1,6 @@
 import React from 'react';
 import { History, MapPin, Mic, Wind, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import InteractionLayer from './components/InteractionLayer.js';
 import LoginScreen from './components/LoginScreen.js';
 import Methodology from './components/Methodology.js';
@@ -60,22 +61,52 @@ const App: React.FC = () => {
           id="odyssey"
           className="relative py-24 px-4 overflow-hidden border-b border-stone/10"
         >
+          {/* Hero Video Background */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-20 grayscale"
+          >
+            <source src="/hero-bg.webm" type="video/webm" />
+            <source src="/hero-bg.mp4" type="video/mp4" />
+          </video>
+
           {/* Noise overlay */}
           <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[repeating-conic-gradient(#000_0%_25%,transparent_0%_50%)] bg-size-[2px_2px]"></div>
 
           <div className="max-w-4xl mx-auto text-center relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-stone/5 border border-stone/10 text-stone text-[10px] font-libre font-bold uppercase tracking-[0.2em] mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut', delay: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-stone/5 border border-stone/10 text-stone text-[10px] font-libre font-bold uppercase tracking-[0.2em] mb-8"
+            >
               <Wind size={12} className="text-brass" />
               <span>Office of Historical Intelligence</span>
-            </div>
+            </motion.div>
 
-            <h1 className="text-5xl md:text-7xl font-libre font-bold text-ink mb-10 leading-tight">
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
+              viewport={{ once: true }}
+              className="text-5xl md:text-7xl font-libre font-bold text-ink mb-10 leading-tight"
+            >
               Your Ancestors&apos; Story, <br />
               <span className="text-stone italic font-normal">Reimagined.</span>
-            </h1>
+            </motion.h1>
 
             {/* Archive Record Sample */}
-            <div className="mb-14 max-w-2xl mx-auto group">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut', delay: 0.3 }}
+              viewport={{ once: true }}
+              className="mb-14 max-w-2xl mx-auto group"
+            >
               <div className="p-1 border border-stone/20 rounded-sm shadow-sm transition-shadow hover:shadow-md">
                 <div className="border-4 border-double border-stone/30 bg-[#fdfaf6] p-10 relative">
                   <div className="absolute top-3 right-5 text-[9px] uppercase tracking-[0.3em] text-stone/40 font-libre font-bold">
@@ -88,15 +119,27 @@ const App: React.FC = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <p className="text-lg md:text-xl text-stone/80 mb-12 leading-relaxed max-w-2xl mx-auto font-spectral">
+            <motion.p
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut', delay: 0.45 }}
+              viewport={{ once: true }}
+              className="text-lg md:text-xl text-stone/80 mb-12 leading-relaxed max-w-2xl mx-auto font-spectral"
+            >
               Heritage Odyssey combines historical emigration records with advanced AI to narrate
               the probable stories of your family&apos;s migration patterns through an emotionally
               resonant voice narrative.
-            </p>
+            </motion.p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut', delay: 0.6 }}
+              viewport={{ once: true }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-6"
+            >
               <button
                 onClick={() => document.querySelector('input')?.focus()}
                 className="w-full sm:w-auto px-10 py-4 bg-cast-iron text-paper border border-brass/30 rounded-sm font-libre font-bold text-sm tracking-widest uppercase hover:bg-cast-iron-dark hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3"
@@ -108,7 +151,7 @@ const App: React.FC = () => {
                 <MapPin size={18} className="text-brass" />
                 Explore the Map
               </button>
-            </div>
+            </motion.div>
           </div>
         </section>
 
