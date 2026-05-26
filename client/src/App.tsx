@@ -1,5 +1,5 @@
 import React from 'react';
-import { History, MapPin, Mic, Wind, Loader2 } from 'lucide-react';
+import { History, MapPin, Mic, Wind, Loader2, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 import InteractionLayer from './components/InteractionLayer.js';
 import LoginScreen from './components/LoginScreen.js';
@@ -8,7 +8,7 @@ import OurStory from './components/OurStory.js';
 import { useAuthContext } from './context/AuthContext.js';
 
 const App: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuthContext();
+  const { isAuthenticated, isLoading, logout } = useAuthContext();
 
   if (isLoading) {
     return (
@@ -51,6 +51,13 @@ const App: React.FC = () => {
             >
               Get Started
             </a>
+            <button
+              onClick={logout}
+              className="flex items-center gap-1.5 text-xs font-libre font-bold tracking-widest text-paper/70 uppercase hover:text-brass transition-colors"
+            >
+              <LogOut size={14} />
+              Sign Out
+            </button>
           </nav>
         </div>
       </header>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useAuthContext } from '../context/AuthContext.js';
 import { Loader2 } from 'lucide-react';
 
 const LoginScreen: React.FC = () => {
   const { login, register } = useAuthContext();
-  const [isGuestLoading, setIsGuestLoading] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [authMode, setAuthMode] = useState<'collapsed' | 'signin' | 'register'>('collapsed');
@@ -12,16 +12,11 @@ const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleGuestLogin = async () => {
-    setIsGuestLoading(true);
+  const handleGuestLogin = () => {
+    setAuthMode('signin');
+    setEmail('guest@heritage-odyssey.demo');
+    setPassword('guest-demo-2026');
     setError(null);
-    try {
-      await login('guest@heritage-odyssey.demo', 'guest-demo-2026');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Guest access failed');
-    } finally {
-      setIsGuestLoading(false);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -52,10 +47,26 @@ const LoginScreen: React.FC = () => {
         opacity: 1,
       }}
     >
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover opacity-20 grayscale"
+      >
+        <source src="/hero-bg.webm" type="video/webm" />
+        <source src="/hero-bg.mp4" type="video/mp4" />
+      </video>
+
       {/* Subtle overlay to make the noise less intense */}
       <div className="absolute inset-0 bg-paper/90 pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-md bg-paper p-8 border-4 border-double border-cast-iron shadow-lg">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="relative z-10 w-full max-w-md bg-paper p-8 border-4 border-double border-cast-iron shadow-lg"
+      >
         <div className="text-center mb-10">
           <h1 className="font-['Libre_Baskerville'] text-4xl text-ink mb-2">Heritage Odyssey</h1>
           <p className="font-['Spectral'] italic text-stone text-lg">
@@ -72,17 +83,10 @@ const LoginScreen: React.FC = () => {
         <div className="space-y-6">
           <button
             onClick={handleGuestLogin}
-            disabled={isGuestLoading || isAuthLoading}
+            disabled={isAuthLoading}
             className="w-full py-4 bg-cast-iron text-paper font-['Libre_Baskerville'] font-bold text-lg hover:bg-brass transition-colors flex items-center justify-center gap-2"
           >
-            {isGuestLoading ? (
-              <>
-                <Loader2 className="animate-spin" size={20} />
-                <span>Entering...</span>
-              </>
-            ) : (
-              'Enter the Archive'
-            )}
+            Enter the Archive
           </button>
 
           <div className="text-center">
@@ -140,7 +144,7 @@ const LoginScreen: React.FC = () => {
 
                 <button
                   type="submit"
-                  disabled={isAuthLoading || isGuestLoading}
+                  disabled={isAuthLoading}
                   className="w-full py-2 bg-cast-iron text-paper font-['Libre_Baskerville'] hover:bg-brass transition-colors flex items-center justify-center gap-2"
                 >
                   {isAuthLoading ? (
@@ -166,7 +170,7 @@ const LoginScreen: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
