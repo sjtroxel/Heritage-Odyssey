@@ -2,99 +2,133 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const Methodology: React.FC = () => {
+  const ledgerTexture = `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`;
+
   return (
-    <section id="methodology" className="py-24 px-4 bg-stone/5 border-b border-stone/10">
-      <div className="max-w-5xl mx-auto">
-        <motion.img
+    <section
+      id="methodology"
+      className="py-24 px-4 border-b border-stone/10 relative overflow-hidden"
+      style={{
+        backgroundColor: '#f2f0eb',
+        backgroundImage: ledgerTexture,
+        backgroundBlendMode: 'multiply',
+      }}
+    >
+      {/* Ledger-like vertical line */}
+      <div className="absolute left-[5%] top-0 w-px h-full bg-red-900/10 hidden md:block"></div>
+
+      <div className="max-w-5xl mx-auto relative z-10">
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          src="/photo-2.jpg"
-          alt="Historical research"
-          className="w-full max-h-64 object-cover grayscale opacity-80 rounded-sm mb-16 shadow-inner"
-        />
+          className="relative mb-16 shadow-2xl"
+        >
+          <img
+            src="/photo-2.jpg"
+            alt="Historical research"
+            className="w-full max-h-64 object-cover grayscale opacity-80 rounded-sm border border-stone/30"
+          />
+          <div className="absolute inset-0 bg-cast-iron/10 mix-blend-overlay"></div>
+        </motion.div>
 
-        <div className="flex flex-col md:flex-row gap-16 items-start">
+        <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="md:w-1/3 sticky top-32"
+            className="w-full md:w-1/3 md:sticky md:top-32"
           >
-            <h2 className="text-4xl font-libre font-bold text-ink mb-6">Our Methodology</h2>
+            <h2 className="text-3xl md:text-4xl font-libre font-bold text-ink mb-6 uppercase tracking-tighter">
+              Our Methodology
+            </h2>
             <div className="w-12 h-1 bg-brass mb-8"></div>
-            <p className="font-spectral text-lg text-stone leading-relaxed mb-6">
-              To transform dry census data into living legacy, we employ a rigorous triple-agent
-              orchestration grounded in the <span className="italic">Push, Liminal, and Pull</span>{' '}
-              narrative arc.
-            </p>
+            <div className="bg-[#fffdfa] p-6 border-l-4 border-red-900/20 shadow-md">
+              <p className="font-spectral text-lg text-stone leading-relaxed">
+                To transform dry census data into living legacy, we employ a rigorous triple-agent
+                orchestration grounded in the{' '}
+                <span className="italic font-bold">Push, Liminal, and Pull</span> narrative arc.
+              </p>
+            </div>
           </motion.div>
 
-          <div className="md:w-2/3 space-y-12">
+          <div className="w-full md:w-2/3 space-y-12">
             {/* Agent Swarm */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="p-8 border border-brass/20 bg-paper shadow-sm"
+              className="p-6 md:p-8 border-2 border-brass/20 bg-[#fffdfa] shadow-lg relative overflow-hidden"
             >
-              <h3 className="text-xs font-libre font-bold tracking-[0.2em] text-brass uppercase mb-6 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-brass"></span>
+              {/* Corner accent */}
+              <div className="absolute top-0 right-0 w-16 h-16 bg-brass/5 -rotate-45 translate-x-8 -translate-y-8"></div>
+
+              <h3 className="text-xs font-libre font-bold tracking-[0.3em] text-brass uppercase mb-10 flex items-center gap-3">
+                <span className="w-2 h-2 bg-brass rotate-45"></span>
                 The Agent Swarm
               </h3>
-              <div className="grid grid-cols-1 gap-8">
+
+              <div className="grid grid-cols-1 gap-10">
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.1 }}
                   viewport={{ once: true }}
-                  className="flex gap-4"
+                  className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start"
                 >
-                  <div className="shrink-0 w-10 h-10 border border-stone/20 flex items-center justify-center font-libre text-stone font-bold text-sm">
+                  <div className="shrink-0 w-12 h-12 border-2 border-stone/10 bg-stone/5 flex items-center justify-center font-libre text-stone/40 font-bold text-lg">
                     01
                   </div>
                   <div>
-                    <h4 className="font-libre font-bold text-ink mb-2">The Researcher</h4>
-                    <p className="font-spectral text-stone leading-relaxed">
+                    <h4 className="font-libre font-bold text-ink mb-2 uppercase tracking-wide">
+                      The Researcher
+                    </h4>
+                    <p className="font-spectral text-stone leading-relaxed text-base">
                       Scours the Pinecone vector registry for specific historical context—emigration
                       records, regional economic pressures, and period-specific accounts.
                     </p>
                   </div>
                 </motion.div>
+
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.2 }}
                   viewport={{ once: true }}
-                  className="flex gap-4"
+                  className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start"
                 >
-                  <div className="shrink-0 w-10 h-10 border border-stone/20 flex items-center justify-center font-libre text-stone font-bold text-sm">
+                  <div className="shrink-0 w-12 h-12 border-2 border-stone/10 bg-stone/5 flex items-center justify-center font-libre text-stone/40 font-bold text-lg">
                     02
                   </div>
                   <div>
-                    <h4 className="font-libre font-bold text-ink mb-2">The Synthesizer</h4>
-                    <p className="font-spectral text-stone leading-relaxed">
+                    <h4 className="font-libre font-bold text-ink mb-2 uppercase tracking-wide">
+                      The Synthesizer
+                    </h4>
+                    <p className="font-spectral text-stone leading-relaxed text-base">
                       Applies the <span className="italic">Narrative Rubric</span> to map historical
                       data onto a human emotional arc, drafting a story written for the ear.
                     </p>
                   </div>
                 </motion.div>
+
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.3 }}
                   viewport={{ once: true }}
-                  className="flex gap-4"
+                  className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start"
                 >
-                  <div className="shrink-0 w-10 h-10 border border-stone/20 flex items-center justify-center font-libre text-stone font-bold text-sm">
+                  <div className="shrink-0 w-12 h-12 border-2 border-stone/10 bg-stone/5 flex items-center justify-center font-libre text-stone/40 font-bold text-lg">
                     03
                   </div>
                   <div>
-                    <h4 className="font-libre font-bold text-ink mb-2">The Narrator</h4>
-                    <p className="font-spectral text-stone leading-relaxed">
+                    <h4 className="font-libre font-bold text-ink mb-2 uppercase tracking-wide">
+                      The Narrator
+                    </h4>
+                    <p className="font-spectral text-stone leading-relaxed text-base">
                       Delivers the final oral history via ElevenLabs voice synthesis, optimized for
                       warmth, cadence, and historical gravity.
                     </p>
@@ -104,48 +138,50 @@ const Methodology: React.FC = () => {
             </motion.div>
 
             {/* Narrative Rubric */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4">
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.4 }}
                 viewport={{ once: true }}
-                className="p-6 border-l-2 border-brass bg-paper"
+                className="p-6 border border-stone/20 bg-paper shadow-md group hover:border-brass/40 transition-colors"
               >
-                <h4 className="font-libre font-bold text-xs tracking-widest uppercase text-stone mb-4">
+                <h4 className="font-libre font-bold text-[10px] tracking-[0.3em] uppercase text-brass mb-4">
                   The Push
                 </h4>
-                <p className="font-spectral text-sm text-stone italic">
+                <p className="font-spectral text-base text-stone italic leading-snug">
                   The world left behind—the famine, the war, or the simple hunger for a better
                   horizon.
                 </p>
               </motion.div>
+
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.5 }}
                 viewport={{ once: true }}
-                className="p-6 border-l-2 border-brass bg-paper"
+                className="p-6 border border-stone/20 bg-paper shadow-md group hover:border-brass/40 transition-colors"
               >
-                <h4 className="font-libre font-bold text-xs tracking-widest uppercase text-stone mb-4">
+                <h4 className="font-libre font-bold text-[10px] tracking-[0.3em] uppercase text-brass mb-4">
                   The Liminal
                 </h4>
-                <p className="font-spectral text-sm text-stone italic">
+                <p className="font-spectral text-base text-stone italic leading-snug">
                   The crossing—steerage bunks, the salt-sting of the Atlantic, and the shedding of
                   an old life.
                 </p>
               </motion.div>
+
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.6 }}
                 viewport={{ once: true }}
-                className="p-6 border-l-2 border-brass bg-paper"
+                className="p-6 border border-stone/20 bg-paper shadow-md group hover:border-brass/40 transition-colors"
               >
-                <h4 className="font-libre font-bold text-xs tracking-widest uppercase text-stone mb-4">
+                <h4 className="font-libre font-bold text-[10px] tracking-[0.3em] uppercase text-brass mb-4">
                   The Pull
                 </h4>
-                <p className="font-spectral text-sm text-stone italic">
+                <p className="font-spectral text-base text-stone italic leading-snug">
                   The arrival—the roar of New York, the chalk mark on a coat, and the first word of
                   a new story.
                 </p>

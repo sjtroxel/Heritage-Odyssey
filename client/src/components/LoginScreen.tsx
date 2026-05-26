@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuthContext } from '../context/AuthContext.js';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Wind, Eye, EyeOff } from 'lucide-react';
 
 const LoginScreen: React.FC = () => {
   const { login, register } = useAuthContext();
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [authMode, setAuthMode] = useState<'collapsed' | 'signin' | 'register'>('collapsed');
+  const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,13 +39,22 @@ const LoginScreen: React.FC = () => {
 
   const grainTexture = `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`;
 
+  const tagline = 'A record of those who came before.';
+  const taglineVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.04, delayChildren: 0.8 } },
+  };
+  const charVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0 } },
+  };
+
   return (
     <div
-      className="fixed inset-0 bg-paper flex items-center justify-center p-4"
+      className="min-h-screen bg-cast-iron/80 relative flex flex-col items-center justify-start overflow-y-auto px-4 py-20"
       style={{
         backgroundImage: grainTexture,
         backgroundBlendMode: 'multiply',
-        opacity: 1,
       }}
     >
       <video
@@ -52,125 +62,189 @@ const LoginScreen: React.FC = () => {
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-20 grayscale"
+        className="fixed inset-0 w-full h-full object-cover opacity-20 grayscale pointer-events-none"
       >
         <source src="/hero-bg.webm" type="video/webm" />
         <source src="/hero-bg.mp4" type="video/mp4" />
       </video>
 
-      {/* Subtle overlay to make the noise less intense */}
-      <div className="absolute inset-0 bg-paper/90 pointer-events-none" />
+      {/* Subtle overlay */}
+      <div className="fixed inset-0 bg-cast-iron/60 pointer-events-none" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="relative z-10 w-full max-w-md bg-paper p-8 border-4 border-double border-cast-iron shadow-lg"
-      >
-        <div className="text-center mb-10">
-          <h1 className="font-['Libre_Baskerville'] text-4xl text-ink mb-2">Heritage Odyssey</h1>
-          <p className="font-['Spectral'] italic text-stone text-lg">
-            A record of those who came before.
-          </p>
-        </div>
-
-        {error && (
-          <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm font-['Spectral']">
-            {error}
-          </div>
-        )}
-
-        <div className="space-y-6">
-          <button
-            onClick={handleGuestLogin}
-            disabled={isAuthLoading}
-            className="w-full py-4 bg-cast-iron text-paper font-['Libre_Baskerville'] font-bold text-lg hover:bg-brass transition-colors flex items-center justify-center gap-2"
+      <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-12">
+        {/* Hero Section */}
+        <div className="text-center space-y-6">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut', delay: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-paper/5 border border-brass/30 text-paper/70 text-[10px] font-libre font-bold uppercase tracking-[0.2em]"
           >
-            Enter the Archive
-          </button>
+            <Wind size={12} className="text-brass" />
+            <span>✦ Office of Historical Intelligence</span>
+          </motion.div>
 
-          <div className="text-center">
-            {authMode === 'collapsed' ? (
-              <div className="space-y-3">
-                <button
-                  onClick={() => setAuthMode('signin')}
-                  className="text-cast-iron hover:text-brass font-['Spectral'] underline decoration-stone/30 underline-offset-4"
-                >
-                  Sign in with your account
-                </button>
-                <div className="block">
-                  <button
-                    onClick={() => setAuthMode('register')}
-                    className="text-cast-iron hover:text-brass font-['Spectral'] underline decoration-stone/30 underline-offset-4"
-                  >
-                    Create an account
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-4 text-left animate-in fade-in slide-in-from-top-2 duration-300"
-              >
-                <h3 className="font-['Libre_Baskerville'] text-xl text-ink border-b border-cast-iron/20 pb-2 mb-4">
-                  {authMode === 'signin' ? 'Sign In' : 'Create Account'}
-                </h3>
+          {/* Main Title - Slightly smaller (7xl) */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
+            className="text-5xl md:text-7xl font-libre font-bold text-paper leading-tight tracking-tighter uppercase"
+          >
+            Heritage Odyssey
+          </motion.h1>
 
-                <div>
-                  <label className="block font-['Spectral'] text-sm text-stone mb-1">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-paper border border-cast-iron/30 px-3 py-2 focus:border-cast-iron focus:ring-1 focus:ring-cast-iron outline-none font-['Spectral']"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-['Spectral'] text-sm text-stone mb-1">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-paper border border-cast-iron/30 px-3 py-2 focus:border-cast-iron focus:ring-1 focus:ring-cast-iron outline-none font-['Spectral']"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isAuthLoading}
-                  className="w-full py-2 bg-cast-iron text-paper font-['Libre_Baskerville'] hover:bg-brass transition-colors flex items-center justify-center gap-2"
-                >
-                  {isAuthLoading ? (
-                    <>
-                      <Loader2 className="animate-spin" size={18} />
-                      <span>{authMode === 'signin' ? 'Signing In...' : 'Registering...'}</span>
-                    </>
-                  ) : authMode === 'signin' ? (
-                    'Sign In'
-                  ) : (
-                    'Register'
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setAuthMode('collapsed')}
-                  className="w-full text-center text-stone hover:text-ink text-sm font-['Spectral'] mt-2"
-                >
-                  Cancel
-                </button>
-              </form>
-            )}
-          </div>
+          {/* Sub-headline - Slightly bigger (4xl) */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut', delay: 0.3 }}
+            className="text-2xl md:text-4xl font-spectral italic text-brass/90"
+          >
+            Your Ancestors&apos; Story, Reimagined.
+          </motion.p>
         </div>
-      </motion.div>
+
+        {/* Authentic Login Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.5 }}
+          className="w-full max-w-md p-8 border-4 border-double border-cast-iron shadow-2xl mb-20 relative overflow-hidden"
+          style={{
+            backgroundColor: '#fdfaf6',
+            backgroundImage: grainTexture,
+            backgroundBlendMode: 'multiply',
+          }}
+        >
+          {/* Subtle parchment aging effect */}
+          <div className="absolute inset-0 bg-linear-to-br from-brass/5 via-transparent to-stone/10 pointer-events-none" />
+
+          <div className="relative z-10">
+            <div className="text-center mb-8">
+              <motion.p
+                variants={taglineVariants}
+                initial="hidden"
+                animate="visible"
+                className="font-['Libre_Baskerville'] font-bold italic text-ink text-lg flex justify-center flex-wrap"
+              >
+                {tagline.split('').map((char, index) => (
+                  <motion.span key={index} variants={charVariants}>
+                    {char === ' ' ? '\u00a0' : char}
+                  </motion.span>
+                ))}
+              </motion.p>
+            </div>
+
+            {error && (
+              <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm font-['Spectral']">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-6">
+              <button
+                onClick={handleGuestLogin}
+                disabled={isAuthLoading}
+                className="w-full py-4 bg-cast-iron text-paper font-['Libre_Baskerville'] font-bold text-lg hover:bg-brass transition-colors flex items-center justify-center gap-2"
+              >
+                Enter the Archive
+              </button>
+
+              <div className="text-center">
+                {authMode === 'collapsed' ? (
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => setAuthMode('signin')}
+                      className="text-cast-iron hover:text-brass font-['Spectral'] font-bold text-lg underline decoration-stone/30 underline-offset-4"
+                    >
+                      Sign in with your account
+                    </button>
+                    <div className="block">
+                      <button
+                        onClick={() => setAuthMode('register')}
+                        className="text-cast-iron hover:text-brass font-['Spectral'] font-bold text-lg underline decoration-stone/30 underline-offset-4"
+                      >
+                        Create an account
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <form
+                    onSubmit={handleSubmit}
+                    className="space-y-4 text-left animate-in fade-in slide-in-from-top-2 duration-300"
+                  >
+                    <h3 className="font-['Libre_Baskerville'] font-bold text-2xl text-ink border-b border-cast-iron/20 pb-2 mb-4 uppercase tracking-tighter">
+                      {authMode === 'signin' ? 'Sign In' : 'Create Account'}
+                    </h3>
+
+                    <div>
+                      <label className="block font-['Spectral'] font-bold text-base text-stone mb-1 uppercase tracking-wide">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full bg-cast-iron text-paper border border-cast-iron/30 px-4 py-3 focus:border-brass focus:ring-1 focus:ring-brass outline-none font-['Spectral'] text-lg"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-['Spectral'] font-bold text-base text-stone mb-1 uppercase tracking-wide">
+                        Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          required
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full bg-cast-iron text-paper border border-cast-iron/30 px-4 py-3 pr-12 focus:border-brass focus:ring-1 focus:ring-brass outline-none font-['Spectral'] text-lg"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-paper/50 hover:text-brass transition-colors p-1"
+                        >
+                          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isAuthLoading}
+                      className="w-full py-4 bg-cast-iron text-paper font-['Libre_Baskerville'] font-bold text-xl hover:bg-brass transition-colors flex items-center justify-center gap-2 uppercase tracking-widest mt-6"
+                    >
+                      {isAuthLoading ? (
+                        <>
+                          <Loader2 className="animate-spin" size={20} />
+                          <span>{authMode === 'signin' ? 'Signing In...' : 'Registering...'}</span>
+                        </>
+                      ) : authMode === 'signin' ? (
+                        'Sign In'
+                      ) : (
+                        'Register'
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setAuthMode('collapsed')}
+                      className="w-full text-center text-stone hover:text-ink text-base font-['Spectral'] font-bold mt-4 uppercase tracking-wider"
+                    >
+                      Cancel
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };
