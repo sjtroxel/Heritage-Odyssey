@@ -80,6 +80,7 @@ The E2E suite in `client/tests/e2e/` will cover two explicit production flows:
    - Audio playback criterion (populated `src` and `oncanplaythrough` within 5s) is met.
 
 ## 7. Verification (Done Criteria)
+- [x] Railway configuration (`railway.toml`) created and environment variables configured in dashboard.
 - [ ] Backend is live on Railway with security headers and rate limiting active.
 - [ ] Frontend is live on Vercel and successfully communicates with the backend.
 - [ ] CORS is strictly limited to the Vercel production origin.

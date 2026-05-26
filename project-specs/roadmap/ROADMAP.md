@@ -93,16 +93,16 @@
 *   **Risks:** UI redesign introducing regressions in existing mobile-responsive layouts.
 *   **Done:** UI transformed to "Victorian Record Office" aesthetic with Framer Motion animations and historical media. Bug fixes for Vite proxy, CSS conflicts, and Auth UI completed. Retrieval threshold tuned to 0.5 with active score logging. All tests passing (51/51).
 
-### Phase 8: Deployment & Launch
+### Phase 8: Deployment & Launch [IN PROGRESS]
 *   **Deliverables:**
     1. Final production security audit.
-    2. Railway configuration for Express backend.
+    2. Railway configuration for Express backend. [DONE]
     3. Vercel configuration for React + Vite frontend.
     4. E2E tests (Playwright) covering user flow.
-    5. Production environment variable management.
+    5. Production environment variable management. [DONE]
     6. Final performance and load testing.
 *   **Risks:** Environment differences between staging/prod; CORS and deployment-specific security configs.
-*   **Done:** The application is deployed and accessible in a production environment with all E2E tests passing.
+*   **Done:** `railway.toml` created and production environment variables configured in Railway dashboard. Initial deployment structure is ready for launch.
 
 ---
 
