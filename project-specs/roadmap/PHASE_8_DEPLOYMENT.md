@@ -1,4 +1,4 @@
-# Phase 8 Plan: Deployment & Launch
+e# Phase 8 Plan: Deployment & Launch
 
 ## 1. Objective
 Finalize the production environment for Heritage Odyssey by deploying the Express 5 backend to Railway and the React 19 frontend to Vercel. This phase focuses on production-grade security, performance stability under load, and end-to-end verification of the full narrative pipeline.
@@ -45,12 +45,12 @@ All environment variables must be configured in the respective deployment platfo
 ## 4. Security & Hardening
 
 ### Server-Side Protection
-1. **Helmet:** Use `helmet` middleware to set secure HTTP headers (HSTS, CSP, etc.).
+1. **Helmet:** Use `helmet` middleware to set secure HTTP headers (HSTS, CSP, etc.). [DONE]
 2. **Rate Limiting:** Implement `express-rate-limit` to prevent abuse.
-   - AI Endpoints (`/api/voice/*`, `/api/narrative/*`): 10 requests per 10 minutes.
-   - General Endpoints: 100 requests per 15 minutes.
-3. **CORS Configuration:** Strictly allow only the `CORS_ORIGIN` (Vercel URL).
-4. **Input Sanitization:** Validate all incoming query strings using `zod` to prevent injection.
+   - AI Endpoints (`/api/voice/*`, `/api/narrative/*`): 10 requests per 10 minutes. [PENDING]
+   - General Endpoints: 100 requests per 15 minutes. [DONE]
+3. **CORS Configuration:** Strictly allow only the `CORS_ORIGIN` (Vercel URL). [DONE]
+4. **Input Sanitization:** Validate all incoming query strings using `zod` to prevent injection. [DONE]
 
 ## 5. Performance & Load Testing
 To ensure the backend handles concurrent narrative requests without degradation:
@@ -81,9 +81,10 @@ The E2E suite in `client/tests/e2e/` will cover two explicit production flows:
 
 ## 7. Verification (Done Criteria)
 - [x] Railway configuration (`railway.toml`) created and environment variables configured in dashboard.
-- [ ] Backend is live on Railway with security headers and rate limiting active.
-- [ ] Frontend is live on Vercel and successfully communicates with the backend.
-- [ ] CORS is strictly limited to the Vercel production origin.
+- [x] Backend is live on Railway with security headers and basic rate limiting active.
+- [x] Frontend is live on Vercel and successfully communicates with the backend.
+- [x] CORS is strictly limited to the Vercel production origin.
+- [ ] AI-specific rate limits (10 req / 10 min) implemented for narrative endpoints.
 - [ ] Playwright E2E tests (Flow 1 & Flow 2) pass against production URLs.
 - [ ] Performance report confirms stability under concurrent load (verified via `autocannon`).
 - [ ] All linting, type-checking, and unit tests pass in the production build pipeline.

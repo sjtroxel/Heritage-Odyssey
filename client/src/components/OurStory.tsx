@@ -15,7 +15,7 @@ const OurStory: React.FC = () => {
       }}
     >
       {/* Hand-drawn line accents */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brass/20 to-transparent"></div>
+      <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-brass/20 to-transparent"></div>
 
       <div className="max-w-4xl mx-auto relative z-10">
         <motion.div
@@ -73,7 +73,21 @@ const OurStory: React.FC = () => {
                   time.
                 </p>
 
-                <div className="relative group my-8 md:float-right md:ml-6 md:mb-4 md:mt-2 max-w-full md:max-w-50">
+                {/* Mobile-only image: centered and non-floating */}
+                <div className="md:hidden relative group my-8 max-w-xs mx-auto">
+                  <div className="absolute -inset-2 bg-cast-iron/5 rotate-1 rounded-sm -z-10"></div>
+                  <img
+                    src="/photo-3.jpg"
+                    alt="Historical document"
+                    className="w-full grayscale border border-stone/30 shadow-md"
+                  />
+                  <p className="mt-3 text-[10px] text-stone/60 italic leading-tight text-right uppercase tracking-widest font-libre">
+                    Registry Entry No. 42-A, <br />
+                    Port of Departure, 1888.
+                  </p>
+                </div>
+
+                <div className="hidden md:block relative group my-8 md:float-right md:ml-6 md:mb-4 md:mt-2 max-w-full md:max-w-50">
                   <div className="absolute -inset-2 bg-cast-iron/5 rotate-1 rounded-sm -z-10"></div>
                   <img
                     src="/photo-3.jpg"

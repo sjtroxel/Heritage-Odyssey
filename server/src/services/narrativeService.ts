@@ -74,3 +74,76 @@ export async function generateNarrative(
     throw error;
   }
 }
+
+type AgentName = 'researcher' | 'synthesizer' | 'narrator';
+type AgentStepEvent = { type: 'agent_step'; agent: AgentName };
+type CompleteEvent = { type: 'complete'; text: string };
+type HandoffEvent = { type: 'handoff'; package: HandoffPackage };
+export type NarrativeEvent = AgentStepEvent | CompleteEvent | HandoffEvent;
+
+/**
+ * Generates a historical narrative as a stream of agent events.
+ */
+export async function* generateNarrativeStream(
+  query: string,
+  userId?: string,
+): AsyncGenerator<NarrativeEvent> {
+  let finalScript: string | null = null;
+  let narrativeDraft: string | null = null;
+  let handoffPackage: HandoffPackage | null = null;
+  let historicalContext: string[] = [];
+
+  try {
+    const stream = await graph.stream(
+      {
+        query,
+        historicalContext: [],
+        narrativeDraft: null,
+        finalScript: null,
+        iterationCount: 0,
+        errors: [],
+        requiresRevision: false,
+        handoffPackage: null,
+      },
+      {
+        streamMode: 'updates',
+        configurable: { userId },
+      },
+    );
+
+    for await (const update of stream) {
+      const nodeName = Object.keys(update)[0] as AgentName;
+      yield { type: 'agent_step', agent: nodeName };
+
+      const state = update[nodeName];
+      if (state) {
+        if (state.finalScript) finalScript = state.finalScript;
+        if (state.narrativeDraft) narrativeDraft = state.narrativeDraft;
+        if (state.handoffPackage) handoffPackage = state.handoffPackage;
+        if (state.historicalContext) historicalContext = state.historicalContext;
+      }
+    }
+
+    if (handoffPackage) {
+      yield { type: 'handoff', package: handoffPackage };
+      return;
+    }
+
+    const text = finalScript ?? narrativeDraft;
+
+    if (text) {
+      // Evaluation Trace Capture (Fire-and-forget)
+      if (process.env.EVAL_MODE === 'true') {
+        exportTrace(query, historicalContext, text).catch((err) => {
+          logger.warn('Failed to export eval trace in fire-and-forget call', err);
+        });
+      }
+      yield { type: 'complete', text };
+    } else {
+      throw new Error('No narrative was generated.');
+    }
+  } catch (error) {
+    logger.error({ err: error }, 'Failed to generate narrative stream');
+    throw error;
+  }
+}

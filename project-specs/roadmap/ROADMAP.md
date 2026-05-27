@@ -97,12 +97,12 @@
 *   **Deliverables:**
     1. Final production security audit.
     2. Railway configuration for Express backend. [DONE]
-    3. Vercel configuration for React + Vite frontend.
+    3. Vercel configuration for React + Vite frontend. [DONE]
     4. E2E tests (Playwright) covering user flow.
     5. Production environment variable management. [DONE]
     6. Final performance and load testing.
 *   **Risks:** Environment differences between staging/prod; CORS and deployment-specific security configs.
-*   **Done:** `railway.toml` created and production environment variables configured in Railway dashboard. Initial deployment structure is ready for launch.
+*   **Done:** Initial deployments live on Railway and Vercel. Basic rate limiting and security headers (Helmet) implemented. `railway.toml` and production env vars configured.
 
 ---
 

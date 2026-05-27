@@ -164,28 +164,6 @@ const App: React.FC = () => {
               <span className="text-stone italic font-normal">Reimagined.</span>
             </motion.h1>
 
-            {/* Archive Record Sample */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: 'easeOut', delay: 0.3 }}
-              viewport={{ once: true }}
-              className="mb-14 max-w-2xl mx-auto group"
-            >
-              <div className="p-1 border border-stone/20 rounded-sm shadow-sm transition-shadow hover:shadow-md">
-                <div className="border-4 border-double border-stone/30 bg-[#fdfaf6] p-6 md:p-10 relative">
-                  <div className="absolute top-3 right-5 text-[9px] uppercase tracking-[0.3em] text-stone/40 font-libre font-bold">
-                    Record No. 1863-B // EMIGRATION_DESK
-                  </div>
-                  <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-12 bg-brass/40"></div>
-                  <p className="text-lg md:text-2xl font-spectral italic text-ink/80 leading-relaxed text-left pl-4">
-                    &quot;Disease swept through camps with regularity; for every man killed by a
-                    Confederate bullet, two more died of illness.&quot;
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
