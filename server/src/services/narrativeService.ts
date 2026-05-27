@@ -76,7 +76,15 @@ export async function generateNarrative(
 }
 
 type AgentName = 'researcher' | 'synthesizer' | 'narrator';
-type AgentStepEvent = { type: 'agent_step'; agent: AgentName };
+type AgentStepEvent = {
+  type: 'agent_step';
+  agent: AgentName;
+  meta?: {
+    contextCount?: number;
+    draftLength?: number;
+    scriptLength?: number;
+  };
+};
 type CompleteEvent = { type: 'complete'; text: string };
 type HandoffEvent = { type: 'handoff'; package: HandoffPackage };
 export type NarrativeEvent = AgentStepEvent | CompleteEvent | HandoffEvent;
@@ -113,9 +121,15 @@ export async function* generateNarrativeStream(
 
     for await (const update of stream) {
       const nodeName = Object.keys(update)[0] as AgentName;
-      yield { type: 'agent_step', agent: nodeName };
-
       const state = update[nodeName];
+
+      const meta: Record<string, number> = {};
+      if (state?.historicalContext?.length) meta.contextCount = state.historicalContext.length;
+      if (state?.narrativeDraft) meta.draftLength = state.narrativeDraft.length;
+      if (state?.finalScript) meta.scriptLength = state.finalScript.length;
+
+      yield { type: 'agent_step', agent: nodeName, meta };
+
       if (state) {
         if (state.finalScript) finalScript = state.finalScript;
         if (state.narrativeDraft) narrativeDraft = state.narrativeDraft;

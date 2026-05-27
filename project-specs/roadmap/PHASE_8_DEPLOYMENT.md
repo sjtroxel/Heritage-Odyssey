@@ -79,12 +79,27 @@ The E2E suite in `client/tests/e2e/` will cover two explicit production flows:
    - Swarm processes the query.
    - Audio playback criterion (populated `src` and `oncanplaythrough` within 5s) is met.
 
-## 7. Verification (Done Criteria)
+## 7. Beyond-Original-Spec Work Completed
+
+The following were implemented during Phase 8 beyond the original plan and represent significant portfolio-visible additions:
+
+- **SSE agent observability** — `POST /api/narrative/generate` streams LangGraph node progress (researcher → synthesizer → narrator) to the client in real time via Server-Sent Events.
+- **Dedicated TTS endpoint** — `POST /api/narrative/tts` accepts pre-generated text and calls ElevenLabs directly, decoupling the expensive LangGraph pipeline from audio synthesis so the pipeline runs exactly once.
+- **`generateNarrativeStream` generator** — `narrativeService.ts` exports an async generator using `graph.stream({ streamMode: 'updates' })` that yields typed `NarrativeEvent` objects as each agent node completes.
+- **`useNarrativePipeline` hook** — client-side hook that orchestrates the two-step SSE → TTS flow, manages agent step labels, narrative text state, and audio playback.
+- **Narrative text display** — `InteractionLayer` now renders the generated narrative text on screen before audio plays, with themed styling.
+- **Real-time agent step labels** — "Consulting the Historical Archive...", "Weaving the Ancestral Narrative...", "Voicing the Chronicle..." cycle visibly as each LangGraph node fires.
+
+## 8. Verification (Done Criteria)
 - [x] Railway configuration (`railway.toml`) created and environment variables configured in dashboard.
 - [x] Backend is live on Railway with security headers and basic rate limiting active.
 - [x] Frontend is live on Vercel and successfully communicates with the backend.
 - [x] CORS is strictly limited to the Vercel production origin.
-- [ ] AI-specific rate limits (10 req / 10 min) implemented for narrative endpoints.
-- [ ] Playwright E2E tests (Flow 1 & Flow 2) pass against production URLs.
-- [ ] Performance report confirms stability under concurrent load (verified via `autocannon`).
-- [ ] All linting, type-checking, and unit tests pass in the production build pipeline.
+- [x] AI-specific rate limits (10 req / 10 min) implemented for all four narrative/voice endpoints.
+- [x] All linting and type-checking pass across all workspaces.
+- [ ] **Unit tests for `generateNarrativeStream`** added to `server/tests/services/narrativeService.test.ts` — currently untested.
+- [ ] **Unit tests for `/api/narrative/generate` (SSE) and `/api/narrative/tts`** added to `server/tests/routes/voiceRoutes.test.ts` — currently untested.
+- [ ] **Agent observability UI polish** — step label display needs a better visual treatment (modal, overlay, or dedicated panel). Currently renders inline in the interaction bar area. Deferred pending Gemini quota reset.
+- [ ] **Playwright E2E tests** (Flow 1: text input, Flow 2: voice input) pass against production URLs.
+- [ ] **Performance report** confirms stability under concurrent load (verified via `autocannon`).
+- [ ] **Cross-device responsive audit** — known issues on desktop, tablet, and small-screen mobile. To be addressed once E2E tests are in place to catch regressions.

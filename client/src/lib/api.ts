@@ -12,6 +12,15 @@ export function apiUrl(path: string): string {
   return path;
 }
 
+export class RateLimitError extends Error {
+  rateLimitReset: number;
+  constructor(resetMs: number) {
+    super('Rate limit reached.');
+    this.name = 'RateLimitError';
+    this.rateLimitReset = resetMs;
+  }
+}
+
 /**
  * Enhanced fetch wrapper that handles automatic token refreshing on 401 errors.
  */
@@ -34,6 +43,12 @@ export async function authFetch(
       headers.set('Authorization', `Bearer ${newToken}`);
       response = await fetch(url, { ...options, headers });
     }
+  }
+
+  if (response.status === 429) {
+    const h = response.headers.get('RateLimit-Reset');
+    const resetMs = h ? parseInt(h, 10) * 1000 : Date.now() + 10 * 60 * 1000;
+    throw new RateLimitError(resetMs);
   }
 
   if (!response.ok) {

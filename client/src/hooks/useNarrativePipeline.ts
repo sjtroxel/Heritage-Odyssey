@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { apiUrl, authFetch } from '../lib/api.js';
+import { apiUrl, authFetch, RateLimitError } from '../lib/api.js';
 import { useAuthContext } from '../context/AuthContext.js';
 
 const AGENT_LABELS: Record<string, string> = {
@@ -8,8 +8,19 @@ const AGENT_LABELS: Record<string, string> = {
   narrator: 'Voicing the Chronicle...',
 };
 
+export interface AgentLogEntry {
+  time: string; // toLocaleTimeString()
+  agent: string;
+  detail: string; // human-readable metadata line
+}
+
 interface AgentStepData {
   agent: string;
+  meta?: {
+    contextCount?: number;
+    draftLength?: number;
+    scriptLength?: number;
+  };
 }
 
 interface CompleteData {
@@ -33,10 +44,12 @@ interface ErrorData {
  */
 export const useNarrativePipeline = () => {
   const [agentStep, setAgentStep] = useState<string | null>(null);
+  const [agentLog, setAgentLog] = useState<AgentLogEntry[]>([]);
   const [narrativeText, setNarrativeText] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [rateLimitReset, setRateLimitReset] = useState<number | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const objectUrlRef = useRef<string | null>(null);
@@ -56,6 +69,17 @@ export const useNarrativePipeline = () => {
       objectUrlRef.current = null;
     }
   }, []);
+
+  const reset = useCallback(() => {
+    cleanup();
+    setAgentStep(null);
+    setAgentLog([]);
+    setNarrativeText(null);
+    setError(null);
+    setIsRunning(false);
+    setIsPlaying(false);
+    setRateLimitReset(null);
+  }, [cleanup]);
 
   const playTTS = useCallback(
     async (text: string) => {
@@ -93,6 +117,12 @@ export const useNarrativePipeline = () => {
         audioRef.current.src = url;
         await audioRef.current.play();
       } catch (err) {
+        if (err instanceof RateLimitError) {
+          setRateLimitReset(err.rateLimitReset);
+          setError('Rate limit reached.');
+          setIsRunning(false);
+          return;
+        }
         setError(err instanceof Error ? err.message : 'TTS playback failed');
         setIsPlaying(false);
       }
@@ -104,10 +134,12 @@ export const useNarrativePipeline = () => {
     async (query: string) => {
       cleanup();
       setAgentStep(null);
+      setAgentLog([]);
       setNarrativeText(null);
       setError(null);
       setIsRunning(true);
       setIsPlaying(false);
+      setRateLimitReset(null);
 
       try {
         const response = await authFetch(
@@ -158,10 +190,37 @@ export const useNarrativePipeline = () => {
               const data = JSON.parse(rawData) as AgentStepData;
               if (data.agent) {
                 setAgentStep(AGENT_LABELS[data.agent] || data.agent);
+
+                const detailParts = [];
+                if (data.meta?.contextCount)
+                  detailParts.push(`${data.meta.contextCount} fragments retrieved`);
+                if (data.meta?.draftLength)
+                  detailParts.push(`draft: ${data.meta.draftLength} chars`);
+                if (data.meta?.scriptLength)
+                  detailParts.push(`script: ${data.meta.scriptLength} chars`);
+                const detail = detailParts.join(' · ') || 'processing...';
+
+                setAgentLog((prev) => [
+                  ...prev,
+                  {
+                    time: new Date().toLocaleTimeString(),
+                    agent: data.agent,
+                    detail,
+                  },
+                ]);
               }
             } else if (type === 'complete') {
               const data = JSON.parse(rawData) as CompleteData;
               if (data.text) {
+                setAgentLog((prev) => [
+                  ...prev,
+                  {
+                    time: new Date().toLocaleTimeString(),
+                    agent: 'pipeline',
+                    detail: `complete — ${data.text.length} chars queued for TTS`,
+                  },
+                ]);
+
                 setNarrativeText(data.text);
                 setAgentStep(null);
                 setIsRunning(false);
@@ -183,6 +242,12 @@ export const useNarrativePipeline = () => {
           }
         }
       } catch (err) {
+        if (err instanceof RateLimitError) {
+          setRateLimitReset(err.rateLimitReset);
+          setError('Rate limit reached.');
+          setIsRunning(false);
+          return;
+        }
         setError(err instanceof Error ? err.message : 'Pipeline execution failed');
       } finally {
         setIsRunning(false);
@@ -197,10 +262,14 @@ export const useNarrativePipeline = () => {
 
   return {
     run,
+    reset,
     agentStep,
+    agentLog,
     narrativeText,
     isRunning,
     isPlaying,
     error,
+    rateLimitReset,
+    setRateLimitReset,
   };
 };

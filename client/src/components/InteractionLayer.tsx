@@ -2,9 +2,10 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Mic, Send, Square, Loader2, Volume2, GripHorizontal } from 'lucide-react';
 import { useMediaRecorder } from '../hooks/useMediaRecorder.js';
 import { useNarrativePipeline } from '../hooks/useNarrativePipeline.js';
-import { apiUrl, authFetch } from '../lib/api.js';
+import { apiUrl, authFetch, RateLimitError } from '../lib/api.js';
 import AudioVisualizer from './AudioVisualizer.js';
 import { useAuthContext } from '../context/AuthContext.js';
+import AgentObservabilityLog from './AgentObservabilityLog.js';
 
 /**
  * Sticky-bottom interaction layer providing voice and text input.
@@ -13,17 +14,38 @@ import { useAuthContext } from '../context/AuthContext.js';
 const InteractionLayer: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [containerHeight, setContainerHeight] = useState(180); // Default height
+  const [countdown, setCountdown] = useState<number | null>(null);
   const isResizing = useRef(false);
 
   const { token, refresh } = useAuthContext();
   const {
     run,
+    reset,
     agentStep,
+    agentLog,
     narrativeText,
     isRunning,
     isPlaying,
     error: pipelineError,
+    rateLimitReset,
+    setRateLimitReset,
   } = useNarrativePipeline();
+
+  // Rate limit countdown logic
+  useEffect(() => {
+    if (!rateLimitReset) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCountdown(null);
+      return;
+    }
+    const tick = () => {
+      const s = Math.max(0, Math.ceil((rateLimitReset - Date.now()) / 1000));
+      setCountdown(s);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [rateLimitReset]);
 
   // Resize logic
   const startResizing = useCallback(() => {
@@ -86,10 +108,15 @@ const InteractionLayer: React.FC = () => {
           await run(data.text);
         }
       } catch (err) {
+        if (err instanceof RateLimitError) {
+          reset();
+          setRateLimitReset(err.rateLimitReset);
+          return;
+        }
         console.error('Transcription error:', err);
       }
     },
-    [run, token, refresh],
+    [run, reset, setRateLimitReset, token, refresh],
   );
 
   const { isRecording, startRecording, stopRecording, isSupported, permissionDenied } =
@@ -102,6 +129,8 @@ const InteractionLayer: React.FC = () => {
   };
 
   const hasStatus = isRecording || isPlaying || isRunning || pipelineError || permissionDenied;
+
+  const showClear = narrativeText || agentLog.length > 0 || pipelineError || rateLimitReset;
 
   return (
     <div
@@ -133,6 +162,20 @@ const InteractionLayer: React.FC = () => {
             </div>
           )}
 
+          <AgentObservabilityLog log={agentLog} isRunning={isRunning} />
+
+          {showClear && (
+            <button
+              onClick={() => {
+                reset();
+                setInputValue('');
+              }}
+              className="text-[10px] font-mono text-stone/40 hover:text-paper/60 uppercase tracking-widest transition-colors self-end mb-2"
+            >
+              × New Query
+            </button>
+          )}
+
           {/* Status / Visualizer Area */}
           {hasStatus && (
             <div className="flex flex-col items-center mb-4 justify-center min-h-10">
@@ -158,7 +201,20 @@ const InteractionLayer: React.FC = () => {
                   {pipelineError ? pipelineError : 'Microphone Access Restricted'}
                 </div>
               )}
+
+              {countdown !== null && countdown > 0 && (
+                <div className="text-paper/70 text-[10px] font-mono uppercase tracking-widest mt-1">
+                  Rate limit resets in {Math.floor(countdown / 60)}:
+                  {String(countdown % 60).padStart(2, '0')}
+                </div>
+              )}
             </div>
+          )}
+
+          {inputValue.length > 50 && (
+            <p className="mb-2 font-spectral italic text-paper/40 line-clamp-2 leading-relaxed">
+              {inputValue}
+            </p>
           )}
 
           {/* Interaction Bar */}

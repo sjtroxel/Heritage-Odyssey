@@ -10,6 +10,7 @@
 | 6 | **Evaluation** | 4 Days | Implement Ragas/TruLens for validation of historical accuracy. |
 | 7 | **UI Overhaul & Pre-Deployment Polish** | 3 Days | Fix functional bugs, redesign UI to historical theme, verify end-to-end locally before deployment. |
 | 8 | **Deployment & Launch** | 2 Days | Finalize production deployment and verify platform stability. |
+| 9 | **Feature Completion & Portfolio Polish** | 3 Days | Implement Saved Records, close test gaps, and bring cross-device quality to portfolio standard. |
 
 ---
 
@@ -92,6 +93,18 @@
     7. Local E2E verification of the full user flow. [DONE]
 *   **Risks:** UI redesign introducing regressions in existing mobile-responsive layouts.
 *   **Done:** UI transformed to "Victorian Record Office" aesthetic with Framer Motion animations and historical media. Bug fixes for Vite proxy, CSS conflicts, and Auth UI completed. Retrieval threshold tuned to 0.5 with active score logging. All tests passing (51/51).
+
+### Phase 9: Feature Completion & Portfolio Polish [PLANNED]
+*   **Deliverables:**
+    1. **Saved Records feature** — "Save to Records" button in the narrative text panel. `POST /api/records` and `GET /api/records` endpoints. Requires a schema migration to make `ancestorProfileId` nullable in `savedNarratives` (decouples saving from requiring a full ancestor profile first).
+    2. **My Records UI** — Replace the dead "Explore the Map" stub button with "My Records". Opens a panel/modal listing the user's saved narratives: query text, narrative text, and a re-narrate button that calls `/api/narrative/tts` directly with the saved text (skipping the LangGraph re-run).
+    3. **Missing unit tests** — `generateNarrativeStream` in `narrativeService.test.ts`; the SSE and TTS routes in `voiceRoutes.test.ts`.
+    4. **Playwright E2E tests** — Flow 1 (text input) and Flow 2 (simulated voice) against production URLs (carried from Phase 8).
+    5. **Agent observability UI polish** — Better visual treatment for the agent step labels during pipeline execution. Current inline display in the interaction bar is functional but not portfolio-quality.
+    6. **Cross-device responsive audit** — Systematic pass across desktop, tablet, and small-screen mobile. Run after E2E is in place to catch regressions.
+    7. **Load testing report** — `autocannon` run confirming stability under concurrent load (carried from Phase 8).
+*   **Risks:** Schema migration in production (Neon) requires a `drizzle-kit push` or migration file; test carefully before deploying. E2E tests against real production endpoints will consume API credits (OpenAI, ElevenLabs) — mock where possible, gate live calls behind a flag.
+*   **Done:** —
 
 ### Phase 8: Deployment & Launch [IN PROGRESS]
 *   **Deliverables:**
