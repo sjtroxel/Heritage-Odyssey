@@ -130,6 +130,8 @@ Building the project is the primary work, but there is a parallel career goal ru
 
 - **Voice/Audio Streaming:** Use `POST` to `/api/narrative/stream` to support large queries. Frontend: Use `fetch` + `createObjectURL` + `HTMLAudioElement` for progressive streaming.
 - **Hook State:** Ensure `cleanup()` functions explicitly pause audio/media and revoke URLs to prevent memory leaks in long sessions.
+- **Narrative Display:** Render narratives using split-and-map on double newlines (`\n\n+`) to maintain consistent paragraph styling across the archive interface.
+- **Agent Formatting:** Enforce 3-4 sentence paragraph constraints in agent system prompts to ensure the narrative fits the "archival transcript" aesthetic and remains readable on mobile viewports.
 
 ---
 

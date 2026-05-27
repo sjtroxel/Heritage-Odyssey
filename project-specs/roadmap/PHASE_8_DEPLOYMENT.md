@@ -87,8 +87,11 @@ The following were implemented during Phase 8 beyond the original plan and repre
 - **Dedicated TTS endpoint** — `POST /api/narrative/tts` accepts pre-generated text and calls ElevenLabs directly, decoupling the expensive LangGraph pipeline from audio synthesis so the pipeline runs exactly once.
 - **`generateNarrativeStream` generator** — `narrativeService.ts` exports an async generator using `graph.stream({ streamMode: 'updates' })` that yields typed `NarrativeEvent` objects as each agent node completes.
 - **`useNarrativePipeline` hook** — client-side hook that orchestrates the two-step SSE → TTS flow, manages agent step labels, narrative text state, and audio playback.
-- **Narrative text display** — `InteractionLayer` now renders the generated narrative text on screen before audio plays, with themed styling.
+- **Narrative text display** — `InteractionLayer` now renders the generated narrative text on screen as split paragraphs before audio plays, with themed styling.
 - **Real-time agent step labels** — "Consulting the Historical Archive...", "Weaving the Ancestral Narrative...", "Voicing the Chronicle..." cycle visibly as each LangGraph node fires.
+- **Tuned Retrieval & UI Entry Points** — Lowered researcher threshold to 0.3/2 for broader matching and added historical sample queries to the interaction layer to guide first-time users.
+- **Formatting Guarantees** — Prompt engineering in synthesizer/narrator ensures consistent 3-4 sentence paragraphs with double-newline separation for better readability.
+
 
 ## 8. Verification (Done Criteria)
 - [x] Railway configuration (`railway.toml`) created and environment variables configured in dashboard.

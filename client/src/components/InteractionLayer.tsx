@@ -7,6 +7,13 @@ import AudioVisualizer from './AudioVisualizer.js';
 import { useAuthContext } from '../context/AuthContext.js';
 import AgentObservabilityLog from './AgentObservabilityLog.js';
 
+const SAMPLE_QUERIES = [
+  'Describe the journey of immigrants crossing the Atlantic in the nineteenth century',
+  'What was daily life like for European settlers arriving in American cities in the 1890s?',
+  'Tell me about the experience of arriving at Ellis Island around 1900',
+  'Describe conditions aboard immigrant ships during the great migration era',
+];
+
 /**
  * Sticky-bottom interaction layer providing voice and text input.
  * Includes a draggable handle to adjust height for better mobile usability.
@@ -156,9 +163,36 @@ const InteractionLayer: React.FC = () => {
         <div className="max-w-2xl mx-auto w-full pt-4">
           {narrativeText && (
             <div className="mb-4 p-3 border border-brass/20 bg-cast-iron-dark/50 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <p className="text-paper/90 text-sm font-spectral leading-relaxed italic">
-                {narrativeText}
+              {narrativeText.split(/\n\n+/).map((para, i) => (
+                <p
+                  key={i}
+                  className="text-paper/90 text-sm font-spectral leading-relaxed italic mb-3 last:mb-0"
+                >
+                  {para.trim()}
+                </p>
+              ))}
+            </div>
+          )}
+
+          {!isRunning && !narrativeText && (
+            <div className="mb-4">
+              <p className="text-[9px] uppercase tracking-widest font-libre text-paper/30 mb-2 text-center">
+                Example Queries
               </p>
+              <div className="flex flex-col gap-1.5">
+                {SAMPLE_QUERIES.map((q, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      setInputValue(q);
+                      run(q);
+                    }}
+                    className="text-left text-[10px] font-spectral italic text-paper/50 hover:text-paper/80 border border-brass/10 hover:border-brass/30 px-3 py-1.5 transition-colors bg-transparent"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 

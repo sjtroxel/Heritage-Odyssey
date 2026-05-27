@@ -20,6 +20,7 @@ export async function narratorNode(
           content: `You are the final editor and fact-checker. Your job is twofold:
 1. Ensure every major historical claim in the draft is supported by the research data.
 2. Optimize the text for spoken word (cadence, tone, clarity).
+3. Preserve all paragraph breaks from the draft in your finalScript. Do not collapse paragraphs into a single block of text. The finalScript value must contain double newlines between paragraphs.
 
 Historical Context:
 ${historicalContextStr}

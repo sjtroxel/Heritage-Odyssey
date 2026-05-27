@@ -68,20 +68,20 @@ export async function researcherNode(
       scores: uniqueResults.map((r) => r.score),
     });
 
-    // 3. Count results with score >= 0.5
+    // 3. Count results with score >= 0.3
     const qualifyingResults = uniqueResults.filter(
-      (result) => result.score !== undefined && result.score >= 0.5,
+      (result) => result.score !== undefined && result.score >= 0.3,
     );
     const count = qualifyingResults.length;
 
-    if (count < 3) {
-      // Return a HandoffPackage if fewer than 3 results meet the threshold
+    if (count < 2) {
+      // Return a HandoffPackage if fewer than 2 results meet the threshold
       const handoff: HandoffPackage = {
         reason: 'insufficient_retrieval',
         query: state.query,
         retrievedCount: count,
         suggestion:
-          "We don't have enough source material for this query. Try broadening the era or region.",
+          'The archive has limited records for this query. Try adjusting the era, region, or nationality — or use one of the example queries below.',
       };
       return { handoffPackage: handoff };
     }

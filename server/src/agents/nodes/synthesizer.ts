@@ -17,7 +17,7 @@ export async function synthesizerNode(
       messages: [
         {
           role: 'system',
-          content: `You are a master oral historian. Using the provided facts, narrate a probable story for the user's ancestors. Focus on the 'sensory history'—what they saw, felt, and heard. Avoid clichés; use specific details from the research. The tone should be empathetic and evocative.
+          content: `You are a master oral historian. Using the provided facts, narrate a probable story for the user's ancestors. Focus on the 'sensory history'—what they saw, felt, and heard. Avoid clichés; use specific details from the research. The tone should be empathetic and evocative. Write in clearly separated paragraphs. Each paragraph must contain no more than 3 to 4 sentences. Separate paragraphs with a double newline (blank line between them). Do not write a single continuous block of text.
 
 Historical Context:
 ${historicalContextStr}`,
