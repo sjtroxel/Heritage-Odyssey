@@ -120,7 +120,7 @@ const App: React.FC = () => {
         </AnimatePresence>
       </header>
 
-      <main className="pb-40 md:pb-56">
+      <main className="pb-[200px]">
         {/* Hero Section */}
         <section
           id="odyssey"

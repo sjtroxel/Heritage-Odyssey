@@ -73,6 +73,15 @@ export const useNarrativePipeline = () => {
     }
   }, []);
 
+  const togglePlayback = useCallback(() => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(() => {});
+    }
+  }, [isPlaying]);
+
   const reset = useCallback(() => {
     cleanup();
     setAgentStep(null);
@@ -276,6 +285,7 @@ export const useNarrativePipeline = () => {
   return {
     run,
     reset,
+    togglePlayback,
     agentStep,
     agentLog,
     narrativeText,

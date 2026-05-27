@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Mic, Send, Square, Loader2, Volume2, GripHorizontal } from 'lucide-react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Mic, Send, Square, Loader2, Volume2, GripHorizontal, Play, Pause } from 'lucide-react';
 import { useMediaRecorder } from '../hooks/useMediaRecorder.js';
 import { useNarrativePipeline } from '../hooks/useNarrativePipeline.js';
 import { apiUrl, authFetch, RateLimitError } from '../lib/api.js';
@@ -16,18 +16,21 @@ const SAMPLE_QUERIES = [
 
 /**
  * Sticky-bottom interaction layer providing voice and text input.
- * Includes a draggable handle to adjust height for better mobile usability.
  */
 const InteractionLayer: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
-  const [containerHeight, setContainerHeight] = useState(180); // Default height
+  const [containerHeight, setContainerHeight] = useState(200);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [isSamplesOpen, setIsSamplesOpen] = useState(false);
+  const [isNarrativeOpen, setIsNarrativeOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const isResizing = useRef(false);
 
   const { token, refresh } = useAuthContext();
   const {
     run,
     reset,
+    togglePlayback,
     agentStep,
     agentLog,
     narrativeText,
@@ -54,15 +57,45 @@ const InteractionLayer: React.FC = () => {
     return () => clearInterval(id);
   }, [rateLimitReset]);
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsNarrativeOpen(Boolean(narrativeText));
+  }, [narrativeText]);
+
+  // Auto-expand logic when results or samples appear
+  useEffect(() => {
+    if (isRunning || narrativeText) {
+      // Expanded height for narrative results
+      if (containerHeight < 400) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setContainerHeight(Math.floor(window.innerHeight * 0.55));
+      }
+    } else if (isSamplesOpen) {
+      // Tighter expanded height specifically for samples
+      if (containerHeight < 300) {
+        setContainerHeight(340);
+      }
+    } else {
+      // Return to base height when nothing is active
+      setContainerHeight(200);
+    }
+
+    if (isRunning) {
+      setIsSamplesOpen(false);
+    }
+  }, [isRunning, narrativeText, isSamplesOpen, containerHeight]);
+
   // Resize logic
   const startResizing = useCallback(() => {
     isResizing.current = true;
+    setIsDragging(true);
     document.body.style.cursor = 'ns-resize';
     document.body.style.userSelect = 'none';
   }, []);
 
   const stopResizing = useCallback(() => {
     isResizing.current = false;
+    setIsDragging(false);
     document.body.style.cursor = 'default';
     document.body.style.userSelect = 'auto';
   }, []);
@@ -75,7 +108,7 @@ const InteractionLayer: React.FC = () => {
 
     const newHeight = window.innerHeight - clientY;
     // Constrain height
-    if (newHeight > 140 && newHeight < window.innerHeight * 0.8) {
+    if (newHeight > 180 && newHeight < window.innerHeight * 0.9) {
       setContainerHeight(newHeight);
     }
   }, []);
@@ -141,59 +174,36 @@ const InteractionLayer: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 bg-cast-iron border-t border-brass shadow-[0_-10px_40px_rgba(0,0,0,0.5)] pointer-events-auto z-40 flex flex-col transition-[height] duration-75 ease-out"
+      className={`fixed bottom-0 left-0 right-0 bg-cast-iron
+        border-t border-brass shadow-[0_-10px_40px_rgba(0,0,0,0.5)]
+        pointer-events-auto z-40 flex flex-col overflow-hidden
+        ${!isDragging ? 'transition-[height] duration-300 ease-in-out' : ''}`}
       style={{ height: `${containerHeight}px` }}
     >
       {/* Draggable Handle Bar */}
       <div
         onMouseDown={startResizing}
         onTouchStart={startResizing}
-        className="w-full h-8 flex items-center justify-center cursor-ns-resize hover:bg-brass/5 active:bg-brass/10 transition-colors group border-b border-brass/10 shrink-0"
+        className="w-full h-6 flex items-center justify-center cursor-ns-resize hover:bg-brass/5 active:bg-brass/10 transition-colors group border-b border-brass/10 shrink-0"
       >
         <div className="flex flex-col items-center gap-0.5">
           <GripHorizontal
-            size={16}
+            size={14}
             className="text-brass/40 group-hover:text-brass transition-colors"
           />
-          <div className="w-12 h-0.5 bg-brass/20 group-hover:bg-brass/40 rounded-full"></div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 md:px-6 pb-6 pt-0 flex flex-col justify-start">
-        <div className="max-w-2xl mx-auto w-full pt-4">
-          {narrativeText && (
-            <div className="mb-4 p-3 border border-brass/20 bg-cast-iron-dark/50 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {narrativeText.split(/\n\n+/).map((para, i) => (
-                <p
-                  key={i}
-                  className="text-paper/90 text-sm font-spectral leading-relaxed italic mb-3 last:mb-0"
-                >
-                  {para.trim()}
-                </p>
-              ))}
-            </div>
-          )}
-
-          {!isRunning && !narrativeText && (
-            <div className="mb-4">
-              <p className="text-[9px] uppercase tracking-widest font-libre text-paper/30 mb-2 text-center">
-                Example Queries
-              </p>
-              <div className="flex flex-col gap-1.5">
-                {SAMPLE_QUERIES.map((q, i) => (
-                  <button
-                    key={i}
-                    onClick={() => {
-                      setInputValue(q);
-                      run(q);
-                    }}
-                    className="text-left text-[10px] font-spectral italic text-paper/50 hover:text-paper/80 border border-brass/10 hover:border-brass/30 px-3 py-1.5 transition-colors bg-transparent"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            </div>
+      {/* Section 1 — scrollable content */}
+      <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-6 pt-4 pb-2">
+        <div className="max-w-2xl mx-auto w-full flex flex-col">
+          {narrativeText && !isNarrativeOpen && (
+            <button
+              onClick={() => setIsNarrativeOpen(true)}
+              className="text-[10px] font-mono text-brass/60 hover:text-brass uppercase tracking-widest transition-colors mb-3 border border-brass/20 hover:border-brass/40 px-3 py-1 self-start"
+            >
+              ▸ Read Narrative
+            </button>
           )}
 
           <AgentObservabilityLog log={agentLog} isRunning={isRunning} />
@@ -244,7 +254,12 @@ const InteractionLayer: React.FC = () => {
               )}
             </div>
           )}
+        </div>
+      </div>
 
+      {/* Section 2 — pinned input, never scrolls */}
+      <div className="shrink-0 px-4 md:px-6 pb-4 pt-2 border-t border-brass/10">
+        <div className="max-w-2xl mx-auto w-full">
           {inputValue.length > 50 && (
             <p className="mb-2 font-spectral italic text-paper/40 line-clamp-2 leading-relaxed">
               {inputValue}
@@ -294,6 +309,35 @@ const InteractionLayer: React.FC = () => {
             </form>
           </div>
 
+          {!isRunning && !narrativeText && (
+            <div className="mt-3">
+              <button
+                onClick={() => setIsSamplesOpen(!isSamplesOpen)}
+                className="text-xs font-mono text-brass/70 hover:text-paper uppercase tracking-widest transition-colors"
+              >
+                {isSamplesOpen ? '▾ hide examples' : '▸ example queries'}
+              </button>
+
+              {isSamplesOpen && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {SAMPLE_QUERIES.map((q, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setInputValue(q);
+                        setIsSamplesOpen(false);
+                        run(q);
+                      }}
+                      className="text-xs font-spectral italic text-paper/60 hover:text-paper/90 border border-brass/10 hover:border-brass/30 px-3 py-1.5 transition-colors bg-transparent rounded-sm"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           <p className="text-[9px] md:text-[10px] text-center text-paper/30 mt-4 uppercase tracking-[0.25em] font-libre font-bold">
             {isRecording
               ? 'Capturing Oral History...'
@@ -301,6 +345,59 @@ const InteractionLayer: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {isNarrativeOpen && narrativeText && (
+        <div
+          className="fixed inset-0 z-60 flex items-center justify-center p-4 md:p-8"
+          onClick={() => setIsNarrativeOpen(false)}
+        >
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+
+          <div
+            className="relative w-full max-w-2xl bg-paper border border-brass/30 shadow-2xl flex flex-col max-h-[75vh] md:max-h-[70vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-6 py-3 border-b border-brass/20 shrink-0">
+              <span className="text-[10px] font-libre font-bold uppercase tracking-[0.2em] text-stone/60">
+                Historical Record
+              </span>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={togglePlayback}
+                  className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest transition-colors text-brass/70 hover:text-brass"
+                >
+                  {isPlaying ? (
+                    <>
+                      <Pause size={11} /> pause
+                    </>
+                  ) : (
+                    <>
+                      <Play size={11} /> resume
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setIsNarrativeOpen(false)}
+                  className="text-[10px] font-mono text-stone/40 hover:text-ink/60 uppercase tracking-widest transition-colors"
+                >
+                  ✕ close
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-y-auto px-6 py-5">
+              {narrativeText.split(/\n\n+/).map((para, i) => (
+                <p
+                  key={i}
+                  className="text-ink/80 text-sm md:text-base font-spectral leading-relaxed italic mb-4 last:mb-0"
+                >
+                  {para.trim()}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

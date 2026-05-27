@@ -98,13 +98,13 @@
 *   **Deliverables:**
     1. **Saved Records feature** — "Save to Records" button in the narrative text panel. `POST /api/records` and `GET /api/records` endpoints. Requires a schema migration to make `ancestorProfileId` nullable in `savedNarratives` (decouples saving from requiring a full ancestor profile first).
     2. **My Records UI** — Replace the dead "Explore the Map" stub button with "My Records". Opens a panel/modal listing the user's saved narratives: query text, narrative text, and a re-narrate button that calls `/api/narrative/tts` directly with the saved text (skipping the LangGraph re-run).
-    3. **Missing unit tests** — `generateNarrativeStream` in `narrativeService.test.ts`; the SSE and TTS routes in `voiceRoutes.test.ts`.
+    3. **Missing unit tests** — `generateNarrativeStream` in `narrativeService.test.ts`; the SSE and TTS routes in `voiceRoutes.test.ts`. [DONE]
     4. **Playwright E2E tests** — Flow 1 (text input) and Flow 2 (simulated voice) against production URLs (carried from Phase 8).
-    5. **Agent observability UI polish** — Better visual treatment for the agent step labels during pipeline execution. Current inline display in the interaction bar is functional but not portfolio-quality.
+    5. **Agent observability UI polish** — Better visual treatment for the agent step labels during pipeline execution (Modal Refactor). [DONE]
     6. **Cross-device responsive audit** — Systematic pass across desktop, tablet, and small-screen mobile. Run after E2E is in place to catch regressions.
     7. **Load testing report** — `autocannon` run confirming stability under concurrent load (carried from Phase 8).
 *   **Risks:** Schema migration in production (Neon) requires a `drizzle-kit push` or migration file; test carefully before deploying. E2E tests against real production endpoints will consume API credits (OpenAI, ElevenLabs) — mock where possible, gate live calls behind a flag.
-*   **Done:** —
+*   **Done:** Unit tests for SSE/TTS and `generateNarrativeStream` are complete and passing. Narrative modal UI overhaul finalized.
 
 ### Phase 8: Deployment & Launch [IN PROGRESS]
 *   **Deliverables:**
@@ -114,8 +114,9 @@
     4. E2E tests (Playwright) covering user flow.
     5. Production environment variable management. [DONE]
     6. Final performance and load testing.
+    7. AI-specific rate limits (10 req / 10 min) implemented for narrative endpoints. [DONE]
 *   **Risks:** Environment differences between staging/prod; CORS and deployment-specific security configs.
-*   **Done:** Initial deployments live on Railway and Vercel. Basic rate limiting and security headers (Helmet) implemented. `railway.toml` and production env vars configured.
+*   **Done:** Backend live on Railway, Frontend on Vercel. Security headers, rate limiting, and CORS configured. SSE/TTS unit tests passing. Narrative modal overlay implemented with playback controls.
 
 ---
 
