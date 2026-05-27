@@ -100,8 +100,8 @@ The following were implemented during Phase 8 beyond the original plan and repre
 - [x] CORS is strictly limited to the Vercel production origin.
 - [x] AI-specific rate limits (10 req / 10 min) implemented for all four narrative/voice endpoints.
 - [x] All linting and type-checking pass across all workspaces.
-- [ ] **Unit tests for `generateNarrativeStream`** added to `server/tests/services/narrativeService.test.ts` — currently untested.
-- [ ] **Unit tests for `/api/narrative/generate` (SSE) and `/api/narrative/tts`** added to `server/tests/routes/voiceRoutes.test.ts` — currently untested.
+- [x] **Unit tests for `generateNarrativeStream`** added to `server/tests/services/narrativeService.test.ts` — 4 tests covering agent_step events, complete event, handoff path, and error propagation.
+- [x] **Unit tests for `/api/narrative/generate` (SSE) and `/api/narrative/tts`** added to `server/tests/routes/voiceRoutes.test.ts` — 7 new tests; rate limiter mocked as pass-through for the test suite.
 - [ ] **Agent observability UI polish** — step label display needs a better visual treatment (modal, overlay, or dedicated panel). Currently renders inline in the interaction bar area. Deferred pending Gemini quota reset.
 - [ ] **Playwright E2E tests** (Flow 1: text input, Flow 2: voice input) pass against production URLs.
 - [ ] **Performance report** confirms stability under concurrent load (verified via `autocannon`).

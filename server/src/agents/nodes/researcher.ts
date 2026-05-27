@@ -68,18 +68,25 @@ export async function researcherNode(
       scores: uniqueResults.map((r) => r.score),
     });
 
-    // 3. Count results with score >= 0.3
+    // 3. Count results with score >= 0.25
     const qualifyingResults = uniqueResults.filter(
-      (result) => result.score !== undefined && result.score >= 0.3,
+      (result) => result.score !== undefined && result.score >= 0.25,
     );
     const count = qualifyingResults.length;
 
     if (count < 2) {
+      // Calculate best score and total retrieved for handoff logging
+      const totalRetrieved = uniqueResults.length;
+      const bestScore =
+        totalRetrieved > 0 ? Math.max(...uniqueResults.map((r) => r.score ?? 0)) : 0;
+
       // Return a HandoffPackage if fewer than 2 results meet the threshold
       const handoff: HandoffPackage = {
         reason: 'insufficient_retrieval',
         query: state.query,
         retrievedCount: count,
+        totalRetrieved,
+        bestScore,
         suggestion:
           'The archive has limited records for this query. Try adjusting the era, region, or nationality — or use one of the example queries below.',
       };

@@ -9,7 +9,7 @@ import AgentObservabilityLog from './AgentObservabilityLog.js';
 
 const SAMPLE_QUERIES = [
   'Describe the journey of immigrants crossing the Atlantic in the nineteenth century',
-  'What was daily life like for European settlers arriving in American cities in the 1890s?',
+  'What was life like for immigrant families living in New York tenements in the 1890s?',
   'Tell me about the experience of arriving at Ellis Island around 1900',
   'Describe conditions aboard immigrant ships during the great migration era',
 ];

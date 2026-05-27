@@ -6,6 +6,11 @@ import * as narrativeService from '../../src/services/narrativeService.js';
 import jwt from 'jsonwebtoken';
 import { Readable } from 'stream';
 
+// Bypass rate limiting so tests don't exhaust the 10-req window
+vi.mock('express-rate-limit', () => ({
+  rateLimit: () => (_req: unknown, _res: unknown, next: () => void) => next(),
+}));
+
 // Mock services to isolate route logic
 vi.mock('../../src/services/voiceService.js', () => ({
   transcribeAudio: vi.fn(),
@@ -14,6 +19,7 @@ vi.mock('../../src/services/voiceService.js', () => ({
 
 vi.mock('../../src/services/narrativeService.js', () => ({
   generateNarrative: vi.fn(),
+  generateNarrativeStream: vi.fn(),
 }));
 
 // Mock jwt for authentication middleware
@@ -118,6 +124,120 @@ describe('Voice Routes Integration', () => {
 
       expect(response.status).toBe(500);
       expect(response.body).toEqual({ error: 'Narrative generation failed' });
+    });
+  });
+
+  describe('POST /api/narrative/generate', () => {
+    it('returns 200 with SSE content-type and calls generateNarrativeStream', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.mocked(narrativeService.generateNarrativeStream as any).mockImplementation(
+        async function* () {
+          yield { type: 'agent_step', agent: 'researcher', meta: { contextCount: 3 } };
+          yield { type: 'complete', text: 'A historical narrative.' };
+        },
+      );
+
+      const response = await request(app)
+        .post('/api/narrative/generate')
+        .set('Authorization', 'Bearer valid-token')
+        .send({ query: 'Tell me about immigrants' });
+
+      expect(response.status).toBe(200);
+      expect(response.headers['content-type']).toContain('text/event-stream');
+      expect(narrativeService.generateNarrativeStream).toHaveBeenCalledWith(
+        'Tell me about immigrants',
+        expect.anything(),
+      );
+    });
+
+    it('calls generateNarrativeStream once even when generator yields a handoff', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.mocked(narrativeService.generateNarrativeStream as any).mockImplementation(
+        async function* () {
+          yield { type: 'agent_step', agent: 'researcher', meta: {} };
+          yield {
+            type: 'handoff',
+            package: { reason: 'insufficient_retrieval', retrievedCount: 0 },
+          };
+        },
+      );
+
+      const response = await request(app)
+        .post('/api/narrative/generate')
+        .set('Authorization', 'Bearer valid-token')
+        .send({ query: 'obscure query' });
+
+      expect(response.status).toBe(200);
+      expect(response.headers['content-type']).toContain('text/event-stream');
+      expect(narrativeService.generateNarrativeStream).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns 400 when query is missing', async () => {
+      const response = await request(app)
+        .post('/api/narrative/generate')
+        .set('Authorization', 'Bearer valid-token')
+        .send({});
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'No query provided' });
+    });
+
+    it('ends the SSE stream gracefully when the generator throws', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.mocked(narrativeService.generateNarrativeStream as any).mockImplementation(() => {
+        throw new Error('Generator failed');
+      });
+
+      const response = await request(app)
+        .post('/api/narrative/generate')
+        .set('Authorization', 'Bearer valid-token')
+        .send({ query: 'Trigger error' });
+
+      // Headers already flushed before the generator runs, so status is always 200
+      expect(response.status).toBe(200);
+      expect(response.headers['content-type']).toContain('text/event-stream');
+    });
+  });
+
+  describe('POST /api/narrative/tts', () => {
+    it('returns 200 with audio/mpeg content-type on success', async () => {
+      vi.mocked(voiceService.streamNarrative).mockResolvedValue(
+        Readable.from([Buffer.from('mock-audio-bytes')]) as unknown as Readable,
+      );
+
+      const response = await request(app)
+        .post('/api/narrative/tts')
+        .set('Authorization', 'Bearer valid-token')
+        .send({ text: 'A narrative to speak aloud.' });
+
+      expect(response.status).toBe(200);
+      expect(response.headers['content-type']).toBe('audio/mpeg');
+      expect(response.body.toString()).toBe('mock-audio-bytes');
+      expect(voiceService.streamNarrative).toHaveBeenCalledWith('A narrative to speak aloud.');
+    });
+
+    it('returns 400 when text is missing', async () => {
+      const response = await request(app)
+        .post('/api/narrative/tts')
+        .set('Authorization', 'Bearer valid-token')
+        .send({});
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'No text provided' });
+    });
+
+    it('returns 500 when streamNarrative fails before headers are sent', async () => {
+      vi.mocked(voiceService.streamNarrative).mockRejectedValue(new Error('ElevenLabs error'));
+
+      const response = await request(app)
+        .post('/api/narrative/tts')
+        .set('Authorization', 'Bearer valid-token')
+        .send({ text: 'Trigger error' });
+
+      expect(response.status).toBe(500);
+      // Body may arrive as Buffer when Content-Type: audio/mpeg was set before the throw
+      const bodyText = Buffer.isBuffer(response.body) ? response.body.toString() : response.text;
+      expect(bodyText).toContain('TTS failed');
     });
   });
 });

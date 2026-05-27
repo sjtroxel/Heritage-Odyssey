@@ -47,6 +47,8 @@ export interface HandoffPackage {
   reason: 'insufficient_retrieval';
   query: string;
   retrievedCount: number;
+  totalRetrieved?: number;
+  bestScore?: number;
   suggestion: string;
 }
 

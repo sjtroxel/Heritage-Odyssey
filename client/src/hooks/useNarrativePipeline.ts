@@ -30,6 +30,9 @@ interface CompleteData {
 interface HandoffData {
   package: {
     suggestion?: string;
+    retrievedCount?: number;
+    totalRetrieved?: number;
+    bestScore?: number;
   };
 }
 
@@ -229,6 +232,16 @@ export const useNarrativePipeline = () => {
             } else if (type === 'handoff') {
               const data = JSON.parse(rawData) as HandoffData;
               if (data.package) {
+                // Log handoff detail before showing suggestion
+                setAgentLog((prev) => [
+                  ...prev,
+                  {
+                    time: new Date().toLocaleTimeString(),
+                    agent: 'researcher',
+                    detail: `handoff — ${data.package.retrievedCount ?? 0} of ${data.package.totalRetrieved ?? '?'} above threshold 0.25 · best score: ${data.package.bestScore?.toFixed(2) ?? 'n/a'}`,
+                  },
+                ]);
+
                 setError(data.package.suggestion || 'No records found for this query.');
                 setIsRunning(false);
                 return;
