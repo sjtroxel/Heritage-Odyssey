@@ -1,6 +1,6 @@
 # Phase 10 Implementation: Ancestor Profile System & Extended User Profile
 
-> **Status: READY** — Phase 9 is complete and CI is clean (62 tests passing, typecheck + lint green as of 2026-05-28). This document is the step-by-step execution guide for Phase 10.
+> **Status: IN PROGRESS** — Steps 1–12 complete as of 2026-05-28. 71 server tests + 15 client tests passing, typecheck + lint green. Steps 13–18 remain (client UI components + final test pass).
 
 ---
 
@@ -25,7 +25,7 @@
 
 ---
 
-## Step 1 — Database Schema Migration
+## Step 1 — Database Schema Migration ✓ COMPLETE
 
 **Files to modify:** `server/src/db/schema.ts`
 
@@ -66,7 +66,7 @@ Verify the migration SQL adds nullable columns to both tables. The `profile_comp
 
 ---
 
-## Step 2 — Update Shared Types
+## Step 2 — Update Shared Types ✓ COMPLETE
 
 **Files to modify:** `shared/types.d.ts`
 
@@ -146,7 +146,7 @@ export interface AncestorCreateRequest {
 
 ---
 
-## Step 3 — Auth Controller: Signup + Profile Endpoints
+## Step 3 — Auth Controller: Signup + Profile Endpoints ✓ COMPLETE
 
 **Files to modify:** `server/src/controllers/authController.ts`
 
@@ -179,7 +179,7 @@ export const getProfile = async (req: Request, res: Response) => {
 
 ---
 
-## Step 4 — Wire New Auth + Ancestors Routes in app.ts
+## Step 4 — Wire New Auth + Ancestors Routes in app.ts ✓ COMPLETE
 
 **Files to modify:** `server/src/app.ts`
 
@@ -206,7 +206,7 @@ export const getProfile = async (req: Request, res: Response) => {
 
 ---
 
-## Step 5 — New Ancestors Routes
+## Step 5 — New Ancestors Routes ✓ COMPLETE
 
 **Files to create:** `server/src/routes/ancestorsRoutes.ts`
 
@@ -228,7 +228,7 @@ Ownership check pattern for PATCH and DELETE: query by `id` first, then check `r
 
 ---
 
-## Step 6 — Extend AgentState
+## Step 6 — Extend AgentState ✓ COMPLETE
 
 **Files to modify:** `server/src/agents/state.ts`
 
@@ -244,7 +244,7 @@ This field carries a pre-formatted narrator context string (built in narrativeSe
 
 ---
 
-## Step 7 — NarrativeService: Query Enrichment
+## Step 7 — NarrativeService: Query Enrichment ✓ COMPLETE
 
 **Files to modify:** `server/src/services/narrativeService.ts`
 
@@ -307,7 +307,7 @@ Inside both functions, before `graph.invoke` / `graph.stream`:
 
 ---
 
-## Step 8 — Narrator Agent: Personalized Prompt
+## Step 8 — Narrator Agent: Personalized Prompt ✓ COMPLETE
 
 **Files to modify:** `server/src/agents/nodes/narrator.ts`
 
@@ -328,7 +328,7 @@ Keep the existing system prompt content (fact-check, TTS optimization, paragraph
 
 ---
 
-## Step 9 — Update /api/narrative/generate: ancestorId + Auto-Save
+## Step 9 — Update /api/narrative/generate: ancestorId + Auto-Save ✓ COMPLETE
 
 **Files to modify:** `server/src/routes/voiceRoutes.ts`
 
@@ -356,7 +356,7 @@ In the `POST /api/narrative/generate` handler:
 
 ---
 
-## Step 10 — Update /api/records: Join Ancestor Name
+## Step 10 — Update /api/records: Join Ancestor Name ✓ COMPLETE
 
 **Files to modify:** `server/src/routes/recordsRoutes.ts`
 
@@ -391,7 +391,7 @@ Update `shared/types.d.ts` `SavedNarrative` to add `ancestorName?: string | null
 
 ---
 
-## Step 11 — Client: Update LoginScreen (Register Form + Design Refresh)
+## Step 11 — Client: Update LoginScreen (Register Form + Design Refresh) ✓ COMPLETE
 
 **Files to modify:** `client/src/components/LoginScreen.tsx`
 
@@ -422,7 +422,7 @@ Update `register()` signature to `register(email, password, firstName, lastName)
 
 ---
 
-## Step 12 — Client: Update useAuth (Profile State)
+## Step 12 — Client: Update useAuth (Profile State) ✓ COMPLETE
 
 **Files to modify:** `client/src/hooks/useAuth.ts`
 

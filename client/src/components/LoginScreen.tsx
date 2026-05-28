@@ -12,6 +12,8 @@ const LoginScreen: React.FC = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   const handleGuestLogin = () => {
     setAuthMode('signin');
@@ -28,7 +30,7 @@ const LoginScreen: React.FC = () => {
       if (authMode === 'signin') {
         await login(email, password);
       } else {
-        await register(email, password);
+        await register(email, password, firstName, lastName);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');
@@ -148,7 +150,7 @@ const LoginScreen: React.FC = () => {
                 disabled={isAuthLoading}
                 className="w-full py-4 bg-cast-iron text-paper font-['Libre_Baskerville'] font-bold text-lg hover:bg-brass transition-colors flex items-center justify-center gap-2"
               >
-                Enter the Archive
+                Continue as Guest
               </button>
 
               <div className="text-center">
@@ -179,7 +181,7 @@ const LoginScreen: React.FC = () => {
                     </h3>
 
                     <div>
-                      <label className="block font-['Spectral'] font-bold text-base text-stone mb-1 uppercase tracking-wide">
+                      <label className="block font-sans text-sm font-semibold text-stone mb-1 uppercase tracking-wide">
                         Email Address
                       </label>
                       <input
@@ -187,12 +189,12 @@ const LoginScreen: React.FC = () => {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-cast-iron text-paper border border-cast-iron/30 px-4 py-3 focus:border-brass focus:ring-1 focus:ring-brass outline-none font-['Spectral'] text-lg"
+                        className="w-full bg-cast-iron text-paper border border-cast-iron/30 px-4 py-3 focus:border-brass focus:ring-1 focus:ring-brass outline-none font-sans text-sm"
                       />
                     </div>
 
                     <div>
-                      <label className="block font-['Spectral'] font-bold text-base text-stone mb-1 uppercase tracking-wide">
+                      <label className="block font-sans text-sm font-semibold text-stone mb-1 uppercase tracking-wide">
                         Password
                       </label>
                       <div className="relative">
@@ -201,7 +203,7 @@ const LoginScreen: React.FC = () => {
                           required
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="w-full bg-cast-iron text-paper border border-cast-iron/30 px-4 py-3 pr-12 focus:border-brass focus:ring-1 focus:ring-brass outline-none font-['Spectral'] text-lg"
+                          className="w-full bg-cast-iron text-paper border border-cast-iron/30 px-4 py-3 pr-12 focus:border-brass focus:ring-1 focus:ring-brass outline-none font-sans text-sm"
                         />
                         <button
                           type="button"
@@ -213,6 +215,35 @@ const LoginScreen: React.FC = () => {
                       </div>
                     </div>
 
+                    {authMode === 'register' && (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block font-sans text-sm font-semibold text-stone mb-1 uppercase tracking-wide">
+                            First Name
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            className="w-full bg-cast-iron text-paper border border-cast-iron/30 px-4 py-3 focus:border-brass focus:ring-1 focus:ring-brass outline-none font-sans text-sm"
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-sans text-sm font-semibold text-stone mb-1 uppercase tracking-wide">
+                            Last Name
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            className="w-full bg-cast-iron text-paper border border-cast-iron/30 px-4 py-3 focus:border-brass focus:ring-1 focus:ring-brass outline-none font-sans text-sm"
+                          />
+                        </div>
+                      </div>
+                    )}
+
                     <button
                       type="submit"
                       disabled={isAuthLoading}
@@ -221,19 +252,25 @@ const LoginScreen: React.FC = () => {
                       {isAuthLoading ? (
                         <>
                           <Loader2 className="animate-spin" size={20} />
-                          <span>{authMode === 'signin' ? 'Signing In...' : 'Registering...'}</span>
+                          <span>
+                            {authMode === 'signin' ? 'Signing In...' : 'Creating Account...'}
+                          </span>
                         </>
                       ) : authMode === 'signin' ? (
                         'Sign In'
                       ) : (
-                        'Register'
+                        'Create Account'
                       )}
                     </button>
 
                     <button
                       type="button"
-                      onClick={() => setAuthMode('collapsed')}
-                      className="w-full text-center text-stone hover:text-ink text-base font-['Spectral'] font-bold mt-4 uppercase tracking-wider"
+                      onClick={() => {
+                        setAuthMode('collapsed');
+                        setFirstName('');
+                        setLastName('');
+                      }}
+                      className="w-full text-center text-stone hover:text-ink text-base font-sans font-semibold mt-4 uppercase tracking-wider"
                     >
                       Cancel
                     </button>

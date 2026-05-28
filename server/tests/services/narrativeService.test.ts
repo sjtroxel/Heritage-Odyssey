@@ -17,6 +17,8 @@ vi.mock('../../src/services/logger.js', () => ({
   },
 }));
 
+type InvokeResult = Awaited<ReturnType<typeof graph.invoke>>;
+
 async function collectEvents<T>(gen: AsyncGenerator<T>): Promise<T[]> {
   const events: T[] = [];
   for await (const event of gen) events.push(event);
@@ -36,11 +38,10 @@ describe('narrativeService', () => {
       suggestion: 'Try broadening...',
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(graph.invoke).mockResolvedValue({
       handoffPackage: mockHandoff,
       finalScript: null,
-    } as any);
+    } as unknown as InvokeResult);
 
     const result = await generateNarrative('test query');
 
@@ -54,11 +55,10 @@ describe('narrativeService', () => {
   it('should return the final script on success', async () => {
     const mockScript = 'Once upon a time...';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(graph.invoke).mockResolvedValue({
       handoffPackage: null,
       finalScript: mockScript,
-    } as any);
+    } as unknown as InvokeResult);
 
     const result = await generateNarrative('test query');
 
@@ -68,12 +68,11 @@ describe('narrativeService', () => {
   it('should return narrativeDraft if finalScript is missing but draft exists', async () => {
     const mockDraft = 'Draft story...';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(graph.invoke).mockResolvedValue({
       handoffPackage: null,
       finalScript: null,
       narrativeDraft: mockDraft,
-    } as any);
+    } as unknown as InvokeResult);
 
     const result = await generateNarrative('test query');
 
@@ -81,13 +80,12 @@ describe('narrativeService', () => {
   });
 
   it('should throw an error if neither script nor handoff is returned', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(graph.invoke).mockResolvedValue({
       handoffPackage: null,
       finalScript: null,
       narrativeDraft: null,
       errors: ['Some agent error'],
-    } as any);
+    } as unknown as InvokeResult);
 
     await expect(generateNarrative('test query')).rejects.toThrow('Agent errors: Some agent error');
   });
@@ -116,11 +114,10 @@ describe('narrativeService', () => {
     };
 
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(graph.invoke).mockResolvedValue({
         handoffPackage: null,
         finalScript: 'Narrative.',
-      } as any);
+      } as unknown as InvokeResult);
     });
 
     it('enriched query contains ancestor name and region when profile provided', async () => {
