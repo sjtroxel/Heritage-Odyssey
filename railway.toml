@@ -1,6 +1,6 @@
 [build]
 builder = "NIXPACKS"
-installCommand = "npm ci"
+installCommand = "npm ci --ignore-scripts"
 buildCommand = "npm run build --workspace=shared && npm run build --workspace=server"
 
 [deploy]

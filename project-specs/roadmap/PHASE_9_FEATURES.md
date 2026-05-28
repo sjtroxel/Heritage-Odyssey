@@ -168,4 +168,4 @@ This is a half-day task with disproportionate signal: it tells a reviewer "this 
 - [ ] Agent observability UI polish implemented and visible on mobile and desktop.
 - [ ] Cross-device responsive audit complete; known issues fixed.
 - [ ] Load testing report generated.
-- [ ] `AUDIT.md` committed at repo root with depcheck, ts-prune, console/TODO grep, and typecheck/lint/test status documented.
+- [x] `AUDIT.md` committed at repo root. depcheck clean, ts-prune false positives documented, zero console.log/TODO, 62/62 tests passing, load test deferred (credits). (2026-05-28)

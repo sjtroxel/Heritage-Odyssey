@@ -8,6 +8,8 @@ playwright-report
 test-results
 client/.auth
 .DS_Store
+*.log
+default.sqlite
 *.local
 scripts/data/
 
