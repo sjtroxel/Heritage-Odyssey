@@ -1,5 +1,7 @@
 # Phase 9 Plan: Feature Completion & Portfolio Polish
 
+> **Status: IN PROGRESS** — Unit tests and narrative modal overlay complete as of 2026-05-27. Seven deliverables remain: Saved Records feature, My Records UI, Playwright E2E, observability UI polish, responsive audit, load testing, and `AUDIT.md` pre-ship cleanup.
+
 ## 1. Objective
 
 Close the gap between Heritage Odyssey's current state and portfolio-quality standards comparable to Asteroid Bonanza and Wildlife Sentinel. Two categories of work: (1) features that make the app actually persistent and useful rather than a one-shot demo, and (2) test/polish work carried over from Phase 8.
@@ -47,22 +49,19 @@ If no records exist yet, show an empty-state message consistent with the Victori
 
 ### 4.1 Unit Tests — Server
 
-**`server/tests/services/narrativeService.test.ts`**
+> **Status: COMPLETE as of 2026-05-27.** All tests below are written and passing. See `server/tests/services/narrativeService.test.ts` and `server/tests/routes/voiceRoutes.test.ts`.
 
-Add tests for `generateNarrativeStream`:
-- Yields `agent_step` events for each node that runs (researcher, synthesizer, narrator).
-- Yields a `complete` event with the `finalScript` when the graph completes normally.
-- Yields a `handoff` event when the researcher node sets `handoffPackage`.
-- Throws (or yields an error-equivalent) when neither `finalScript` nor `narrativeDraft` is set.
-- Mock `graph.stream` (add it to the existing `vi.mock('../../src/agents/graph.js')` block).
+**`server/tests/services/narrativeService.test.ts`** — 4 tests under `describe('generateNarrativeStream')`:
+- Yields `agent_step` events for each node (researcher, synthesizer, narrator) with correct meta (contextCount, draftLength, scriptLength).
+- Yields `complete` event with `finalScript` as the last event.
+- Yields `handoff` event when researcher returns insufficient context.
+- Error propagation from `graph.stream`.
 
-**`server/tests/routes/voiceRoutes.test.ts`**
+**`server/tests/routes/voiceRoutes.test.ts`** — 7 tests across two describe blocks:
+- `POST /api/narrative/generate`: SSE content-type header + service invocation, handoff path, 400 on missing query, graceful end on throw.
+- `POST /api/narrative/tts`: `audio/mpeg` success, 400 on missing text, 500 on `streamNarrative` failure.
 
-Add tests for:
-- `POST /api/narrative/generate` — returns `text/event-stream` content type; emits SSE events matching the mock stream output; handles missing `query` with 400.
-- `POST /api/narrative/tts` — calls `streamNarrative` with the provided text; returns `audio/mpeg`; handles missing `text` with 400.
-
-Note: Testing SSE with `supertest` requires reading the response body as a stream. Use `supertest`'s `.buffer(false)` option or collect raw bytes and parse SSE manually in the test.
+Key implementation notes (for reference): rate limiter is mocked as pass-through to avoid 10/10min cap during tests; `res.flushHeaders()` prevents supertest from buffering SSE body so route tests assert on headers + service call args rather than body content.
 
 ### 4.2 E2E Tests — Playwright
 
@@ -129,16 +128,44 @@ Target: 0% error rate, memory stable under 512MB on Railway.
 
 ---
 
-## 8. Verification (Done Criteria)
+## 8. AUDIT.md Pre-Ship Cleanup Pass
+
+Documented engineering-maturity cleanup committed as `AUDIT.md` at the repository root. Per the `feedback_audit_md_pattern` convention adopted after the Vibeathon post-mortem. Visible to any recruiter or reviewer reading the repo.
+
+Required passes:
+
+```bash
+# 1. Dependency cleanup
+npx depcheck                         # Unused deps + missing deps
+npx ts-prune                         # Unused TypeScript exports
+
+# 2. Stale code grep
+grep -rn "TODO\|FIXME\|XXX" --include="*.ts" --include="*.tsx" server/src client/src
+grep -rn "console\.log" --include="*.ts" --include="*.tsx" server/src client/src
+
+# 3. Type/lint health
+npm run typecheck
+npm run lint
+npm run test
+```
+
+Each pass's findings recorded in `AUDIT.md` with: what was found, what was kept (with rationale), what was removed. Commit as a single PR titled "audit: pre-ship cleanup pass".
+
+This is a half-day task with disproportionate signal: it tells a reviewer "this person cleans up before shipping" without requiring any actual feature work.
+
+---
+
+## 9. Verification (Done Criteria)
 
 - [ ] Schema migration applied: `savedNarratives.ancestorProfileId` is nullable in production.
 - [ ] `POST /api/records` and `GET /api/records` endpoints implemented and tested.
 - [ ] "Save to Records" button functional in the narrative text panel.
 - [ ] "My Records" panel replaces the dead "Explore the Map" stub.
 - [ ] Re-Narrate button on saved records works (calls `/api/narrative/tts` with stored text).
-- [ ] Unit tests for `generateNarrativeStream` added and passing.
-- [ ] Unit tests for `/api/narrative/generate` and `/api/narrative/tts` added and passing.
+- [x] Unit tests for `generateNarrativeStream` added and passing (4 tests, complete 2026-05-27).
+- [x] Unit tests for `/api/narrative/generate` and `/api/narrative/tts` added and passing (7 tests, complete 2026-05-27).
 - [ ] Playwright E2E Flow 1 and Flow 2 pass against production (with `E2E_LIVE=true`).
 - [ ] Agent observability UI polish implemented and visible on mobile and desktop.
 - [ ] Cross-device responsive audit complete; known issues fixed.
 - [ ] Load testing report generated.
+- [ ] `AUDIT.md` committed at repo root with depcheck, ts-prune, console/TODO grep, and typecheck/lint/test status documented.

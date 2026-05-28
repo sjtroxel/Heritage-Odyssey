@@ -1,16 +1,23 @@
 # Heritage Odyssey Roadmap
 
-| Phase | Name | Duration | Key Goal |
+| Phase | Name | Status | Key Goal |
 | :--- | :--- | :--- | :--- |
-| 1 | **Foundation** | 3 Days | Set up the monorepo structure and development environment. |
-| 2 | **Database & Auth** | 3 Days | Implement Neon PostgreSQL schema with Drizzle ORM and JWT-based authentication. |
-| 3 | **Data & RAG** | 5 Days | Implement document ingestion and vector storage via Pinecone. |
-| 4 | **Agent Swarm** | 6 Days | Build the LangGraph orchestration for historical narrative generation. |
-| 5 | **Voice & UI** | 5 Days | Integrate ElevenLabs/Whisper and develop the frontend interface. |
-| 6 | **Evaluation** | 4 Days | Implement Ragas/TruLens for validation of historical accuracy. |
-| 7 | **UI Overhaul & Pre-Deployment Polish** | 3 Days | Fix functional bugs, redesign UI to historical theme, verify end-to-end locally before deployment. |
-| 8 | **Deployment & Launch** | 2 Days | Finalize production deployment and verify platform stability. |
-| 9 | **Feature Completion & Portfolio Polish** | 3 Days | Implement Saved Records, close test gaps, and bring cross-device quality to portfolio standard. |
+| 1 | **Foundation** | COMPLETE | Set up the monorepo structure and development environment. |
+| 2 | **Database & Auth** | COMPLETE | Implement Neon PostgreSQL schema with Drizzle ORM and JWT-based authentication. |
+| 3 | **Data & RAG** | COMPLETE | Implement document ingestion and vector storage via Pinecone. |
+| 4 | **Agent Swarm** | COMPLETE | Build the LangGraph orchestration for historical narrative generation. |
+| 5 | **Voice & UI** | COMPLETE | Integrate ElevenLabs/Whisper and develop the frontend interface. |
+| 6 | **Evaluation** | COMPLETE | Implement Ragas/TruLens for validation of historical accuracy. |
+| 7 | **UI Overhaul & Pre-Deployment Polish** | COMPLETE | Fix functional bugs, redesign UI to historical theme, verify end-to-end locally before deployment. |
+| 8 | **Deployment & Launch** | COMPLETE | Finalize production deployment and verify platform stability. |
+| 9 | **Feature Completion & Portfolio Polish** | IN PROGRESS | Implement Saved Records, close test/polish carry-overs from Phase 8, add `AUDIT.md` pre-ship cleanup. |
+| 10 | **Ancestor Profile System** | PLANNED | Wire the `ancestor_profiles` table to the UI; personalize narrative generation with ancestor context. |
+| — | **🔀 Strategic Fork** | DECISION POINT | Choose Path A (Depth) or Path B (Velocity) for Phases 11 and 12. See § Strategic Fork After Phase 10 below. |
+| 11A | **FamilySearch Integration (Depth)** | PATH OPTION | Full FamilySearch OAuth + GEDCOM import + 12-field schema + per-user namespaces + dual-source RAG. ~6-10 weeks. |
+| 11B | **FamilySearch Integration (Velocity)** | PATH OPTION | FamilySearch OAuth + 6-field schema + per-user namespaces + dual-source RAG. No GEDCOM. ~4-5 weeks. |
+| 12A | **Python FastAPI Eval Service (Depth)** | PATH OPTION | Full FastAPI microservice, second Railway deployment, eval_scores table, 6-dimension HTTP API. ~3-4 weeks. |
+| 12B | **Eval Infrastructure (Velocity)** | PATH OPTION | Promptfoo CI + LangSmith env vars + extended `evaluation/` Python with LLM-as-judge. ~1.5-2 weeks. |
+| 13 | **Migration Map** | SPECCED | Interactive migration map driven by real FamilySearch geographic data. Independent of path choice. Specced for design signal; build timing TBD. |
 
 ---
 
@@ -94,29 +101,121 @@
 *   **Risks:** UI redesign introducing regressions in existing mobile-responsive layouts.
 *   **Done:** UI transformed to "Victorian Record Office" aesthetic with Framer Motion animations and historical media. Bug fixes for Vite proxy, CSS conflicts, and Auth UI completed. Retrieval threshold tuned to 0.5 with active score logging. All tests passing (51/51).
 
-### Phase 9: Feature Completion & Portfolio Polish [PLANNED]
+### Phase 8: Deployment & Launch [COMPLETE]
 *   **Deliverables:**
-    1. **Saved Records feature** — "Save to Records" button in the narrative text panel. `POST /api/records` and `GET /api/records` endpoints. Requires a schema migration to make `ancestorProfileId` nullable in `savedNarratives` (decouples saving from requiring a full ancestor profile first).
-    2. **My Records UI** — Replace the dead "Explore the Map" stub button with "My Records". Opens a panel/modal listing the user's saved narratives: query text, narrative text, and a re-narrate button that calls `/api/narrative/tts` directly with the saved text (skipping the LangGraph re-run).
-    3. **Missing unit tests** — `generateNarrativeStream` in `narrativeService.test.ts`; the SSE and TTS routes in `voiceRoutes.test.ts`. [DONE]
-    4. **Playwright E2E tests** — Flow 1 (text input) and Flow 2 (simulated voice) against production URLs (carried from Phase 8).
-    5. **Agent observability UI polish** — Better visual treatment for the agent step labels during pipeline execution (Modal Refactor). [DONE]
-    6. **Cross-device responsive audit** — Systematic pass across desktop, tablet, and small-screen mobile. Run after E2E is in place to catch regressions.
-    7. **Load testing report** — `autocannon` run confirming stability under concurrent load (carried from Phase 8).
-*   **Risks:** Schema migration in production (Neon) requires a `drizzle-kit push` or migration file; test carefully before deploying. E2E tests against real production endpoints will consume API credits (OpenAI, ElevenLabs) — mock where possible, gate live calls behind a flag.
-*   **Done:** Unit tests for SSE/TTS and `generateNarrativeStream` are complete and passing. Narrative modal UI overhaul finalized.
-
-### Phase 8: Deployment & Launch [IN PROGRESS]
-*   **Deliverables:**
-    1. Final production security audit.
-    2. Railway configuration for Express backend. [DONE]
+    1. Production security hardening — Helmet headers, CORS restricted to Vercel origin, Zod input validation on all endpoints. [DONE]
+    2. Railway configuration for Express backend (`railway.toml`). [DONE]
     3. Vercel configuration for React + Vite frontend. [DONE]
-    4. E2E tests (Playwright) covering user flow.
-    5. Production environment variable management. [DONE]
-    6. Final performance and load testing.
-    7. AI-specific rate limits (10 req / 10 min) implemented for narrative endpoints. [DONE]
+    4. Production environment variable management (Railway + Vercel dashboards). [DONE]
+    5. AI-specific rate limits (10 req / 10 min) for all narrative/voice endpoints. [DONE]
+    6. SSE agent observability — LangGraph node progress (researcher → synthesizer → narrator) streamed to client in real time via Server-Sent Events. [DONE]
+    7. Dedicated TTS endpoint (`POST /api/narrative/tts`) decoupled from LangGraph pipeline; re-narrate path uses stored text directly. [DONE]
+    8. Rate-limit countdown UI, `× New Query` reset, paragraph-split narrative rendering, retrieval threshold tuned to 0.25. [DONE]
+    9. Narrative modal overlay with Victorian "Historical Record" aesthetic and Pause/Resume controls, replacing the inline panel. [DONE]
+    10. Collapsible agent observability log — per-node meta (contextCount, draftLength, scriptLength) in terminal-style panel. [DONE]
+    11. Unit tests for `generateNarrativeStream` — 4 tests: agent_step events, complete event, handoff path, error propagation. [DONE]
+    12. Unit tests for SSE generate route and TTS route — 7 tests; rate limiter mocked as pass-through. [DONE]
 *   **Risks:** Environment differences between staging/prod; CORS and deployment-specific security configs.
-*   **Done:** Backend live on Railway, Frontend on Vercel. Security headers, rate limiting, and CORS configured. SSE/TTS unit tests passing. Narrative modal overlay implemented with playback controls.
+*   **Done:** Backend live on Railway, frontend live on Vercel. Security headers, CORS, Zod input validation, and rate limiting fully implemented. SSE observability streams real-time LangGraph node progress to the UI. Full test suite: 62 tests (47 server + 15 client), all passing. Playwright E2E tests and `autocannon` load testing formally deferred to Phase 9.
+
+### Phase 9: Feature Completion & Portfolio Polish [IN PROGRESS]
+*   **Deliverables:**
+    1. **Unit tests (carry-over from Phase 8)** — `generateNarrativeStream` tests in `narrativeService.test.ts`; SSE and TTS route tests in `voiceRoutes.test.ts`. [DONE]
+    2. **Narrative modal overlay** — High-contrast "Historical Record" modal with Pause/Resume controls. [DONE]
+    3. **Saved Records feature** — Schema migration (`savedNarratives.ancestorProfileId` → nullable), `POST /api/records`, `GET /api/records`, and `DELETE /api/records/:id` endpoints, and "Save to Records" button in the narrative modal. [PLANNED]
+    4. **My Records UI** — Replace the dead "Explore the Map" stub with "My Records". Modal/panel listing saved narratives; each card has a Re-Narrate button (calls `/api/narrative/tts` with stored text, skipping LangGraph re-run) and a Delete button. [PLANNED]
+    5. **Playwright E2E tests** — Flow 1 (text input path) and Flow 2 (simulated voice input) against production URLs, gated by `E2E_LIVE=true`. Carried from Phase 8. [PLANNED]
+    6. **Agent observability UI polish** — Better visual treatment for agent step labels during pipeline execution; sample queries moved below input bar; modal-first pattern for secondary UI. [PLANNED]
+    7. **Cross-device responsive audit** — Systematic breakpoint pass (< 375px, 375–430px, 768px, 1024px, 1280px+). Run after E2E tests are in place. [PLANNED]
+    8. **Load testing report** — `autocannon` run against Railway TTS endpoint, 5–10 concurrent users, 30-second duration. Carried from Phase 8. [PLANNED]
+    9. **`AUDIT.md` pre-ship cleanup pass** — `depcheck`, `ts-prune`, console/TODO grep, and typecheck/lint/test status documented at repo root. Engineering-maturity signal visible to any reviewer. Per `feedback_audit_md_pattern`. [PLANNED]
+*   **Risks:** Production schema migration via `drizzle-kit push` — sequence carefully. Playwright E2E tests consume real OpenAI/ElevenLabs credits; `E2E_LIVE=true` gate required in CI.
+*   **Done:** Unit tests for `generateNarrativeStream`, SSE generate route, and TTS route complete and passing (62 tests total). Narrative modal overlay finalized during Phase 8. Seven deliverables remain.
+
+### Phase 10: Ancestor Profile System [PLANNED]
+*   **Deliverables:**
+    1. **Ancestor Profile CRUD** — `POST /api/ancestors`, `GET /api/ancestors`, `PATCH /api/ancestors/:id`, `DELETE /api/ancestors/:id`. The `ancestor_profiles` table has been in the database since Phase 2; this phase wires it to the UI. [PLANNED]
+    2. **My Ancestors panel** — Modal/panel listing the user's ancestor profiles with create, edit, delete, and "Narrate" actions. [PLANNED]
+    3. **Query enrichment** — When a narrative request includes an `ancestorId`, `narrativeService.ts` fetches the profile and enriches the query with the ancestor's name, birth region, and era before passing it to LangGraph. [PLANNED]
+    4. **Personalized narrator prompt** — Narrator agent updated to address the ancestor by name (e.g., "Stanisław would have left Galicia in the winter of 1883..."). [PLANNED]
+    5. **Ancestor-linked saves** — Narratives generated via an ancestor profile are saved to `saved_narratives` with `ancestorProfileId` set; My Records panel (Phase 9) shows the ancestor name on linked cards. [PLANNED]
+    6. **Unit tests** — Ancestor CRUD endpoints and query enrichment logic. [PLANNED]
+*   **Risks:** Query enrichment must degrade gracefully when no ancestor profile is selected — all existing ad-hoc flows must continue working unchanged.
+*   **Done:** Nothing yet. The `ancestor_profiles` table and auth middleware are the only prerequisites; both exist.
+
+---
+
+## 🔀 Strategic Fork After Phase 10
+
+After Phase 10 ships, Heritage Odyssey is a complete personalized-narrative product (Ancestor Profile CRUD + query enrichment + personalized narrator). The phases that follow address two more questions: *should HO ingest real third-party genealogy records (Phase 11)*, and *should HO host its own production-grade evaluation layer (Phase 12)*. Each of those questions has two answers — a depth path and a velocity path — and they should be chosen together as a strategy.
+
+**This decision is intentionally deferred to after Phase 10 completes.** Both paths are documented in full detail so the decision can be made with complete visibility into the trade-off rather than re-derived from memory.
+
+### Path A — Depth Path (One mega-project)
+
+Heritage Odyssey becomes the single deep portfolio project that demonstrates the entire stack: multi-agent LangGraph orchestration, real third-party API integration (FamilySearch + GEDCOM), per-user dynamic embedding, AND a standalone Python FastAPI evaluation microservice with HTTP API.
+
+- **[Phase 11A — FamilySearch Integration (Depth)](PHASE_11A_FAMILYSEARCH_DEPTH.md)** — Full FamilySearch OAuth + GEDCOM file import + 12-field schema extension + per-user Pinecone namespaces + dual-source researcher. ~6-10 weeks.
+- **[Phase 12A — Python FastAPI Eval Service (Depth)](PHASE_12A_PYTHON_EVAL_SERVICE_DEPTH.md)** — Full FastAPI microservice deployed as a second Railway service, `eval_scores` PostgreSQL table, HTTP eval API with 6 scoring dimensions, 30-day trend endpoint, Dockerfile + pytest suite. ~3-4 weeks.
+
+**Path A total estimated time after Phase 10:** ~9-14 weeks (~2-3.5 months).
+**Job-applying start estimate:** ~Nov 2026 – Jan 2027.
+
+**Path A pitch:** *"I built a genealogy intelligence platform — multi-agent narrative pipeline, real FamilySearch record retrieval per user, and a Python evaluation microservice with automated quality regression in CI."*
+
+### Path B — Velocity Path (Two-projects strategy)
+
+Heritage Odyssey ships at portfolio-grade with the architecturally interesting differentiator (dual-source RAG with FamilySearch records) and a lean but interview-grade evaluation layer. The weeks freed up are then invested in a *separate* Python + FastAPI project, restoring the two-strong-projects portfolio shape from the original May 26 strategy.
+
+- **[Phase 11B — FamilySearch Integration (Velocity)](PHASE_11B_FAMILYSEARCH_VELOCITY.md)** — FamilySearch OAuth + 6-field schema + per-user Pinecone namespaces + dual-source researcher. No GEDCOM. ~4-5 weeks.
+- **[Phase 12B — Eval Infrastructure (Velocity)](PHASE_12B_EVAL_INFRA_VELOCITY.md)** — Promptfoo CI regression suite + LangSmith production tracing (env vars only) + extended `evaluation/` Python with LLM-as-judge and custom scorers. No FastAPI service, no second Railway deployment. ~1.5-2 weeks.
+
+**Path B total estimated time after Phase 10:** ~5.5-7 weeks (~1.5-2 months).
+**Job-applying start estimate:** ~Aug – Oct 2026.
+
+**Path B pitch:** *"I built a genealogy intelligence platform with multi-agent narrative pipeline and dual-source RAG against real FamilySearch records, plus Promptfoo + LangSmith evaluation in CI. My next project is a Python-native [topic] app demonstrating FastAPI and async patterns."*
+
+### Trade-off Summary
+
+| Dimension | Path A (Depth) | Path B (Velocity) |
+| :--- | :--- | :--- |
+| Total post-Phase-10 weeks | ~9-14 | ~5.5-7 |
+| Job-applying start estimate | ~Nov 2026 – Jan 2027 | ~Aug – Oct 2026 |
+| FamilySearch OAuth + per-user namespaces + dual-source RAG | Yes | Yes (identical) |
+| GEDCOM file import support | Yes | **No** |
+| Python FastAPI microservice | Yes (inside HO) | **No in HO** — but a separate Python project is in scope after |
+| Production LangSmith tracing | Yes | Yes (identical) |
+| Promptfoo CI regression suite | Yes | Yes (identical) |
+| LLM-as-judge scoring | Yes | Yes (identical, just in `evaluation/` not in a service) |
+| Number of strong portfolio projects | 1 deep | 2 (HO + separate Python project) |
+| Risk if Phase 11 or 12 stalls | Blocks the entire applying-start | Lower — HO ships sooner; the separate Python project is independent |
+| Interview answer for "Can you work in Python?" | "Yes — the eval microservice in Heritage Odyssey" | "Yes — Heritage Odyssey's eval suite and my separate Python project" |
+
+### When to make the decision
+
+The decision should be made **after Phase 10 ships**, not before. The right inputs at that point are: (1) where the AI Engineer job market is then (postings, skill demands, what's still hot), (2) how the user feels about HO's depth vs starting a new project, and (3) whether any unforeseen Phase 10 work changed the cost estimates. Both paths are designed to be ready to pick up immediately once Phase 10 completes.
+
+Phase 13 (Migration Map) is independent of this fork and can be tackled under either path — though under Path A it has more meaningful geographic data to work with due to the deeper schema.
+
+---
+
+### Phase 13: Migration Map [SPECCED — build timing TBD]
+*   **Summary:** Replace the dead "Explore the Map" hero button with an interactive migration map. With Phase 11's real FamilySearch geographic data (birth place → arrival port → census residence), actual migration routes become possible. The map shows a user's ancestor's probable journey as an animated route overlaid on a period-appropriate historical map base layer.
+*   **Candidate tooling:** Mapbox GL JS (most capable, free tier available), Leaflet (lighter weight, fully open-source), or Deck.gl (best for animated routes).
+*   **Specced as a design signal** — shows system design thinking even if not yet built. Include in the portfolio README and blog post as "Phase 13: planned." Recruiters reading the README see the vision even if the feature isn't shipped.
+*   **Independent of the Path A / Path B fork** — buildable under either, though Path A's richer schema (departurePort, shipName) gives the map more to render.
+
+---
+
+## File Naming Convention
+
+Phases that have alternative implementation paths use a letter suffix:
+
+- `PHASE_NN_FEATURE.md` — single path (Phases 1-10, 13)
+- `PHASE_NNA_FEATURE_DEPTH.md` — depth-path variant for that phase
+- `PHASE_NNB_FEATURE_VELOCITY.md` — velocity-path variant for that phase
+
+The A/B variants are mutually exclusive — pick one when the decision is made. Both are kept in the repo as documented alternatives.
 
 ---
 
