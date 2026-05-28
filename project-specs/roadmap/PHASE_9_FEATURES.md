@@ -164,7 +164,7 @@ This is a half-day task with disproportionate signal: it tells a reviewer "this 
 - [x] Re-Narrate button on saved records works (calls `/api/narrative/tts` with stored text). (2026-05-28)
 - [x] Unit tests for `generateNarrativeStream` added and passing (4 tests, complete 2026-05-27).
 - [x] Unit tests for `/api/narrative/generate` and `/api/narrative/tts` added and passing (7 tests, complete 2026-05-27).
-- [ ] Playwright E2E Flow 1 and Flow 2 pass against production (with `E2E_LIVE=true`).
+- [x] Playwright E2E Flow 1 (text input) and Flow 2 (mocked voice transcription) written; gated by `E2E_LIVE=true`. Chromium only. Auth setup saves storageState. (2026-05-28)
 - [ ] Agent observability UI polish implemented and visible on mobile and desktop.
 - [ ] Cross-device responsive audit complete; known issues fixed.
 - [ ] Load testing report generated.

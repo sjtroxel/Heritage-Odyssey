@@ -11,7 +11,7 @@
 | 7 | **UI Overhaul & Pre-Deployment Polish** | COMPLETE | Fix functional bugs, redesign UI to historical theme, verify end-to-end locally before deployment. |
 | 8 | **Deployment & Launch** | COMPLETE | Finalize production deployment and verify platform stability. |
 | 9 | **Feature Completion & Portfolio Polish** | IN PROGRESS | Implement Saved Records, close test/polish carry-overs from Phase 8, add `AUDIT.md` pre-ship cleanup. |
-| 10 | **Ancestor Profile System** | PLANNED | Wire the `ancestor_profiles` table to the UI; personalize narrative generation with ancestor context. |
+| 10 | **Ancestor Profile System & Extended User Profile** | PLANNED | Extended user profile (name, DOB, location, heritage regions, research interests); expanded ancestor profile schema; personalized narrative generation. |
 | — | **🔀 Strategic Fork** | DECISION POINT | Choose Path A (Depth) or Path B (Velocity) for Phases 11 and 12. See § Strategic Fork After Phase 10 below. |
 | 11A | **FamilySearch Integration (Depth)** | PATH OPTION | Full FamilySearch OAuth + GEDCOM import + 12-field schema + per-user namespaces + dual-source RAG. ~6-10 weeks. |
 | 11B | **FamilySearch Integration (Velocity)** | PATH OPTION | FamilySearch OAuth + 6-field schema + per-user namespaces + dual-source RAG. No GEDCOM. ~4-5 weeks. |

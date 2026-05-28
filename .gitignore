@@ -4,6 +4,9 @@ dist
 server/.env
 *.tsbuildinfo
 coverage
+playwright-report
+test-results
+client/.auth
 .DS_Store
 *.local
 scripts/data/
