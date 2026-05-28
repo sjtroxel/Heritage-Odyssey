@@ -7,6 +7,8 @@ import AudioVisualizer from './AudioVisualizer.js';
 import { useAuthContext } from '../context/AuthContext.js';
 import AgentObservabilityLog from './AgentObservabilityLog.js';
 
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+
 const SAMPLE_QUERIES = [
   'Describe the journey of immigrants crossing the Atlantic in the nineteenth century',
   'What was life like for immigrant families living in New York tenements in the 1890s?',
@@ -19,11 +21,13 @@ const SAMPLE_QUERIES = [
  */
 const InteractionLayer: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
+  const [currentQuery, setCurrentQuery] = useState('');
   const [containerHeight, setContainerHeight] = useState(200);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [isSamplesOpen, setIsSamplesOpen] = useState(false);
   const [isNarrativeOpen, setIsNarrativeOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const isResizing = useRef(false);
 
   const { token, refresh } = useAuthContext();
@@ -126,6 +130,27 @@ const InteractionLayer: React.FC = () => {
     };
   }, [resize, stopResizing]);
 
+  const handleSave = useCallback(async () => {
+    if (!narrativeText || !currentQuery) return;
+    setSaveStatus('saving');
+    try {
+      await authFetch(
+        apiUrl('/api/records'),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: currentQuery, contentText: narrativeText }),
+        },
+        token,
+        refresh,
+      );
+      setSaveStatus('saved');
+    } catch {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  }, [narrativeText, currentQuery, token, refresh]);
+
   const onRecordingComplete = useCallback(
     async (blob: Blob, _mimeType: string) => {
       try {
@@ -145,6 +170,8 @@ const InteractionLayer: React.FC = () => {
         const data = await response.json();
         if (data.text) {
           setInputValue(data.text);
+          setCurrentQuery(data.text);
+          setSaveStatus('idle');
           await run(data.text);
         }
       } catch (err) {
@@ -165,6 +192,8 @@ const InteractionLayer: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || isRunning || isRecording) return;
+    setCurrentQuery(inputValue);
+    setSaveStatus('idle');
     await run(inputValue);
   };
 
@@ -325,6 +354,8 @@ const InteractionLayer: React.FC = () => {
                       key={i}
                       onClick={() => {
                         setInputValue(q);
+                        setCurrentQuery(q);
+                        setSaveStatus('idle');
                         setIsSamplesOpen(false);
                         run(q);
                       }}
@@ -375,6 +406,27 @@ const InteractionLayer: React.FC = () => {
                       <Play size={11} /> resume
                     </>
                   )}
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={saveStatus !== 'idle'}
+                  className={`text-[10px] font-mono uppercase tracking-widest transition-colors ${
+                    saveStatus === 'saved'
+                      ? 'text-brass/50 cursor-default'
+                      : saveStatus === 'error'
+                        ? 'text-red-400/70 cursor-default'
+                        : saveStatus === 'saving'
+                          ? 'text-brass/40 cursor-wait'
+                          : 'text-brass/70 hover:text-brass'
+                  }`}
+                >
+                  {saveStatus === 'saved'
+                    ? '✓ saved'
+                    : saveStatus === 'error'
+                      ? '✕ error'
+                      : saveStatus === 'saving'
+                        ? 'saving...'
+                        : '+ save'}
                 </button>
                 <button
                   onClick={() => setIsNarrativeOpen(false)}

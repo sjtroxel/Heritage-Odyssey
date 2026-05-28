@@ -157,11 +157,11 @@ This is a half-day task with disproportionate signal: it tells a reviewer "this 
 
 ## 9. Verification (Done Criteria)
 
-- [ ] Schema migration applied: `savedNarratives.ancestorProfileId` is nullable in production.
-- [ ] `POST /api/records` and `GET /api/records` endpoints implemented and tested.
-- [ ] "Save to Records" button functional in the narrative text panel.
-- [ ] "My Records" panel replaces the dead "Explore the Map" stub.
-- [ ] Re-Narrate button on saved records works (calls `/api/narrative/tts` with stored text).
+- [x] Schema migration applied: `savedNarratives.ancestorProfileId` is nullable in production. `query TEXT NOT NULL` column added. (2026-05-28)
+- [x] `POST /api/records`, `GET /api/records`, and `DELETE /api/records/:id` endpoints implemented. (2026-05-28)
+- [x] "Save to Records" button functional in the narrative modal. (2026-05-28)
+- [x] "My Records" panel replaces the dead "Explore the Map" stub. (2026-05-28)
+- [x] Re-Narrate button on saved records works (calls `/api/narrative/tts` with stored text). (2026-05-28)
 - [x] Unit tests for `generateNarrativeStream` added and passing (4 tests, complete 2026-05-27).
 - [x] Unit tests for `/api/narrative/generate` and `/api/narrative/tts` added and passing (7 tests, complete 2026-05-27).
 - [ ] Playwright E2E Flow 1 and Flow 2 pass against production (with `E2E_LIVE=true`).

@@ -6,6 +6,7 @@ import { rateLimit } from 'express-rate-limit';
 import { logger } from './services/logger.js';
 import * as authController from './controllers/authController.js';
 import voiceRoutes from './routes/voiceRoutes.js';
+import recordsRoutes from './routes/recordsRoutes.js';
 import { authenticate } from './middleware/auth.js';
 import type { HealthStatus } from '@heritage-odyssey/shared/types';
 
@@ -48,6 +49,7 @@ app.get('/api/profile', authenticate, (req: Request, res: Response) => {
 });
 
 app.use('/api', voiceRoutes);
+app.use('/api', recordsRoutes);
 
 // Error handling
 app.use((err: Error, req: Request, _res: Response, _next: NextFunction) => {

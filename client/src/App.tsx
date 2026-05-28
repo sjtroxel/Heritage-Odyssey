@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { MapPin, Mic, Wind, Loader2, LogOut, Menu, X } from 'lucide-react';
+import { BookOpen, Mic, Wind, Loader2, LogOut, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import InteractionLayer from './components/InteractionLayer.js';
 import LoginScreen from './components/LoginScreen.js';
 import Methodology from './components/Methodology.js';
 import OurStory from './components/OurStory.js';
+import MyRecordsPanel from './components/MyRecordsPanel.js';
 import { useAuthContext } from './context/AuthContext.js';
 
 const App: React.FC = () => {
   const { isAuthenticated, isLoading, logout } = useAuthContext();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isRecordsOpen, setIsRecordsOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -120,7 +122,7 @@ const App: React.FC = () => {
         </AnimatePresence>
       </header>
 
-      <main className="pb-[200px]">
+      <main className="pb-50">
         {/* Hero Section */}
         <section
           id="odyssey"
@@ -194,9 +196,12 @@ const App: React.FC = () => {
                 <Mic size={18} className="text-brass" />
                 Start My Odyssey
               </button>
-              <button className="w-full sm:w-auto px-10 py-4 bg-paper border border-stone/30 text-ink rounded-sm font-libre font-bold text-sm tracking-widest uppercase hover:border-stone/50 hover:bg-stone/5 transition-all flex items-center justify-center gap-3">
-                <MapPin size={18} className="text-brass" />
-                Explore the Map
+              <button
+                onClick={() => setIsRecordsOpen(true)}
+                className="w-full sm:w-auto px-10 py-4 bg-paper border border-stone/30 text-ink rounded-sm font-libre font-bold text-sm tracking-widest uppercase hover:border-stone/50 hover:bg-stone/5 transition-all flex items-center justify-center gap-3"
+              >
+                <BookOpen size={18} className="text-brass" />
+                My Records
               </button>
             </motion.div>
           </div>
@@ -235,6 +240,7 @@ const App: React.FC = () => {
 
       {/* Persistent Interaction Layer */}
       <InteractionLayer />
+      {isRecordsOpen && <MyRecordsPanel onClose={() => setIsRecordsOpen(false)} />}
     </div>
   );
 };

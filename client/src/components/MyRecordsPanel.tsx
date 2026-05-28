@@ -1,0 +1,204 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { Loader2, Trash2, Volume2, X } from 'lucide-react';
+import { apiUrl, authFetch } from '../lib/api.js';
+import { useAuthContext } from '../context/AuthContext.js';
+
+interface SavedRecord {
+  id: string;
+  query: string;
+  contentText: string;
+  createdAt: string;
+  ancestorProfileId: string | null;
+}
+
+interface MyRecordsPanelProps {
+  onClose: () => void;
+}
+
+const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
+  const { token, refresh } = useAuthContext();
+  const [records, setRecords] = useState<SavedRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [renaratingId, setRenaratingId] = useState<string | null>(null);
+  const [activeAudio, setActiveAudio] = useState<HTMLAudioElement | null>(null);
+
+  const fetchRecords = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await authFetch(apiUrl('/api/records'), {}, token, refresh);
+      const data: SavedRecord[] = await res.json();
+      setRecords(data);
+    } catch {
+      setError('Failed to load records. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, [token, refresh]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchRecords();
+  }, [fetchRecords]);
+
+  useEffect(() => {
+    return () => {
+      activeAudio?.pause();
+    };
+  }, [activeAudio]);
+
+  const handleDelete = useCallback(
+    async (id: string) => {
+      setDeletingId(id);
+      try {
+        await authFetch(apiUrl(`/api/records/${id}`), { method: 'DELETE' }, token, refresh);
+        setRecords((prev) => prev.filter((r) => r.id !== id));
+      } catch {
+        // silently leave the card — a retry will work
+      } finally {
+        setDeletingId(null);
+      }
+    },
+    [token, refresh],
+  );
+
+  const handleRenarrate = useCallback(
+    async (record: SavedRecord) => {
+      if (renaratingId) return;
+      activeAudio?.pause();
+      setRenaratingId(record.id);
+      try {
+        const res = await authFetch(
+          apiUrl('/api/narrative/tts'),
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: record.contentText }),
+          },
+          token,
+          refresh,
+        );
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        setActiveAudio(audio);
+        audio.play();
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          setRenaratingId(null);
+          setActiveAudio(null);
+        };
+      } catch {
+        setRenaratingId(null);
+      }
+    },
+    [renaratingId, activeAudio, token, refresh],
+  );
+
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  return (
+    <div
+      className="fixed inset-0 z-60 flex items-center justify-center p-4 md:p-8"
+      onClick={onClose}
+    >
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+
+      <div
+        className="relative w-full max-w-2xl bg-paper border border-brass/30 shadow-2xl flex flex-col max-h-[80vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-3 border-b border-brass/20 shrink-0">
+          <span className="text-[10px] font-libre font-bold uppercase tracking-[0.2em] text-stone/60">
+            My Records
+          </span>
+          <button
+            onClick={onClose}
+            className="text-[10px] font-mono text-stone/40 hover:text-ink/60 uppercase tracking-widest transition-colors"
+          >
+            <X size={14} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="overflow-y-auto flex-1 px-6 py-5">
+          {loading && (
+            <div className="flex items-center justify-center py-12 gap-3 text-stone/50">
+              <Loader2 size={16} className="animate-spin" />
+              <span className="text-xs font-mono uppercase tracking-widest">
+                Consulting the Registry...
+              </span>
+            </div>
+          )}
+
+          {!loading && error && (
+            <p className="text-center text-xs font-mono text-red-400/70 py-8 uppercase tracking-widest">
+              {error}
+            </p>
+          )}
+
+          {!loading && !error && records.length === 0 && (
+            <p className="text-center text-sm font-spectral italic text-stone/50 py-12">
+              No records have been committed to the Registry.
+            </p>
+          )}
+
+          {!loading && !error && records.length > 0 && (
+            <ul className="flex flex-col gap-4">
+              {records.map((record) => (
+                <li
+                  key={record.id}
+                  className="border border-brass/15 bg-stone/5 p-4 flex flex-col gap-2"
+                >
+                  <p className="text-xs font-libre font-bold uppercase tracking-wider text-ink/80 line-clamp-2">
+                    {record.query}
+                  </p>
+                  <p className="text-xs font-spectral italic text-stone/60 line-clamp-3 leading-relaxed">
+                    {record.contentText}
+                  </p>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-[9px] font-mono text-stone/40 uppercase tracking-widest">
+                      {formatDate(record.createdAt)}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => handleRenarrate(record)}
+                        disabled={renaratingId !== null}
+                        className="flex items-center gap-1 text-[9px] font-mono uppercase tracking-widest text-brass/60 hover:text-brass disabled:opacity-30 transition-colors"
+                      >
+                        {renaratingId === record.id ? (
+                          <Loader2 size={10} className="animate-spin" />
+                        ) : (
+                          <Volume2 size={10} />
+                        )}
+                        {renaratingId === record.id ? 'narrating...' : 're-narrate'}
+                      </button>
+                      <button
+                        onClick={() => handleDelete(record.id)}
+                        disabled={deletingId === record.id}
+                        className="flex items-center gap-1 text-[9px] font-mono uppercase tracking-widest text-stone/40 hover:text-red-400/70 disabled:opacity-30 transition-colors"
+                      >
+                        {deletingId === record.id ? (
+                          <Loader2 size={10} className="animate-spin" />
+                        ) : (
+                          <Trash2 size={10} />
+                        )}
+                        delete
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MyRecordsPanel;

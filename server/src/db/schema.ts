@@ -23,9 +23,10 @@ export const savedNarratives = pgTable('saved_narratives', {
   userId: uuid('user_id')
     .references(() => users.id, { onDelete: 'cascade' })
     .notNull(),
-  ancestorProfileId: uuid('ancestor_profile_id')
-    .references(() => ancestorProfiles.id, { onDelete: 'cascade' })
-    .notNull(),
+  ancestorProfileId: uuid('ancestor_profile_id').references(() => ancestorProfiles.id, {
+    onDelete: 'cascade',
+  }),
+  query: text('query').notNull(),
   contentText: text('content_text').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
