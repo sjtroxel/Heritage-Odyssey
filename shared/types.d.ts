@@ -2,6 +2,14 @@ export interface User {
   id: string;
   email: string;
   createdAt: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  dateOfBirth?: string | null;
+  birthLocation?: string | null;
+  currentLocation?: string | null;
+  heritageRegions?: string[] | null;
+  researchInterests?: string | null;
+  profileComplete?: boolean;
 }
 
 export interface AuthResponse {
@@ -16,14 +24,23 @@ export interface AncestorProfile {
   birthRegion: string;
   era: string;
   createdAt: string;
+  lastName?: string | null;
+  birthYear?: number | null;
+  deathYear?: number | null;
+  originCountry?: string | null;
+  destination?: string | null;
+  relationship?: string | null;
+  notes?: string | null;
 }
 
 export interface SavedNarrative {
   id: string;
   userId: string;
-  ancestorProfileId: string;
+  ancestorProfileId: string | null;
+  query: string;
   contentText: string;
   createdAt: string;
+  ancestorName?: string | null;
 }
 
 export interface ModelUsage {
@@ -58,6 +75,30 @@ export interface TranscriptionResponse {
 
 export interface StreamNarrativeRequest {
   query: string;
+  ancestorId?: string;
+}
+
+export interface ProfileUpdateRequest {
+  firstName?: string;
+  lastName?: string;
+  dateOfBirth?: string;
+  birthLocation?: string;
+  currentLocation?: string;
+  heritageRegions?: string[];
+  researchInterests?: string;
+}
+
+export interface AncestorCreateRequest {
+  name: string;
+  birthRegion: string;
+  era: string;
+  lastName?: string;
+  birthYear?: number;
+  deathYear?: number;
+  originCountry?: string;
+  destination?: string;
+  relationship?: string;
+  notes?: string;
 }
 
 export type InteractionMode = 'idle' | 'recording' | 'processing' | 'playing';

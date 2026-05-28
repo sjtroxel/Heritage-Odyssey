@@ -15,6 +15,13 @@
       "when": 1779986740080,
       "tag": "0001_breezy_obadiah_stane",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780004280955,
+      "tag": "0002_quiet_shocker",
+      "breakpoints": true
     }
   ]
 }

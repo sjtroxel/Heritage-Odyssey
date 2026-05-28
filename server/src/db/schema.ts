@@ -1,10 +1,18 @@
-import { pgTable, text, timestamp, uuid, integer } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, integer, boolean, date } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').unique().notNull(),
   passwordHash: text('password_hash').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  firstName: text('first_name'),
+  lastName: text('last_name'),
+  dateOfBirth: date('date_of_birth'),
+  birthLocation: text('birth_location'),
+  currentLocation: text('current_location'),
+  heritageRegions: text('heritage_regions').array(),
+  researchInterests: text('research_interests'),
+  profileComplete: boolean('profile_complete').notNull().default(false),
 });
 
 export const ancestorProfiles = pgTable('ancestor_profiles', {
@@ -16,6 +24,13 @@ export const ancestorProfiles = pgTable('ancestor_profiles', {
   birthRegion: text('birth_region').notNull(),
   era: text('era').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  lastName: text('last_name'),
+  birthYear: integer('birth_year'),
+  deathYear: integer('death_year'),
+  originCountry: text('origin_country'),
+  destination: text('destination'),
+  relationship: text('relationship'),
+  notes: text('notes'),
 });
 
 export const savedNarratives = pgTable('saved_narratives', {

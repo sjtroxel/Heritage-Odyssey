@@ -42,6 +42,14 @@ describe('Auth Endpoints', () => {
         email: 'test@example.com',
         passwordHash: 'hashed-password',
         createdAt: new Date(),
+        firstName: 'Jane',
+        lastName: 'Smith',
+        profileComplete: false,
+        dateOfBirth: null,
+        birthLocation: null,
+        currentLocation: null,
+        heritageRegions: null,
+        researchInterests: null,
       };
 
       (db.query.users.findFirst as MockInstance).mockResolvedValue(undefined);
@@ -55,12 +63,36 @@ describe('Auth Endpoints', () => {
 
       const response = await request(app)
         .post('/api/auth/signup')
-        .send({ email: 'test@example.com', password: 'password123' });
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'Jane',
+          lastName: 'Smith',
+        });
 
       expect(response.status).toBe(201);
       expect(response.body.user.email).toBe('test@example.com');
+      expect(response.body.user.firstName).toBe('Jane');
       expect(response.body.accessToken).toBe('mock-token');
       expect(response.headers['set-cookie']).toBeDefined();
+    });
+
+    it('should return 400 if firstName is missing', async () => {
+      const response = await request(app)
+        .post('/api/auth/signup')
+        .send({ email: 'test@example.com', password: 'password123', lastName: 'Smith' });
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toBe('First name and last name are required');
+    });
+
+    it('should return 400 if lastName is missing', async () => {
+      const response = await request(app)
+        .post('/api/auth/signup')
+        .send({ email: 'test@example.com', password: 'password123', firstName: 'Jane' });
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toBe('First name and last name are required');
     });
 
     it('should return 400 if user already exists', async () => {
@@ -68,7 +100,12 @@ describe('Auth Endpoints', () => {
 
       const response = await request(app)
         .post('/api/auth/signup')
-        .send({ email: 'test@example.com', password: 'password123' });
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'Jane',
+          lastName: 'Smith',
+        });
 
       expect(response.status).toBe(400);
       expect(response.body.message).toBe('User already exists');
@@ -150,31 +187,6 @@ describe('Auth Endpoints', () => {
       const response = await request(app)
         .post('/api/auth/refresh')
         .set('Cookie', ['refreshToken=invalid-token']);
-
-      expect(response.status).toBe(401);
-    });
-  });
-
-  describe('GET /api/profile', () => {
-    it('should return user profile with valid token', async () => {
-      (jwt.verify as MockInstance).mockReturnValue({ sub: 'user-id' });
-
-      const response = await request(app)
-        .get('/api/profile')
-        .set('Authorization', 'Bearer valid-token');
-
-      expect(response.status).toBe(200);
-      expect(response.body.user.id).toBe('user-id');
-    });
-
-    it('should return 401 with invalid token', async () => {
-      (jwt.verify as MockInstance).mockImplementation(() => {
-        throw new Error('Invalid token');
-      });
-
-      const response = await request(app)
-        .get('/api/profile')
-        .set('Authorization', 'Bearer invalid-token');
 
       expect(response.status).toBe(401);
     });

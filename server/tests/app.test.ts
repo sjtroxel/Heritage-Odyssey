@@ -28,8 +28,8 @@ describe('Express App', () => {
       expect(response.status).toBe(400);
     });
 
-    it('should return 401 for /api/profile without token', async () => {
-      const response = await request(app).get('/api/profile');
+    it('should return 401 for /api/auth/profile without token', async () => {
+      const response = await request(app).get('/api/auth/profile');
       expect(response.status).toBe(401);
     });
   });
