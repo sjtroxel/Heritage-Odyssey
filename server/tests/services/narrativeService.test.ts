@@ -30,16 +30,17 @@ describe('narrativeService', () => {
 
   it('should return a HandoffPackage when retrieval is thin', async () => {
     const mockHandoff = {
-      reason: 'insufficient_retrieval',
+      reason: 'insufficient_retrieval' as const,
       query: 'test query',
       retrievedCount: 1,
       suggestion: 'Try broadening...',
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(graph.invoke).mockResolvedValue({
       handoffPackage: mockHandoff,
       finalScript: null,
-    });
+    } as any);
 
     const result = await generateNarrative('test query');
 
@@ -53,10 +54,11 @@ describe('narrativeService', () => {
   it('should return the final script on success', async () => {
     const mockScript = 'Once upon a time...';
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(graph.invoke).mockResolvedValue({
       handoffPackage: null,
       finalScript: mockScript,
-    });
+    } as any);
 
     const result = await generateNarrative('test query');
 
@@ -66,11 +68,12 @@ describe('narrativeService', () => {
   it('should return narrativeDraft if finalScript is missing but draft exists', async () => {
     const mockDraft = 'Draft story...';
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(graph.invoke).mockResolvedValue({
       handoffPackage: null,
       finalScript: null,
       narrativeDraft: mockDraft,
-    });
+    } as any);
 
     const result = await generateNarrative('test query');
 
@@ -78,12 +81,13 @@ describe('narrativeService', () => {
   });
 
   it('should throw an error if neither script nor handoff is returned', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(graph.invoke).mockResolvedValue({
       handoffPackage: null,
       finalScript: null,
       narrativeDraft: null,
       errors: ['Some agent error'],
-    });
+    } as any);
 
     await expect(generateNarrative('test query')).rejects.toThrow('Agent errors: Some agent error');
   });
@@ -92,6 +96,70 @@ describe('narrativeService', () => {
     vi.mocked(graph.invoke).mockRejectedValue(new Error('Graph failed'));
 
     await expect(generateNarrative('test query')).rejects.toThrow('Graph failed');
+  });
+
+  describe('query enrichment', () => {
+    const baseProfile = {
+      id: 'anc-1',
+      userId: 'user-1',
+      name: 'Stanisław',
+      lastName: 'Kowalski',
+      birthRegion: 'Galicia',
+      era: 'Late 19th century',
+      createdAt: '2026-01-01T00:00:00.000Z',
+      birthYear: 1872,
+      deathYear: null,
+      originCountry: 'Poland',
+      destination: 'Chicago',
+      relationship: 'great-grandfather',
+      notes: 'Arrived through Ellis Island in 1898',
+    };
+
+    beforeEach(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.mocked(graph.invoke).mockResolvedValue({
+        handoffPackage: null,
+        finalScript: 'Narrative.',
+      } as any);
+    });
+
+    it('enriched query contains ancestor name and region when profile provided', async () => {
+      await generateNarrative('Tell me their story', 'user-1', baseProfile);
+      expect(graph.invoke).toHaveBeenCalledWith(
+        expect.objectContaining({
+          query: expect.stringContaining('Stanisław Kowalski'),
+        }),
+        expect.any(Object),
+      );
+    });
+
+    it('raw query passes through unchanged when no profile provided', async () => {
+      await generateNarrative('Tell me their story');
+      expect(graph.invoke).toHaveBeenCalledWith(
+        expect.objectContaining({ query: 'Tell me their story' }),
+        expect.any(Object),
+      );
+    });
+
+    it('enriched query includes notes when notes are present', async () => {
+      await generateNarrative('Tell me their story', 'user-1', baseProfile);
+      expect(graph.invoke).toHaveBeenCalledWith(
+        expect.objectContaining({
+          query: expect.stringContaining('Ellis Island'),
+        }),
+        expect.any(Object),
+      );
+    });
+
+    it('enriched query includes destination when destination is present', async () => {
+      await generateNarrative('Tell me their story', 'user-1', baseProfile);
+      expect(graph.invoke).toHaveBeenCalledWith(
+        expect.objectContaining({
+          query: expect.stringContaining('Chicago'),
+        }),
+        expect.any(Object),
+      );
+    });
   });
 
   describe('generateNarrativeStream', () => {

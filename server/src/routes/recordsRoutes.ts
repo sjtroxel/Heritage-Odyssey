@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { authenticate } from '../middleware/auth.js';
 import { db } from '../db/index.js';
-import { savedNarratives } from '../db/schema.js';
+import { savedNarratives, ancestorProfiles } from '../db/schema.js';
 import { logger } from '../services/logger.js';
 
 const router = Router();
@@ -40,8 +40,21 @@ router.get('/records', authenticate, async (req: Request, res: Response) => {
 
   try {
     const records = await db
-      .select()
+      .select({
+        id: savedNarratives.id,
+        userId: savedNarratives.userId,
+        ancestorProfileId: savedNarratives.ancestorProfileId,
+        query: savedNarratives.query,
+        contentText: savedNarratives.contentText,
+        createdAt: savedNarratives.createdAt,
+        ancestorName: sql<string | null>`
+          CASE WHEN ${ancestorProfiles.name} IS NOT NULL
+          THEN ${ancestorProfiles.name} || COALESCE(' ' || ${ancestorProfiles.lastName}, '')
+          ELSE NULL END
+        `.as('ancestor_name'),
+      })
       .from(savedNarratives)
+      .leftJoin(ancestorProfiles, eq(savedNarratives.ancestorProfileId, ancestorProfiles.id))
       .where(eq(savedNarratives.userId, userId))
       .orderBy(desc(savedNarratives.createdAt));
     res.json(records);

@@ -12,12 +12,16 @@ export async function narratorNode(
   try {
     const historicalContextStr = state.historicalContext.join('\n\n');
 
+    const personalizationBlock = state.ancestorContext
+      ? `You are narrating for a specific ancestor. Profile:\n${state.ancestorContext}\n\nAddress them by name in your narrative. Say "Stanisław would have experienced..." not "a Polish immigrant would have experienced...". Where family notes are provided, weave them in as documented fact.\n\n---\n\n`
+      : '';
+
     const response = await ModelRouter.chat({
       model: MODELS.NARRATOR,
       messages: [
         {
           role: 'system',
-          content: `You are the final editor and fact-checker. Your job is twofold:
+          content: `${personalizationBlock}You are the final editor and fact-checker. Your job is twofold:
 1. Ensure every major historical claim in the draft is supported by the research data.
 2. Optimize the text for spoken word (cadence, tone, clarity).
 3. Preserve all paragraph breaks from the draft in your finalScript. Do not collapse paragraphs into a single block of text. The finalScript value must contain double newlines between paragraphs.

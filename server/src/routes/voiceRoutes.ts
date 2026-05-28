@@ -1,10 +1,13 @@
 import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import { rateLimit } from 'express-rate-limit';
+import { eq } from 'drizzle-orm';
 import { authenticate } from '../middleware/auth.js';
 import { transcribeAudio, streamNarrative } from '../services/voiceService.js';
 import { generateNarrative, generateNarrativeStream } from '../services/narrativeService.js';
 import { logger } from '../services/logger.js';
+import { db } from '../db/index.js';
+import { ancestorProfiles, savedNarratives } from '../db/schema.js';
 
 const router = Router();
 
@@ -98,11 +101,26 @@ router.post(
   authenticate,
   async (req: Request, res: Response) => {
     try {
-      const { query } = req.body;
+      const { query, ancestorId } = req.body;
 
       if (!query) {
         res.status(400).json({ error: 'No query provided' });
         return;
+      }
+
+      const userId = (req as Request & { user?: { id: string } }).user?.id;
+
+      // Ancestor profile lookup and ownership check before opening SSE
+      let ancestorProfile = null;
+      if (ancestorId) {
+        const found = await db.query.ancestorProfiles.findFirst({
+          where: eq(ancestorProfiles.id, ancestorId),
+        });
+        if (!found || found.userId !== userId) {
+          res.status(403).json({ error: 'Ancestor profile not found or access denied' });
+          return;
+        }
+        ancestorProfile = { ...found, createdAt: found.createdAt.toISOString() };
       }
 
       // SSE Headers
@@ -111,19 +129,31 @@ router.post(
       res.setHeader('Connection', 'keep-alive');
       res.flushHeaders();
 
-      const userId = (req as Request & { user?: { id: string } }).user?.id;
       let disconnected = false;
+      let completedText: string | null = null;
 
       req.on('close', () => {
         disconnected = true;
       });
 
-      for await (const event of generateNarrativeStream(query, userId)) {
+      for await (const event of generateNarrativeStream(query, userId, ancestorProfile)) {
         if (disconnected) break;
+        if (event.type === 'complete') completedText = event.text;
         res.write(`event: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`);
       }
 
       res.end();
+
+      if (completedText && userId) {
+        db.insert(savedNarratives)
+          .values({
+            userId,
+            query,
+            contentText: completedText,
+            ancestorProfileId: ancestorId ?? null,
+          })
+          .catch((err: unknown) => logger.error({ err }, 'Auto-save narrative failed'));
+      }
     } catch (error) {
       logger.error({ err: error }, 'SSE narrative generation error');
       if (!res.headersSent) {

@@ -147,6 +147,7 @@ describe('Voice Routes Integration', () => {
       expect(narrativeService.generateNarrativeStream).toHaveBeenCalledWith(
         'Tell me about immigrants',
         expect.anything(),
+        null,
       );
     });
 

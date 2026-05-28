@@ -1,7 +1,31 @@
 import { graph } from '../agents/graph.js';
-import { HandoffPackage } from '@heritage-odyssey/shared/types';
+import { AncestorProfile, HandoffPackage } from '@heritage-odyssey/shared/types';
 import { logger } from './logger.js';
 import { exportTrace } from './evalService.js';
+
+function buildEnrichedQuery(query: string, profile: AncestorProfile): string {
+  const fullName = [profile.name, profile.lastName].filter(Boolean).join(' ');
+  const parts = [`Tell me about ${fullName}`];
+  if (profile.birthRegion) parts.push(`born in ${profile.birthRegion}`);
+  if (profile.birthYear) parts.push(`around ${profile.birthYear}`);
+  if (profile.destination) parts.push(`who emigrated to ${profile.destination}`);
+  if (profile.era) parts.push(`during the ${profile.era}`);
+  if (profile.relationship) parts.push(`— the researcher's ${profile.relationship}`);
+  let enriched = parts.join(', ') + '.';
+  if (profile.notes) enriched += ` Additional family context: ${profile.notes}`;
+  return enriched.includes(query.trim()) ? enriched : `${query}\n\n${enriched}`;
+}
+
+function buildAncestorContext(profile: AncestorProfile): string {
+  const fullName = [profile.name, profile.lastName].filter(Boolean).join(' ');
+  const lines = [`Relationship: ${profile.relationship ?? 'ancestor'}`];
+  lines.push(`Full Name: ${fullName}`);
+  if (profile.birthYear) lines.push(`Born: ~${profile.birthYear}`);
+  if (profile.birthRegion) lines.push(`Origin: ${profile.birthRegion}`);
+  if (profile.destination) lines.push(`Destination: ${profile.destination}`);
+  if (profile.notes) lines.push(`Notes: ${profile.notes}`);
+  return lines.join('\n');
+}
 
 /**
  * Public service to generate a historical narrative using the multi-agent swarm.
@@ -14,12 +38,16 @@ import { exportTrace } from './evalService.js';
 export async function generateNarrative(
   query: string,
   userId?: string,
+  ancestorProfile?: AncestorProfile | null,
 ): Promise<string | HandoffPackage> {
   try {
+    const effectiveQuery = ancestorProfile ? buildEnrichedQuery(query, ancestorProfile) : query;
+    const ancestorContext = ancestorProfile ? buildAncestorContext(ancestorProfile) : null;
+
     // Invoke the LangGraph runnable with the initial state
     const result = await graph.invoke(
       {
-        query,
+        query: effectiveQuery,
         historicalContext: [],
         narrativeDraft: null,
         finalScript: null,
@@ -27,6 +55,7 @@ export async function generateNarrative(
         errors: [],
         requiresRevision: false,
         handoffPackage: null,
+        ancestorContext,
       },
       {
         configurable: { userId },
@@ -95,16 +124,20 @@ export type NarrativeEvent = AgentStepEvent | CompleteEvent | HandoffEvent;
 export async function* generateNarrativeStream(
   query: string,
   userId?: string,
+  ancestorProfile?: AncestorProfile | null,
 ): AsyncGenerator<NarrativeEvent> {
   let finalScript: string | null = null;
   let narrativeDraft: string | null = null;
   let handoffPackage: HandoffPackage | null = null;
   let historicalContext: string[] = [];
 
+  const effectiveQuery = ancestorProfile ? buildEnrichedQuery(query, ancestorProfile) : query;
+  const ancestorContext = ancestorProfile ? buildAncestorContext(ancestorProfile) : null;
+
   try {
     const stream = await graph.stream(
       {
-        query,
+        query: effectiveQuery,
         historicalContext: [],
         narrativeDraft: null,
         finalScript: null,
@@ -112,6 +145,7 @@ export async function* generateNarrativeStream(
         errors: [],
         requiresRevision: false,
         handoffPackage: null,
+        ancestorContext,
       },
       {
         streamMode: 'updates',

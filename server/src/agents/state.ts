@@ -29,4 +29,7 @@ export const AgentState = Annotation.Root({
 
   // Surfaced when retrieval is too thin to build a historically grounded story
   handoffPackage: Annotation<HandoffPackage | null>,
+
+  // Pre-formatted ancestor context string for narrator personalization (null when no ancestor selected)
+  ancestorContext: Annotation<string | null>,
 });
