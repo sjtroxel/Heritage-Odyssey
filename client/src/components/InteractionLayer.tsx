@@ -1,11 +1,13 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Mic, Send, Square, Loader2, Volume2, GripHorizontal, Play, Pause } from 'lucide-react';
+import { Mic, Send, Square, Volume2, GripHorizontal } from 'lucide-react';
 import { useMediaRecorder } from '../hooks/useMediaRecorder.js';
 import { useNarrativePipeline } from '../hooks/useNarrativePipeline.js';
 import { apiUrl, authFetch, RateLimitError } from '../lib/api.js';
 import AudioVisualizer from './AudioVisualizer.js';
 import { useAuthContext } from '../context/AuthContext.js';
 import AgentObservabilityLog from './AgentObservabilityLog.js';
+import AgentProgressTrack from './AgentProgressTrack.js';
+import PlaybackControls from './PlaybackControls.js';
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -35,7 +37,9 @@ const InteractionLayer: React.FC = () => {
     run,
     reset,
     togglePlayback,
-    agentStep,
+    restartPlayback,
+    seekBackward,
+    seekForward,
     agentLog,
     narrativeText,
     isRunning,
@@ -197,7 +201,8 @@ const InteractionLayer: React.FC = () => {
     await run(inputValue);
   };
 
-  const hasStatus = isRecording || isPlaying || isRunning || pipelineError || permissionDenied;
+  const hasStatus =
+    isRecording || isPlaying || pipelineError || permissionDenied || countdown !== null;
 
   const showClear = narrativeText || agentLog.length > 0 || pipelineError || rateLimitReset;
 
@@ -235,6 +240,7 @@ const InteractionLayer: React.FC = () => {
             </button>
           )}
 
+          <AgentProgressTrack log={agentLog} isRunning={isRunning} />
           <AgentObservabilityLog log={agentLog} isRunning={isRunning} />
 
           {showClear && (
@@ -254,13 +260,6 @@ const InteractionLayer: React.FC = () => {
             <div className="flex flex-col items-center mb-4 justify-center min-h-10">
               <AudioVisualizer isActive={isRecording} mode="recording" />
               <AudioVisualizer isActive={isPlaying} mode="playing" />
-
-              {isRunning && agentStep && (
-                <div className="flex items-center gap-2 text-paper/80 text-xs font-spectral italic animate-in fade-in slide-in-from-bottom-2">
-                  <Loader2 size={14} className="animate-spin text-brass" />
-                  <span>{agentStep}</span>
-                </div>
-              )}
 
               {isPlaying && !isRunning && (
                 <div className="flex items-center gap-2 text-paper/80 text-xs font-spectral italic animate-in fade-in">
@@ -369,7 +368,7 @@ const InteractionLayer: React.FC = () => {
             </div>
           )}
 
-          <p className="text-[9px] md:text-[10px] text-center text-paper/30 mt-4 uppercase tracking-[0.25em] font-libre font-bold">
+          <p className="text-[8px] md:text-[10px] text-center text-paper/30 mt-4 uppercase tracking-[0.08em] md:tracking-[0.25em] font-libre font-bold">
             {isRecording
               ? 'Capturing Oral History...'
               : 'Authorized Personnel Only // Registry Access'}
@@ -385,55 +384,55 @@ const InteractionLayer: React.FC = () => {
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
           <div
-            className="relative w-full max-w-2xl bg-paper border border-brass/30 shadow-2xl flex flex-col max-h-[75vh] md:max-h-[70vh]"
+            className="relative w-full max-w-2xl bg-paper border border-brass/30 shadow-2xl flex flex-col max-h-[65vh] md:max-h-[75vh]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-6 py-3 border-b border-brass/20 shrink-0">
-              <span className="text-[10px] font-libre font-bold uppercase tracking-[0.2em] text-stone/60">
-                Historical Record
-              </span>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={togglePlayback}
-                  className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest transition-colors text-brass/70 hover:text-brass"
-                >
-                  {isPlaying ? (
-                    <>
-                      <Pause size={11} /> pause
-                    </>
-                  ) : (
-                    <>
-                      <Play size={11} /> resume
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={saveStatus !== 'idle'}
-                  className={`text-[10px] font-mono uppercase tracking-widest transition-colors ${
-                    saveStatus === 'saved'
-                      ? 'text-brass/50 cursor-default'
+            <div className="border-b border-brass/20 shrink-0">
+              {/* Row 1 — title + document actions */}
+              <div className="flex items-center justify-between px-6 py-2.5">
+                <span className="text-[10px] font-libre font-bold uppercase tracking-[0.2em] text-stone/60">
+                  Historical Record
+                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleSave}
+                    disabled={saveStatus !== 'idle'}
+                    className={`text-[10px] font-mono uppercase tracking-widest transition-colors ${
+                      saveStatus === 'saved'
+                        ? 'text-brass/50 cursor-default'
+                        : saveStatus === 'error'
+                          ? 'text-red-400/70 cursor-default'
+                          : saveStatus === 'saving'
+                            ? 'text-brass/40 cursor-wait'
+                            : 'text-brass/70 hover:text-brass'
+                    }`}
+                  >
+                    {saveStatus === 'saved'
+                      ? '✓ saved'
                       : saveStatus === 'error'
-                        ? 'text-red-400/70 cursor-default'
+                        ? '✕ error'
                         : saveStatus === 'saving'
-                          ? 'text-brass/40 cursor-wait'
-                          : 'text-brass/70 hover:text-brass'
-                  }`}
-                >
-                  {saveStatus === 'saved'
-                    ? '✓ saved'
-                    : saveStatus === 'error'
-                      ? '✕ error'
-                      : saveStatus === 'saving'
-                        ? 'saving...'
-                        : '+ save'}
-                </button>
-                <button
-                  onClick={() => setIsNarrativeOpen(false)}
-                  className="text-[10px] font-mono text-stone/40 hover:text-ink/60 uppercase tracking-widest transition-colors"
-                >
-                  ✕ close
-                </button>
+                          ? 'saving...'
+                          : '+ save'}
+                  </button>
+                  <button
+                    onClick={() => setIsNarrativeOpen(false)}
+                    className="text-[10px] font-mono text-stone/40 hover:text-ink/60 uppercase tracking-widest transition-colors"
+                  >
+                    ✕ close
+                  </button>
+                </div>
+              </div>
+
+              {/* Row 2 — playback transport */}
+              <div className="px-6 py-2 border-t border-brass/10">
+                <PlaybackControls
+                  isPlaying={isPlaying}
+                  onToggle={togglePlayback}
+                  onRestart={restartPlayback}
+                  onSeekBackward={seekBackward}
+                  onSeekForward={seekForward}
+                />
               </div>
             </div>
 

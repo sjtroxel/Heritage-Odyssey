@@ -10,14 +10,6 @@ const AgentObservabilityLog: React.FC<AgentObservabilityLogProps> = ({ log, isRu
   const [isOpen, setIsOpen] = useState(false);
   const logEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-open when the first log entry arrives
-  useEffect(() => {
-    if (log.length === 1) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsOpen(true);
-    }
-  }, [log.length]);
-
   // Auto-scroll to newest entry
   useEffect(() => {
     if (isOpen && logEndRef.current) {
@@ -50,7 +42,7 @@ const AgentObservabilityLog: React.FC<AgentObservabilityLogProps> = ({ log, isRu
       {/* Expanded state — Modal Overlay */}
       {isOpen && log.length > 0 && (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4"
           onClick={() => setIsOpen(false)}
         >
           {/* Backdrop */}

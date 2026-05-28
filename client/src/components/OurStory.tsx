@@ -133,7 +133,7 @@ const OurStory: React.FC = () => {
               </p>
               <div className="mt-8 flex items-center gap-4 relative z-10">
                 <div className="w-10 h-px bg-brass"></div>
-                <span className="font-['Pinyon_Script'] text-xl text-brass">
+                <span className="font-['Pinyon_Script'] text-base sm:text-xl text-brass">
                   The Office of Historical Intelligence
                 </span>
               </div>
@@ -155,11 +155,6 @@ const OurStory: React.FC = () => {
             <p className="font-spectral text-xl md:text-2xl text-paper italic leading-relaxed relative z-10">
               Every family has an odyssey. We are simply the archivists helping you remember yours.
             </p>
-            <div className="mt-6 flex justify-center gap-2">
-              <div className="w-1 h-1 bg-brass rounded-full"></div>
-              <div className="w-1 h-1 bg-brass rounded-full opacity-50"></div>
-              <div className="w-1 h-1 bg-brass rounded-full opacity-20"></div>
-            </div>
           </div>
         </motion.div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, Mic, Wind, Loader2, LogOut, Menu, X } from 'lucide-react';
+import { BookOpen, Mic, Loader2, LogOut, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import InteractionLayer from './components/InteractionLayer.js';
 import LoginScreen from './components/LoginScreen.js';
@@ -149,9 +149,8 @@ const App: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut', delay: 0 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-stone/5 border border-stone/10 text-stone text-[10px] font-libre font-bold uppercase tracking-[0.2em] mb-8"
+              className="inline-flex items-center px-4 py-1.5 rounded-sm bg-stone/5 border border-stone/10 text-stone text-[10px] font-libre font-bold uppercase tracking-widest sm:tracking-[0.2em] mb-8"
             >
-              <Wind size={12} className="text-brass" />
               <span>Office of Historical Intelligence</span>
             </motion.div>
 
@@ -171,7 +170,7 @@ const App: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut', delay: 0.45 }}
               viewport={{ once: true }}
-              className="max-w-2xl mx-auto mb-12"
+              className="hidden md:block max-w-2xl mx-auto mb-12"
             >
               <div className="bg-[#fdfaf6]/80 backdrop-blur-sm p-8 border-l-4 border-brass shadow-lg">
                 <p className="text-lg md:text-xl text-ink/80 leading-relaxed font-spectral">
@@ -211,7 +210,7 @@ const App: React.FC = () => {
         <Methodology />
 
         <footer className="border-t border-brass/20 py-12 px-4 bg-cast-iron text-paper/50 font-spectral relative z-10">
-          <div className="max-w-7xl mx-auto flex flex-col items-center justify-center gap-4 text-xs tracking-widest uppercase font-libre">
+          <div className="max-w-7xl mx-auto flex flex-col items-center justify-center gap-3 text-[9px] sm:text-xs tracking-wider sm:tracking-widest uppercase font-libre">
             <div className="flex items-center gap-1.5">
               <span>© 2026 sjtroxel</span>
               <a

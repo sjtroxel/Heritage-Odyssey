@@ -82,6 +82,25 @@ export const useNarrativePipeline = () => {
     }
   }, [isPlaying]);
 
+  const restartPlayback = useCallback(() => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = 0;
+    audioRef.current.play().catch(() => {});
+  }, []);
+
+  const seekBackward = useCallback(() => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 10);
+  }, []);
+
+  const seekForward = useCallback(() => {
+    if (!audioRef.current) return;
+    const duration = audioRef.current.duration;
+    audioRef.current.currentTime = isFinite(duration)
+      ? Math.min(duration, audioRef.current.currentTime + 10)
+      : audioRef.current.currentTime + 10;
+  }, []);
+
   const reset = useCallback(() => {
     cleanup();
     setAgentStep(null);
@@ -286,6 +305,9 @@ export const useNarrativePipeline = () => {
     run,
     reset,
     togglePlayback,
+    restartPlayback,
+    seekBackward,
+    seekForward,
     agentStep,
     agentLog,
     narrativeText,

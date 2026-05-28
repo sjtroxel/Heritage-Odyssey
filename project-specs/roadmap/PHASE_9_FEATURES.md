@@ -165,7 +165,7 @@ This is a half-day task with disproportionate signal: it tells a reviewer "this 
 - [x] Unit tests for `generateNarrativeStream` added and passing (4 tests, complete 2026-05-27).
 - [x] Unit tests for `/api/narrative/generate` and `/api/narrative/tts` added and passing (7 tests, complete 2026-05-27).
 - [x] Playwright E2E Flow 1 (text input) and Flow 2 (mocked voice transcription) written; gated by `E2E_LIVE=true`. Chromium only. Auth setup saves storageState. (2026-05-28)
-- [ ] Agent observability UI polish implemented and visible on mobile and desktop.
-- [ ] Cross-device responsive audit complete; known issues fixed.
-- [ ] Load testing report generated.
+- [x] Agent observability UI polish implemented: 3-node progress track (Researcher → Synthesizer → Narrator) with pending/active/completed states. Auto-open removed from detail log modal; track is the primary status indicator. (2026-05-28)
+- [x] Cross-device responsive audit complete: no breaking issues at 375–1280px. Fixed MyRecordsPanel body/header padding on mobile (px-4 sm:px-6), corrected narrative modal max-h (65vh mobile / 75vh desktop). (2026-05-28)
+- [x] Load testing report generated. Infrastructure layer (GET /health, 10c/30s): 47 ms P50, rate limiter correct, zero crashes. TTS endpoint deferred — credit cost + AI rate limiter makes burst test low-signal. Full results in `AUDIT.md` §6. (2026-05-28)
 - [x] `AUDIT.md` committed at repo root. depcheck clean, ts-prune false positives documented, zero console.log/TODO, 62/62 tests passing, load test deferred (credits). (2026-05-28)

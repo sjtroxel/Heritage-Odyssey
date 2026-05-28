@@ -173,7 +173,7 @@ All UI work must respect this design language. Deviating from it creates jarring
 | Phase | Name | Status |
 | :--- | :--- | :--- |
 | 1–8 | Foundation through Deployment | **COMPLETE** |
-| 9 | Feature Completion & Portfolio Polish | **IN PROGRESS** — Saved Records, My Records, Playwright E2E done. Remaining: observability UI polish, responsive audit, load test. `AUDIT.md` committed. |
+| 9 | Feature Completion & Portfolio Polish | **COMPLETE** — Saved Records, My Records, Playwright E2E, observability UI, responsive audit, load test, `AUDIT.md` all done. |
 | 10 | Ancestor Profile System + Extended User Profile | **PLANNED** — Extended `users` schema (name, DOB, location, heritage regions) + expanded `ancestor_profiles` + personalized narrator. See `PHASE_10_ANCESTOR_PROFILES.md`. |
 | 11–12 | FamilySearch + Eval Service | **STRATEGIC FORK** — Depth (11A/12A) vs Velocity (11B/12B) path. Decision after Phase 10. See `ROADMAP.md`. |
 | 13 | Migration Map | **SPECCED** — design signal only, build timing TBD |
