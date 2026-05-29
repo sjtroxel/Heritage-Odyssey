@@ -2,9 +2,9 @@
 
 > **Status: PLANNED — alternative to [Phase 12B Velocity](PHASE_12B_EVAL_INFRA_VELOCITY.md). Choose one path after Phase 10.**
 >
-> This is the **Depth Path** for Phase 12. Full Python FastAPI evaluation microservice, deployed as a second Railway service, with its own `eval_scores` PostgreSQL table, six scoring dimensions, and HTTP API. Estimated ~3-4 weeks. Pair with [Phase 11A](PHASE_11A_FAMILYSEARCH_DEPTH.md) for the full single-mega-project strategy. See [ROADMAP.md § Strategic Fork After Phase 10](ROADMAP.md) for the trade-off analysis.
+> This is the **Depth Path** for Phase 12. Full Python FastAPI evaluation microservice, deployed as a second Railway service, with its own `eval_scores` PostgreSQL table, six scoring dimensions, and HTTP API. Estimated ~3-4 weeks. Pair with [Phase 11A](PHASE_11A_GENEALOGY_IMPORT_DEPTH.md) for the full single-mega-project strategy. See [ROADMAP.md § Strategic Fork After Phase 10](ROADMAP.md) for the trade-off analysis.
 >
-> This phase closes the Python + Evals gap identified as Tier 1 in the May 2026 career strategy audit — but does it *inside* Heritage Odyssey rather than requiring a separate project. By Phase 12A, the portfolio story is: multi-agent LangGraph orchestration, FamilySearch record retrieval, and a Python FastAPI evaluation layer that runs automated narrative quality regression on every deploy.
+> This phase closes the Python + Evals gap identified as Tier 1 in the May 2026 career strategy audit — but does it *inside* Heritage Odyssey rather than requiring a separate project. By Phase 12A, the portfolio story is: multi-agent LangGraph orchestration, per-user GEDCOM record retrieval, and a Python FastAPI evaluation layer that runs automated narrative quality regression on every deploy.
 
 ## 1. Objective
 
@@ -435,7 +435,7 @@ By the end of Phase 12, the Heritage Odyssey stack spans two languages and three
 
 **TypeScript (Node/Express + React):**
 - Multi-agent LangGraph orchestration
-- FamilySearch OAuth2 + third-party API integration
+- GEDCOM genealogy import + Google OAuth2 (third-party auth)
 - Per-user Pinecone namespace management
 - JWT auth + rate limiting + SSE streaming
 

@@ -2,7 +2,7 @@
 
 > **Status: PLANNED — alternative to [Phase 12A Depth](PHASE_12A_PYTHON_EVAL_SERVICE_DEPTH.md). Choose one path after Phase 10.**
 >
-> This is the **Velocity Path** for Phase 12. Promptfoo for prompt regression in CI, LangSmith for production tracing via env vars (zero code), and an extended Python eval script in the existing `evaluation/` directory with LLM-as-judge and citation coverage scorers. Estimated ~1.5-2 weeks (vs ~3-4 weeks for the Path A FastAPI microservice). Pair with [Phase 11B](PHASE_11B_FAMILYSEARCH_VELOCITY.md) for the full velocity-to-applying strategy. See [ROADMAP.md § Strategic Fork After Phase 10](ROADMAP.md) for the trade-off analysis.
+> This is the **Velocity Path** for Phase 12. Promptfoo for prompt regression in CI, LangSmith for production tracing via env vars (zero code), and an extended Python eval script in the existing `evaluation/` directory with LLM-as-judge and citation coverage scorers. Estimated ~1.5-2 weeks (vs ~3-4 weeks for the Path A FastAPI microservice). Pair with [Phase 11B](PHASE_11B_GENEALOGY_IMPORT_VELOCITY.md) for the full velocity-to-applying strategy. See [ROADMAP.md § Strategic Fork After Phase 10](ROADMAP.md) for the trade-off analysis.
 
 ## 1. Objective
 

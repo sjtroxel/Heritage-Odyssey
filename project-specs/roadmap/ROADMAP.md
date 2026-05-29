@@ -13,11 +13,11 @@
 | 9 | **Feature Completion & Portfolio Polish** | IN PROGRESS | Implement Saved Records, close test/polish carry-overs from Phase 8, add `AUDIT.md` pre-ship cleanup. |
 | 10 | **Ancestor Profile System & Extended User Profile** | PLANNED | Extended user profile (name, DOB, location, heritage regions, research interests); expanded ancestor profile schema; personalized narrative generation. |
 | — | **🔀 Strategic Fork** | DECISION POINT | Choose Path A (Depth) or Path B (Velocity) for Phases 11 and 12. See § Strategic Fork After Phase 10 below. |
-| 11A | **FamilySearch Integration (Depth)** | PATH OPTION | Full FamilySearch OAuth + GEDCOM import + 12-field schema + per-user namespaces + dual-source RAG. ~6-10 weeks. |
-| 11B | **FamilySearch Integration (Velocity)** | PATH OPTION | FamilySearch OAuth + 6-field schema + per-user namespaces + dual-source RAG. No GEDCOM. ~4-5 weeks. |
+| 11A | **Genealogy Import (Depth)** | PATH OPTION | Full GEDCOM import + 12-field schema + multi-event parsing + per-user namespaces + dual-source RAG + Google OAuth/demo. ~6-10 weeks. |
+| 11B | **Genealogy Import (Velocity)** | PATH OPTION | GEDCOM import (core fields) + 6-field schema + per-user namespaces + dual-source RAG + Google OAuth/demo. ~4-5 weeks. |
 | 12A | **Python FastAPI Eval Service (Depth)** | PATH OPTION | Full FastAPI microservice, second Railway deployment, eval_scores table, 6-dimension HTTP API. ~3-4 weeks. |
 | 12B | **Eval Infrastructure (Velocity)** | PATH OPTION | Promptfoo CI + LangSmith env vars + extended `evaluation/` Python with LLM-as-judge. ~1.5-2 weeks. |
-| 13 | **Migration Map** | SPECCED | Interactive migration map driven by real FamilySearch geographic data. Independent of path choice. Specced for design signal; build timing TBD. |
+| 13 | **Migration Map** | SPECCED | Interactive migration map driven by real geographic data from imported GEDCOM records. Independent of path choice. Specced for design signal; build timing TBD. |
 
 ---
 
@@ -153,27 +153,27 @@ After Phase 10 ships, Heritage Odyssey is a complete personalized-narrative prod
 
 ### Path A — Depth Path (One mega-project)
 
-Heritage Odyssey becomes the single deep portfolio project that demonstrates the entire stack: multi-agent LangGraph orchestration, real third-party API integration (FamilySearch + GEDCOM), per-user dynamic embedding, AND a standalone Python FastAPI evaluation microservice with HTTP API.
+Heritage Odyssey becomes the single deep portfolio project that demonstrates the entire stack: multi-agent LangGraph orchestration, real personal-data ingestion (GEDCOM import) with Google OAuth, per-user dynamic embedding, AND a standalone Python FastAPI evaluation microservice with HTTP API.
 
-- **[Phase 11A — FamilySearch Integration (Depth)](PHASE_11A_FAMILYSEARCH_DEPTH.md)** — Full FamilySearch OAuth + GEDCOM file import + 12-field schema extension + per-user Pinecone namespaces + dual-source researcher. ~6-10 weeks.
+- **[Phase 11A — Genealogy Import (Depth)](PHASE_11A_GENEALOGY_IMPORT_DEPTH.md)** — Full GEDCOM file import + 12-field schema extension + multi-event parsing + per-user Pinecone namespaces + dual-source researcher + Google OAuth/demo auth. ~6-10 weeks.
 - **[Phase 12A — Python FastAPI Eval Service (Depth)](PHASE_12A_PYTHON_EVAL_SERVICE_DEPTH.md)** — Full FastAPI microservice deployed as a second Railway service, `eval_scores` PostgreSQL table, HTTP eval API with 6 scoring dimensions, 30-day trend endpoint, Dockerfile + pytest suite. ~3-4 weeks.
 
 **Path A total estimated time after Phase 10:** ~9-14 weeks (~2-3.5 months).
 **Job-applying start estimate:** ~Nov 2026 – Jan 2027.
 
-**Path A pitch:** *"I built a genealogy intelligence platform — multi-agent narrative pipeline, real FamilySearch record retrieval per user, and a Python evaluation microservice with automated quality regression in CI."*
+**Path A pitch:** *"I built a genealogy intelligence platform — multi-agent narrative pipeline, per-user retrieval over the user's own family records (GEDCOM import), and a Python evaluation microservice with automated quality regression in CI."*
 
 ### Path B — Velocity Path (Two-projects strategy)
 
-Heritage Odyssey ships at portfolio-grade with the architecturally interesting differentiator (dual-source RAG with FamilySearch records) and a lean but interview-grade evaluation layer. The weeks freed up are then invested in a *separate* Python + FastAPI project, restoring the two-strong-projects portfolio shape from the original May 26 strategy.
+Heritage Odyssey ships at portfolio-grade with the architecturally interesting differentiator (dual-source RAG over the user's own GEDCOM records) and a lean but interview-grade evaluation layer. The weeks freed up are then invested in a *separate* Python + FastAPI project, restoring the two-strong-projects portfolio shape from the original May 26 strategy.
 
-- **[Phase 11B — FamilySearch Integration (Velocity)](PHASE_11B_FAMILYSEARCH_VELOCITY.md)** — FamilySearch OAuth + 6-field schema + per-user Pinecone namespaces + dual-source researcher. No GEDCOM. ~4-5 weeks.
+- **[Phase 11B — Genealogy Import (Velocity)](PHASE_11B_GENEALOGY_IMPORT_VELOCITY.md)** — GEDCOM import (core fields) + 6-field schema + per-user Pinecone namespaces + dual-source researcher + Google OAuth/demo auth. ~4-5 weeks.
 - **[Phase 12B — Eval Infrastructure (Velocity)](PHASE_12B_EVAL_INFRA_VELOCITY.md)** — Promptfoo CI regression suite + LangSmith production tracing (env vars only) + extended `evaluation/` Python with LLM-as-judge and custom scorers. No FastAPI service, no second Railway deployment. ~1.5-2 weeks.
 
 **Path B total estimated time after Phase 10:** ~5.5-7 weeks (~1.5-2 months).
 **Job-applying start estimate:** ~Aug – Oct 2026.
 
-**Path B pitch:** *"I built a genealogy intelligence platform with multi-agent narrative pipeline and dual-source RAG against real FamilySearch records, plus Promptfoo + LangSmith evaluation in CI. My next project is a Python-native [topic] app demonstrating FastAPI and async patterns."*
+**Path B pitch:** *"I built a genealogy intelligence platform with multi-agent narrative pipeline and dual-source RAG against the user's own family records (GEDCOM import), plus Promptfoo + LangSmith evaluation in CI. My next project is a Python-native [topic] app demonstrating FastAPI and async patterns."*
 
 ### Trade-off Summary
 
@@ -181,8 +181,8 @@ Heritage Odyssey ships at portfolio-grade with the architecturally interesting d
 | :--- | :--- | :--- |
 | Total post-Phase-10 weeks | ~9-14 | ~5.5-7 |
 | Job-applying start estimate | ~Nov 2026 – Jan 2027 | ~Aug – Oct 2026 |
-| FamilySearch OAuth + per-user namespaces + dual-source RAG | Yes | Yes (identical) |
-| GEDCOM file import support | Yes | **No** |
+| GEDCOM import + per-user namespaces + dual-source RAG + Google OAuth/demo | Yes | Yes (identical) |
+| Full multi-event parsing (ports, ship names, source citations) + 12-field schema | Yes | **No — 6 core fields only** |
 | Python FastAPI microservice | Yes (inside HO) | **No in HO** — but a separate Python project is in scope after |
 | Production LangSmith tracing | Yes | Yes (identical) |
 | Promptfoo CI regression suite | Yes | Yes (identical) |
@@ -200,7 +200,7 @@ Phase 13 (Migration Map) is independent of this fork and can be tackled under ei
 ---
 
 ### Phase 13: Migration Map [SPECCED — build timing TBD]
-*   **Summary:** Replace the dead "Explore the Map" hero button with an interactive migration map. With Phase 11's real FamilySearch geographic data (birth place → arrival port → census residence), actual migration routes become possible. The map shows a user's ancestor's probable journey as an animated route overlaid on a period-appropriate historical map base layer.
+*   **Summary:** Replace the dead "Explore the Map" hero button with an interactive migration map. With Phase 11's real geographic data from imported GEDCOM records (birth place → arrival port → census residence), actual migration routes become possible. The map shows a user's ancestor's probable journey as an animated route overlaid on a period-appropriate historical map base layer.
 *   **Candidate tooling:** Mapbox GL JS (most capable, free tier available), Leaflet (lighter weight, fully open-source), or Deck.gl (best for animated routes).
 *   **Specced as a design signal** — shows system design thinking even if not yet built. Include in the portfolio README and blog post as "Phase 13: planned." Recruiters reading the README see the vision even if the feature isn't shipped.
 *   **Independent of the Path A / Path B fork** — buildable under either, though Path A's richer schema (departurePort, shipName) gives the map more to render.

@@ -6,7 +6,7 @@
 
 Two parallel goals that belong together:
 
-1. **Extended user profile** — The current auth system knows nothing about the person behind the credentials. A genealogy app in particular needs to know who the researcher is: their name, where they come from, what heritage they're tracing. This data will also progressively enrich the app experience (personalized sample queries, narrator context, future FamilySearch OAuth pre-fill).
+1. **Extended user profile** — The current auth system knows nothing about the person behind the credentials. A genealogy app in particular needs to know who the researcher is: their name, where they come from, what heritage they're tracing. This data will also progressively enrich the app experience (personalized sample queries, narrator context, future genealogy-import context).
 
 2. **Ancestor profile CRUD + personalized narratives** — Give users the ability to create named ancestor profiles and generate narratives personally addressed to those ancestors. This is the feature that justifies calling Heritage Odyssey a "family history intelligence system" rather than a narrative generator.
 
@@ -34,8 +34,8 @@ ALTER TABLE users ADD COLUMN profile_complete boolean NOT NULL DEFAULT false;
 - `firstName` / `lastName` — required at signup for all new users (nullable in DB for backward compat).
 - `dateOfBirth` — optional. Used to calculate approximate generation context ("your great-great-grandparents' era") in future phases.
 - `birthLocation` — optional. Where the researcher was born, distinct from where their ancestors are from.
-- `currentLocation` — optional. Useful for eventual FamilySearch OAuth pre-fill.
-- `heritageRegions` — optional array, collected during onboarding or profile edit. This is the highest-value genealogy-specific field: knowing the user researches Irish and Polish ancestry allows the app to surface relevant sample queries, tune retrieval, and eventually scope FamilySearch searches. Stored as a PostgreSQL text array.
+- `currentLocation` — optional. Useful for eventual genealogy-import context and map rendering.
+- `heritageRegions` — optional array, collected during onboarding or profile edit. This is the highest-value genealogy-specific field: knowing the user researches Irish and Polish ancestry allows the app to surface relevant sample queries, tune retrieval, and eventually scope retrieval over imported records. Stored as a PostgreSQL text array.
 - `researchInterests` — optional free text. The user describes what they're trying to find: "tracking the Kowalski line from Galicia to Chicago, 1870–1920" or "Irish famine emigration, County Galway." Used as narrative context in Phase 11+.
 - `profileComplete` — boolean flag, set to `true` once the user has filled in at least name + one heritage region. Drives the onboarding prompt (see §2.4).
 
@@ -217,7 +217,7 @@ The My Records panel (Phase 9) should be updated to display the ancestor name on
 
 Fields collected in this phase feed directly into later phases:
 
-- **Phase 11 (FamilySearch)** — `heritageRegions` and `originCountry` can be used to scope FamilySearch API searches. The `researchInterests` text can be parsed or passed as context to the researcher agent.
+- **Phase 11 (Genealogy Import)** — `heritageRegions` and `originCountry` can be used to scope and enrich retrieval over imported GEDCOM records. The `researchInterests` text can be parsed or passed as context to the researcher agent.
 - **Phase 12 (Eval service)** — `heritageRegions` can be used to generate targeted golden-set queries for the evaluation suite rather than generic test queries.
 - **Phase 13 (Migration map)** — `birthRegion`, `destination`, `birthYear` from ancestor profiles become the data points that the map renders as route annotations.
 
