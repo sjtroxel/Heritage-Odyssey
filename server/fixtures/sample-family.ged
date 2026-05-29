@@ -1,0 +1,91 @@
+0 HEAD
+1 SOUR Heritage Odyssey
+2 NAME Heritage Odyssey Sample Family
+1 GEDC
+2 VERS 5.5.1
+1 CHAR UTF-8
+0 @I1@ INDI
+1 NAME Heinrich /Mueller/
+1 SEX M
+1 BIRT
+2 DATE 12 MAR 1845
+2 PLAC Saxony, Germany
+1 DEAT
+2 DATE 08 NOV 1921
+2 PLAC Chicago, Illinois, USA
+1 EMIG
+2 DATE APR 1872
+2 PLAC Bremen, Germany
+1 IMMI
+2 DATE 22 APR 1872
+2 PLAC New York, New York, USA
+2 SHIP SS Deutschland
+1 OCCU Blacksmith
+1 FAMS @F1@
+1 FAMC @F2@
+1 SOUR
+2 DATA Naturalization record, Cook County, Illinois, 1878
+0 @I2@ INDI
+1 NAME Anna /Hoffmann/
+1 SEX F
+1 BIRT
+2 DATE 03 SEP 1848
+2 PLAC Bavaria, Germany
+1 DEAT
+2 DATE 14 JAN 1915
+2 PLAC Chicago, Illinois, USA
+1 EMIG
+2 DATE 1872
+2 PLAC Hamburg, Germany
+1 IMMI
+2 DATE 22 APR 1872
+2 PLAC New York, New York, USA
+1 OCCU Domestic servant
+1 FAMS @F1@
+0 @I3@ INDI
+1 NAME Karl /Mueller/
+1 SEX M
+1 BIRT
+2 DATE 17 JUN 1873
+2 PLAC New York, New York, USA
+1 DEAT
+2 DATE 30 OCT 1945
+2 PLAC Chicago, Illinois, USA
+1 OCCU Steel worker
+1 FAMC @F1@
+0 @I4@ INDI
+1 NAME Maria /Mueller/
+1 SEX F
+1 BIRT
+2 DATE 02 FEB 1875
+2 PLAC Chicago, Illinois, USA
+1 DEAT
+2 DATE 11 MAY 1950
+2 PLAC Chicago, Illinois, USA
+1 FAMC @F1@
+0 @I5@ INDI
+1 NAME Friedrich /Mueller/
+1 SEX M
+1 BIRT
+2 DATE Abt 1812
+2 PLAC Saxony, Germany
+1 DEAT
+2 DATE 1880
+2 PLAC Saxony, Germany
+1 OCCU Farmer
+1 FAMS @F2@
+0 @I6@ INDI
+1 NAME Living /Person/
+1 RESN privacy
+0 @F1@ FAM
+1 HUSB @I1@
+1 WIFE @I2@
+1 CHIL @I3@
+1 CHIL @I4@
+1 MARR
+2 DATE 1869
+2 PLAC Saxony, Germany
+0 @F2@ FAM
+1 HUSB @I5@
+1 CHIL @I1@
+0 TRLR

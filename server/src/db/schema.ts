@@ -3,7 +3,7 @@ import { pgTable, text, timestamp, uuid, integer, boolean, date } from 'drizzle-
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').unique().notNull(),
-  passwordHash: text('password_hash').notNull(),
+  passwordHash: text('password_hash'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   firstName: text('first_name'),
   lastName: text('last_name'),
@@ -13,6 +13,8 @@ export const users = pgTable('users', {
   heritageRegions: text('heritage_regions').array(),
   researchInterests: text('research_interests'),
   profileComplete: boolean('profile_complete').notNull().default(false),
+  googleId: text('google_id').unique(),
+  authProvider: text('auth_provider').notNull().default('password'),
 });
 
 export const ancestorProfiles = pgTable('ancestor_profiles', {
@@ -31,6 +33,17 @@ export const ancestorProfiles = pgTable('ancestor_profiles', {
   destination: text('destination'),
   relationship: text('relationship'),
   notes: text('notes'),
+  gedcomId: text('gedcom_id'),
+  birthDate: text('birth_date'),
+  birthPlace: text('birth_place'),
+  deathDate: text('death_date'),
+  deathPlace: text('death_place'),
+  arrivalDate: text('arrival_date'),
+  arrivalPort: text('arrival_port'),
+  departurePort: text('departure_port'),
+  shipName: text('ship_name'),
+  occupations: text('occupations').array(),
+  sourceSummary: text('source_summary'),
 });
 
 export const savedNarratives = pgTable('saved_narratives', {

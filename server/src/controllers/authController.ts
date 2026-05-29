@@ -103,7 +103,7 @@ export const login = async (req: Request, res: Response) => {
       where: eq(users.email, email),
     });
 
-    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+    if (!user || !user.passwordHash || !(await bcrypt.compare(password, user.passwordHash))) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 

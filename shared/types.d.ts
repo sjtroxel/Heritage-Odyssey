@@ -10,6 +10,8 @@ export interface User {
   heritageRegions?: string[] | null;
   researchInterests?: string | null;
   profileComplete?: boolean;
+  googleId?: string | null;
+  authProvider?: string;
 }
 
 export interface AuthResponse {
@@ -31,6 +33,22 @@ export interface AncestorProfile {
   destination?: string | null;
   relationship?: string | null;
   notes?: string | null;
+  gedcomId?: string | null;
+  birthDate?: string | null;
+  birthPlace?: string | null;
+  deathDate?: string | null;
+  deathPlace?: string | null;
+  arrivalDate?: string | null;
+  arrivalPort?: string | null;
+  departurePort?: string | null;
+  shipName?: string | null;
+  occupations?: string[] | null;
+  sourceSummary?: string | null;
+}
+
+export interface GedcomImportResponse {
+  imported: number;
+  warnings: string[];
 }
 
 export interface SavedNarrative {
