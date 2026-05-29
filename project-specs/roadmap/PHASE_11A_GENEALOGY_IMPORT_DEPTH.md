@@ -270,15 +270,15 @@ Add a "Data Sources" section to the My Ancestors panel (Phase 10):
 
 ## 11. Verification (Done Criteria)
 
-- [ ] Google Cloud OAuth client registered; credentials in env vars (dev + prod redirect URIs).
-- [ ] "Continue with Google" sign-in works end-to-end; `users` gains `googleId` / `authProvider`.
-- [ ] "Try the demo" issues a session for the seeded demo account; existing email/password flow still works.
-- [ ] `ancestor_profiles` schema extended with the 12 GEDCOM-derived fields.
-- [ ] GEDCOM parser implemented; `POST /api/ancestors/import/gedcom` functional, idempotent, skips living persons.
-- [ ] Sample `.ged` fixture committed; "Load sample family" import works; demo account pre-seeded with it.
-- [ ] `embedAncestorProfile` service embeds and upserts into the user-scoped Pinecone namespace.
-- [ ] Researcher agent runs dual-source queries; personal records prefixed with `[PERSONAL RECORD]`.
-- [ ] Synthesizer and narrator prompts updated to treat `[PERSONAL RECORD]` as primary sources.
-- [ ] Unit tests for the GEDCOM parser, embedding service, dual-source researcher, Google OAuth callback, and demo login.
-- [ ] Pinecone namespace cleanup on user data-clear and account deletion.
-- [ ] Privacy review: raw GEDCOM files not persisted; living persons skipped; namespaces isolated per user; no Google tokens persisted.
+- [x] Google Cloud OAuth client registered; credentials in env vars (dev + prod redirect URIs).
+- [x] "Continue with Google" sign-in works end-to-end; `users` gains `googleId` / `authProvider`.
+- [x] "Try the demo" issues a session for the seeded demo account; existing email/password flow still works.
+- [x] `ancestor_profiles` schema extended with the 12 GEDCOM-derived fields.
+- [x] GEDCOM parser implemented; `POST /api/ancestors/import/gedcom` functional, idempotent, skips living persons.
+- [x] Sample `.ged` fixture committed; "Load sample family" import works; demo account pre-seeded with it.
+- [x] `embedAncestorProfile` service embeds and upserts into the user-scoped Pinecone namespace.
+- [x] Researcher agent runs dual-source queries; personal records prefixed with `[PERSONAL RECORD]`.
+- [x] Synthesizer and narrator prompts updated to treat `[PERSONAL RECORD]` as primary sources.
+- [x] Unit tests for the GEDCOM parser, embedding service, dual-source researcher, Google OAuth callback, and demo login.
+- [x] Pinecone namespace cleanup on user data-clear and account deletion.
+- [x] Privacy review: raw GEDCOM files not persisted; living persons skipped; namespaces isolated per user; no Google tokens persisted.

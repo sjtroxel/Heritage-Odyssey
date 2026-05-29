@@ -301,7 +301,10 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
             <div className="flex items-center gap-2 mb-2 self-start">
               <span className="font-spectral italic text-[11px] text-brass/80 border border-brass/30 px-3 py-1">
                 Narrating for:{' '}
-                {[selectedAncestor.name, selectedAncestor.lastName].filter(Boolean).join(' ')}
+                {!selectedAncestor.lastName ||
+                selectedAncestor.name.includes(selectedAncestor.lastName)
+                  ? selectedAncestor.name
+                  : `${selectedAncestor.name} ${selectedAncestor.lastName}`}
               </span>
               <button
                 onClick={onClearAncestor}
@@ -347,7 +350,11 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Press & Hold Mic or Type to Search..."
+                placeholder={
+                  selectedAncestor
+                    ? `Ask about ${selectedAncestor.name}...`
+                    : 'Press & Hold Mic or Type to Search...'
+                }
                 className="grow bg-transparent border-none focus:ring-0 text-paper placeholder:text-paper/20 placeholder:uppercase placeholder:tracking-[0.15em] placeholder:text-[9px] md:placeholder:text-[10px] text-base py-3 px-2 font-spectral"
                 disabled={isRunning || isRecording}
               />

@@ -382,8 +382,10 @@ const MyAncestorsPanel: React.FC<MyAncestorsPanelProps> = ({ onClose, onNarrate 
     </div>
   );
 
-  const fullName = (ancestor: AncestorProfile) =>
-    [ancestor.name, ancestor.lastName].filter(Boolean).join(' ');
+  const fullName = (ancestor: AncestorProfile) => {
+    if (!ancestor.lastName || ancestor.name.includes(ancestor.lastName)) return ancestor.name;
+    return `${ancestor.name} ${ancestor.lastName}`;
+  };
 
   return (
     <div

@@ -10,10 +10,10 @@
 | 6 | **Evaluation** | COMPLETE | Implement Ragas/TruLens for validation of historical accuracy. |
 | 7 | **UI Overhaul & Pre-Deployment Polish** | COMPLETE | Fix functional bugs, redesign UI to historical theme, verify end-to-end locally before deployment. |
 | 8 | **Deployment & Launch** | COMPLETE | Finalize production deployment and verify platform stability. |
-| 9 | **Feature Completion & Portfolio Polish** | IN PROGRESS | Implement Saved Records, close test/polish carry-overs from Phase 8, add `AUDIT.md` pre-ship cleanup. |
-| 10 | **Ancestor Profile System & Extended User Profile** | PLANNED | Extended user profile (name, DOB, location, heritage regions, research interests); expanded ancestor profile schema; personalized narrative generation. |
-| — | **🔀 Strategic Fork** | DECISION POINT | Choose Path A (Depth) or Path B (Velocity) for Phases 11 and 12. See § Strategic Fork After Phase 10 below. |
-| 11A | **Genealogy Import (Depth)** | PATH OPTION | Full GEDCOM import + 12-field schema + multi-event parsing + per-user namespaces + dual-source RAG + Google OAuth/demo. ~6-10 weeks. |
+| 9 | **Feature Completion & Portfolio Polish** | COMPLETE | Implement Saved Records, close test/polish carry-overs from Phase 8, add `AUDIT.md` pre-ship cleanup. |
+| 10 | **Ancestor Profile System & Extended User Profile** | COMPLETE | Extended user profile (name, DOB, location, heritage regions, research interests); expanded ancestor profile schema; personalized narrative generation. |
+| — | **🔀 Strategic Fork** | PATH CHOSEN: 11A | Chose Path A (Depth). Phase 11A complete 2026-05-29. Phase 12 decision (12A vs 12B) pending. |
+| 11A | **Genealogy Import (Depth)** | COMPLETE | Full GEDCOM import + 12-field schema + multi-event parsing + per-user namespaces + dual-source RAG + Google OAuth/demo. Smoke test passed 2026-05-29. |
 | 11B | **Genealogy Import (Velocity)** | PATH OPTION | GEDCOM import (core fields) + 6-field schema + per-user namespaces + dual-source RAG + Google OAuth/demo. ~4-5 weeks. |
 | 12A | **Python FastAPI Eval Service (Depth)** | PATH OPTION | Full FastAPI microservice, second Railway deployment, eval_scores table, 6-dimension HTTP API. ~3-4 weeks. |
 | 12B | **Eval Infrastructure (Velocity)** | PATH OPTION | Promptfoo CI + LangSmith env vars + extended `evaluation/` Python with LLM-as-judge. ~1.5-2 weeks. |

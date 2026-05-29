@@ -168,14 +168,15 @@ All UI work must respect this design language. Deviating from it creates jarring
 
 ---
 
-## Phase Status (as of 2026-05-28)
+## Phase Status (as of 2026-05-29)
 
 | Phase | Name | Status |
 | :--- | :--- | :--- |
 | 1–8 | Foundation through Deployment | **COMPLETE** |
 | 9 | Feature Completion & Portfolio Polish | **COMPLETE** — Saved Records, My Records, Playwright E2E, observability UI, responsive audit, load test, `AUDIT.md` all done. |
-| 10 | Ancestor Profile System + Extended User Profile | **IN PROGRESS** — Steps 1–5 complete (schema migration, shared types, auth controller, routes wired, ancestors CRUD, 20 new tests). Steps 6–18 remain. See `PHASE_10_IMPLEMENTATION.md`. |
-| 11–12 | FamilySearch + Eval Service | **STRATEGIC FORK** — Depth (11A/12A) vs Velocity (11B/12B) path. Decision after Phase 10. See `ROADMAP.md`. |
+| 10 | Ancestor Profile System + Extended User Profile | **COMPLETE** — Full ancestor profile CRUD + extended user profile. 71 server + 15 client tests. |
+| 11A | Genealogy Import (Depth) | **COMPLETE** — GEDCOM import, 12-field schema, per-user Pinecone namespaces, dual-source RAG, Google OAuth, demo mode. All 13 steps done, smoke test passed 2026-05-29. |
+| 12 | Eval Service | **NEXT** — 12A (FastAPI depth) vs 12B (Promptfoo velocity) decision pending. See `ROADMAP.md`. |
 | 13 | Migration Map | **SPECCED** — design signal only, build timing TBD |
 
 ---

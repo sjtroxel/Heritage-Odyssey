@@ -163,7 +163,7 @@ const LoginScreen: React.FC = () => {
               <button
                 onClick={handleGuestLogin}
                 disabled={isAuthLoading}
-                className="w-full py-4 bg-cast-iron text-paper font-['Libre_Baskerville'] font-bold text-lg hover:bg-brass transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 bg-cast-iron text-paper font-['Libre_Baskerville'] font-bold text-base hover:bg-brass transition-colors flex items-center justify-center gap-2"
               >
                 Continue as Guest
               </button>
@@ -217,7 +217,7 @@ const LoginScreen: React.FC = () => {
                     onSubmit={handleSubmit}
                     className="space-y-4 text-left animate-in fade-in slide-in-from-top-2 duration-300"
                   >
-                    <h3 className="font-['Libre_Baskerville'] font-bold text-2xl text-ink border-b border-cast-iron/20 pb-2 mb-4 uppercase tracking-tighter">
+                    <h3 className="font-['Libre_Baskerville'] font-bold text-base text-ink border-b border-cast-iron/20 pb-2 mb-4 uppercase tracking-tighter">
                       {authMode === 'signin' ? 'Sign In' : 'Create Account'}
                     </h3>
 
@@ -288,11 +288,11 @@ const LoginScreen: React.FC = () => {
                     <button
                       type="submit"
                       disabled={isAuthLoading}
-                      className="w-full py-4 bg-cast-iron text-paper font-['Libre_Baskerville'] font-bold text-xl hover:bg-brass transition-colors flex items-center justify-center gap-2 uppercase tracking-widest mt-6"
+                      className="w-full py-3 bg-cast-iron text-paper font-['Libre_Baskerville'] font-bold text-base hover:bg-brass transition-colors flex items-center justify-center gap-2 uppercase tracking-widest mt-6"
                     >
                       {isAuthLoading ? (
                         <>
-                          <Loader2 className="animate-spin" size={20} />
+                          <Loader2 className="animate-spin" size={16} />
                           <span>
                             {authMode === 'signin' ? 'Signing In...' : 'Creating Account...'}
                           </span>
@@ -311,7 +311,7 @@ const LoginScreen: React.FC = () => {
                         setFirstName('');
                         setLastName('');
                       }}
-                      className="w-full text-center text-stone hover:text-ink text-base font-sans font-semibold mt-4 uppercase tracking-wider"
+                      className="w-full text-center text-stone hover:text-ink text-base font-sans font-semibold mt-1 uppercase tracking-wider"
                     >
                       Cancel
                     </button>

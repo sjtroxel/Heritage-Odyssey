@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, Mic, Loader2, LogOut, Menu, X, Settings, Users } from 'lucide-react';
+import { BookOpen, Mic, Loader2, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AncestorProfile } from '@heritage-odyssey/shared/types';
 import InteractionLayer from './components/InteractionLayer.js';
@@ -59,38 +59,34 @@ const App: React.FC = () => {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-6 text-xs font-libre font-bold tracking-widest text-paper/70 uppercase">
             <a href="#story" className="hover:text-brass transition-colors">
-              Our Story
+              OUR STORY
             </a>
             <a href="#methodology" className="hover:text-brass transition-colors">
-              Methodology
+              METHODOLOGY
             </a>
             <a
               href="#odyssey"
               className="px-6 py-2 border border-brass/40 bg-brass/10 text-brass rounded-sm hover:bg-brass/20 transition-all"
             >
-              Get Started
+              GET STARTED
             </a>
             <button
               onClick={() => setIsAncestorsOpen(true)}
-              className="flex items-center gap-1.5 hover:text-brass transition-colors"
-              title="My Ancestors"
+              className="hover:text-brass transition-colors"
             >
-              <Users size={14} />
-              Ancestors
+              ANCESTORS
             </button>
             <button
               onClick={() => setIsProfileOpen(true)}
-              className="flex items-center gap-1.5 hover:text-brass transition-colors"
-              title="Profile Settings"
+              className="hover:text-brass transition-colors"
             >
-              <Settings size={14} />
+              SETTINGS
             </button>
             <button
               onClick={logout}
-              className="flex items-center gap-1.5 hover:text-brass transition-colors"
+              className="px-6 py-2 border border-rose-200/40 bg-rose-200/10 text-rose-200 rounded-sm hover:bg-rose-200/20 transition-all"
             >
-              <LogOut size={14} />
-              Sign Out
+              SIGN OUT
             </button>
           </nav>
 
@@ -114,57 +110,54 @@ const App: React.FC = () => {
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="md:hidden bg-cast-iron border-t border-brass/20 overflow-hidden"
             >
-              <div className="flex flex-col p-6 gap-6 text-sm font-libre font-bold tracking-[0.2em] text-paper/80 uppercase">
+              <div className="flex flex-col p-6 gap-4 text-sm font-libre font-bold tracking-[0.2em] text-paper/80 uppercase">
                 <a
                   href="#story"
                   onClick={() => setIsMenuOpen(false)}
-                  className="hover:text-brass transition-colors border-b border-brass/10 pb-2"
+                  className="hover:text-brass transition-colors border-b border-brass/10 pb-4"
                 >
-                  Our Story
+                  OUR STORY
                 </a>
                 <a
                   href="#methodology"
                   onClick={() => setIsMenuOpen(false)}
-                  className="hover:text-brass transition-colors border-b border-brass/10 pb-2"
+                  className="hover:text-brass transition-colors border-b border-brass/10 pb-4"
                 >
-                  Methodology
+                  METHODOLOGY
                 </a>
                 <a
                   href="#odyssey"
                   onClick={() => setIsMenuOpen(false)}
-                  className="text-brass flex items-center gap-2"
+                  className="text-brass hover:text-brass/80 transition-colors border-b border-brass/10 pb-4"
                 >
-                  Get Started
+                  GET STARTED
                 </a>
                 <button
                   onClick={() => {
                     setIsAncestorsOpen(true);
                     setIsMenuOpen(false);
                   }}
-                  className="flex items-center gap-2 text-paper/70 hover:text-brass transition-colors border-b border-brass/10 pb-2"
+                  className="text-left hover:text-brass transition-colors border-b border-brass/10 pb-4"
                 >
-                  <Users size={16} />
-                  My Ancestors
+                  ANCESTORS
                 </button>
                 <button
                   onClick={() => {
                     setIsProfileOpen(true);
                     setIsMenuOpen(false);
                   }}
-                  className="flex items-center gap-2 text-paper/70 hover:text-brass transition-colors border-b border-brass/10 pb-2"
+                  className="text-left hover:text-brass transition-colors border-b border-brass/10 pb-4"
                 >
-                  <Settings size={16} />
-                  Profile Settings
+                  SETTINGS
                 </button>
                 <button
                   onClick={() => {
                     logout();
                     setIsMenuOpen(false);
                   }}
-                  className="flex items-center gap-2 text-paper/60 hover:text-brass transition-colors pt-2"
+                  className="text-left text-rose-200 hover:text-rose-200/80 transition-colors"
                 >
-                  <LogOut size={16} />
-                  Sign Out
+                  SIGN OUT
                 </button>
               </div>
             </motion.nav>
