@@ -12,11 +12,13 @@
 | 8 | **Deployment & Launch** | COMPLETE | Finalize production deployment and verify platform stability. |
 | 9 | **Feature Completion & Portfolio Polish** | COMPLETE | Implement Saved Records, close test/polish carry-overs from Phase 8, add `AUDIT.md` pre-ship cleanup. |
 | 10 | **Ancestor Profile System & Extended User Profile** | COMPLETE | Extended user profile (name, DOB, location, heritage regions, research interests); expanded ancestor profile schema; personalized narrative generation. |
-| — | **🔀 Strategic Fork** | PATH CHOSEN: 11A | Chose Path A (Depth). Phase 11A complete 2026-05-29. Phase 12 decision (12A vs 12B) pending. |
+| — | **🔀 Strategic Fork** | PATH CHOSEN: 11A → 12A | Chose Path A (Depth). 11A complete 2026-05-29. **12A locked 2026-05-29** (rested decision, see note below). |
 | 11A | **Genealogy Import (Depth)** | COMPLETE | Full GEDCOM import + 12-field schema + multi-event parsing + per-user namespaces + dual-source RAG + Google OAuth/demo. Smoke test passed 2026-05-29. |
-| 11B | **Genealogy Import (Velocity)** | PATH OPTION | GEDCOM import (core fields) + 6-field schema + per-user namespaces + dual-source RAG + Google OAuth/demo. ~4-5 weeks. |
-| 12A | **Python FastAPI Eval Service (Depth)** | PATH OPTION | Full FastAPI microservice, second Railway deployment, eval_scores table, 6-dimension HTTP API. ~3-4 weeks. |
-| 12B | **Eval Infrastructure (Velocity)** | PATH OPTION | Promptfoo CI + LangSmith env vars + extended `evaluation/` Python with LLM-as-judge. ~1.5-2 weeks. |
+| 11B | **Genealogy Import (Velocity)** | NOT CHOSEN | GEDCOM import (core fields) + 6-field schema + per-user namespaces + dual-source RAG + Google OAuth/demo. ~4-5 weeks. |
+| 12A | **Python FastAPI Eval Service (Depth)** | **LOCKED — NEXT** | Full FastAPI microservice, eval_scores table, 6-dimension HTTP API. Second Railway deploy is optional/stretch. ~3-4 weeks. Build order in [PHASE_12A_IMPLEMENTATION.md](PHASE_12A_IMPLEMENTATION.md). |
+| 12B | **Eval Infrastructure (Velocity)** | NOT CHOSEN | Promptfoo CI + LangSmith env vars + extended `evaluation/` Python with LLM-as-judge. ~1.5-2 weeks. |
+
+> **12A lock rationale (2026-05-29, 3pm):** With 11A already shipped, the live cost of 12A over 12B is only the spec delta (~2 weeks), not the whole-track Aug-Oct vs Nov-Jan swing. 12A is chosen deliberately as a *scaffolded Python/FastAPI learning rep* ahead of the separate greenfield Python project that follows HO — building inside a repo where the domain, data, and eval logic already exist lowers cognitive load so attention goes to the Python itself. Conditions of the lock: (1) scope discipline — second Railway deploy, 30-day trend endpoint, and admin view are **optional/droppable** if they threaten the timeline; the eval suite can run as a CI job instead of a standing service; (2) the user does articulation/reading reps on the FastAPI + scorer code (the learning value depends on this, not on the artifact existing).
 | 13 | **Migration Map** | SPECCED | Interactive migration map driven by real geographic data from imported GEDCOM records. Independent of path choice. Specced for design signal; build timing TBD. |
 
 ---

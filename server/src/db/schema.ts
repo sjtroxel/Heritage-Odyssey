@@ -1,4 +1,13 @@
-import { pgTable, text, timestamp, uuid, integer, boolean, date } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+  integer,
+  boolean,
+  date,
+  doublePrecision,
+} from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -57,6 +66,22 @@ export const savedNarratives = pgTable('saved_narratives', {
   query: text('query').notNull(),
   contentText: text('content_text').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const evalScores = pgTable('eval_scores', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  runId: text('run_id'),
+  query: text('query').notNull(),
+  narrativeText: text('narrative_text').notNull(),
+  faithfulness: doublePrecision('faithfulness'),
+  answerRelevancy: doublePrecision('answer_relevancy'),
+  contextRecall: doublePrecision('context_recall'),
+  historicalGrounding: doublePrecision('historical_grounding'),
+  emotionalResonance: doublePrecision('emotional_resonance'),
+  citationCoverage: doublePrecision('citation_coverage'),
+  overall: doublePrecision('overall'),
+  modelUsed: text('model_used'),
+  evaluatedAt: timestamp('evaluated_at').defaultNow().notNull(),
 });
 
 export const modelUsage = pgTable('model_usage', {

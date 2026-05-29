@@ -19,6 +19,7 @@
     "eval": "cd evaluation && venv/bin/python main.py",
     "eval:dashboard": "cd evaluation && venv/bin/python main.py --dashboard",
     "eval:trace": "EVAL_MODE=true npm run dev",
+    "eval:service": "cd evaluation-service && venv/bin/uvicorn main:app --reload --port 8000",
     "test": "npm test --workspaces --if-present",
     "format": "prettier --write .",
     "prepare": "husky"
