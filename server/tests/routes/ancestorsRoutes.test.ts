@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach, type MockInstance } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
+import { readFileSync } from 'fs';
 import { app } from '../../src/app.js';
 import { db } from '../../src/db/index.js';
+import { parseGedcom } from '../../src/services/gedcomParser.js';
 
 vi.mock('../../src/db/index.js', () => ({
   db: {
@@ -23,6 +25,18 @@ vi.mock('jsonwebtoken', () => ({
     sign: vi.fn(),
     verify: vi.fn(),
   },
+}));
+
+vi.mock('../../src/services/gedcomParser.js', () => ({
+  parseGedcom: vi.fn(),
+}));
+
+vi.mock('../../src/services/embedding.js', () => ({
+  embedAncestorProfile: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('fs', () => ({
+  readFileSync: vi.fn(),
 }));
 
 const mockAncestor = {
@@ -170,6 +184,138 @@ describe('Ancestors Endpoints', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.notes).toBe('Ship manifest: 1883');
+    });
+  });
+
+  describe('POST /api/ancestors/import/gedcom', () => {
+    const mockParsedAncestor = {
+      gedcomId: '@I1@',
+      name: 'Heinrich Mueller',
+      lastName: 'Mueller',
+      birthDate: '12 MAR 1845',
+      birthPlace: 'Saxony, Germany',
+      birthYear: 1845,
+    };
+    const gedcomBuffer = Buffer.from('0 HEAD\n0 TRLR');
+
+    beforeEach(() => {
+      (parseGedcom as MockInstance).mockReturnValue({
+        ancestors: [mockParsedAncestor],
+        warnings: [],
+      });
+    });
+
+    it('should return 401 without a token', async () => {
+      (jwt.verify as MockInstance).mockImplementation(() => {
+        throw new Error();
+      });
+      const response = await request(app)
+        .post('/api/ancestors/import/gedcom')
+        .attach('file', gedcomBuffer, { filename: 'test.ged', contentType: 'text/plain' });
+      expect(response.status).toBe(401);
+    });
+
+    it('should return 400 when no file is uploaded', async () => {
+      const response = await request(app)
+        .post('/api/ancestors/import/gedcom')
+        .set('Authorization', 'Bearer valid-token')
+        .send();
+      expect(response.status).toBe(400);
+    });
+
+    it('should insert a new ancestor and return imported count', async () => {
+      (db.query.ancestorProfiles.findFirst as MockInstance).mockResolvedValue(undefined);
+      (db.insert as MockInstance).mockReturnValue({
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockResolvedValue([{ ...mockAncestor, gedcomId: '@I1@' }]),
+        }),
+      });
+
+      const response = await request(app)
+        .post('/api/ancestors/import/gedcom')
+        .set('Authorization', 'Bearer valid-token')
+        .attach('file', gedcomBuffer, { filename: 'test.ged', contentType: 'text/plain' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.imported).toBe(1);
+      expect(response.body.warnings).toEqual([]);
+      expect(db.insert).toHaveBeenCalled();
+    });
+
+    it('should update an existing ancestor when gedcomId matches (idempotent)', async () => {
+      (db.query.ancestorProfiles.findFirst as MockInstance).mockResolvedValue({
+        ...mockAncestor,
+        gedcomId: '@I1@',
+      });
+      (db.update as MockInstance).mockReturnValue({
+        set: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            returning: vi.fn().mockResolvedValue([{ ...mockAncestor, gedcomId: '@I1@' }]),
+          }),
+        }),
+      });
+
+      const response = await request(app)
+        .post('/api/ancestors/import/gedcom')
+        .set('Authorization', 'Bearer valid-token')
+        .attach('file', gedcomBuffer, { filename: 'test.ged', contentType: 'text/plain' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.imported).toBe(1);
+      expect(db.update).toHaveBeenCalled();
+      expect(db.insert).not.toHaveBeenCalled();
+    });
+
+    it('should include parser warnings in the response', async () => {
+      (parseGedcom as MockInstance).mockReturnValue({
+        ancestors: [],
+        warnings: ['Skipped living or private person: @I6@'],
+      });
+
+      const response = await request(app)
+        .post('/api/ancestors/import/gedcom')
+        .set('Authorization', 'Bearer valid-token')
+        .attach('file', gedcomBuffer, { filename: 'test.ged', contentType: 'text/plain' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.imported).toBe(0);
+      expect(response.body.warnings).toHaveLength(1);
+    });
+  });
+
+  describe('POST /api/ancestors/import/sample', () => {
+    it('should return 401 without a token', async () => {
+      (jwt.verify as MockInstance).mockImplementation(() => {
+        throw new Error();
+      });
+      const response = await request(app).post('/api/ancestors/import/sample');
+      expect(response.status).toBe(401);
+    });
+
+    it('should read the fixture and import ancestors', async () => {
+      (readFileSync as MockInstance).mockReturnValue('0 HEAD\n0 TRLR');
+      (parseGedcom as MockInstance).mockReturnValue({
+        ancestors: [
+          { gedcomId: '@I1@', name: 'Heinrich Mueller', birthYear: 1845 },
+          { gedcomId: '@I2@', name: 'Anna Hoffmann', birthYear: 1848 },
+        ],
+        warnings: ['Skipped living or private person: @I6@'],
+      });
+      (db.query.ancestorProfiles.findFirst as MockInstance).mockResolvedValue(undefined);
+      (db.insert as MockInstance).mockReturnValue({
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockResolvedValue([mockAncestor]),
+        }),
+      });
+
+      const response = await request(app)
+        .post('/api/ancestors/import/sample')
+        .set('Authorization', 'Bearer valid-token');
+
+      expect(response.status).toBe(200);
+      expect(response.body.imported).toBe(2);
+      expect(response.body.warnings).toHaveLength(1);
+      expect(readFileSync).toHaveBeenCalled();
     });
   });
 

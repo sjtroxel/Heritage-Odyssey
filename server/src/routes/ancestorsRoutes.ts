@@ -1,10 +1,21 @@
 import { Router, Request, Response } from 'express';
 import { eq, and, desc } from 'drizzle-orm';
 import { z } from 'zod';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { readFileSync } from 'fs';
+import multer from 'multer';
 import { authenticate } from '../middleware/auth.js';
 import { db } from '../db/index.js';
 import { ancestorProfiles } from '../db/schema.js';
 import { logger } from '../services/logger.js';
+import { parseGedcom, type ParsedAncestor } from '../services/gedcomParser.js';
+import { embedAncestorProfile } from '../services/embedding.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const SAMPLE_FIXTURE_PATH = join(__dirname, '../../../fixtures/sample-family.ged');
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 const router = Router();
 
@@ -161,6 +172,128 @@ router.delete('/ancestors/:id', authenticate, async (req: Request, res: Response
   } catch (error) {
     logger.error({ err: error }, 'Failed to delete ancestor profile');
     res.status(500).json({ error: 'Failed to delete ancestor profile' });
+  }
+});
+
+async function importAncestors(
+  userId: string,
+  raw: string,
+): Promise<{ imported: number; warnings: string[] }> {
+  const { ancestors, warnings } = parseGedcom(raw);
+  let imported = 0;
+
+  for (const ancestor of ancestors) {
+    try {
+      const values = buildAncestorValues(userId, ancestor);
+
+      if (ancestor.gedcomId) {
+        const existing = await db.query.ancestorProfiles.findFirst({
+          where: and(
+            eq(ancestorProfiles.userId, userId),
+            eq(ancestorProfiles.gedcomId, ancestor.gedcomId),
+          ),
+        });
+
+        if (existing) {
+          const [updated] = await db
+            .update(ancestorProfiles)
+            .set(values)
+            .where(eq(ancestorProfiles.id, existing.id))
+            .returning();
+          if (updated)
+            await embedAncestorProfile(updated, userId).catch((e) =>
+              warnings.push(
+                `Embed failed for ${ancestor.name}: ${e instanceof Error ? e.message : String(e)}`,
+              ),
+            );
+        } else {
+          const [inserted] = await db.insert(ancestorProfiles).values(values).returning();
+          if (inserted)
+            await embedAncestorProfile(inserted, userId).catch((e) =>
+              warnings.push(
+                `Embed failed for ${ancestor.name}: ${e instanceof Error ? e.message : String(e)}`,
+              ),
+            );
+        }
+      } else {
+        const [inserted] = await db.insert(ancestorProfiles).values(values).returning();
+        if (inserted)
+          await embedAncestorProfile(inserted, userId).catch((e) =>
+            warnings.push(
+              `Embed failed for ${ancestor.name}: ${e instanceof Error ? e.message : String(e)}`,
+            ),
+          );
+      }
+
+      imported++;
+    } catch (err) {
+      warnings.push(
+        `Failed to save ${ancestor.name}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+  }
+
+  return { imported, warnings };
+}
+
+function buildAncestorValues(userId: string, ancestor: ParsedAncestor) {
+  return {
+    userId,
+    name: ancestor.name,
+    birthRegion: ancestor.birthPlace ?? ancestor.departurePort ?? 'Unknown',
+    era: ancestor.birthYear ? String(ancestor.birthYear) : 'Unknown',
+    lastName: ancestor.lastName ?? null,
+    birthYear: ancestor.birthYear ?? null,
+    deathYear: ancestor.deathYear ?? null,
+    originCountry: ancestor.departurePort ?? null,
+    destination: ancestor.arrivalPort ?? null,
+    gedcomId: ancestor.gedcomId || null,
+    birthDate: ancestor.birthDate ?? null,
+    birthPlace: ancestor.birthPlace ?? null,
+    deathDate: ancestor.deathDate ?? null,
+    deathPlace: ancestor.deathPlace ?? null,
+    arrivalDate: ancestor.arrivalDate ?? null,
+    arrivalPort: ancestor.arrivalPort ?? null,
+    departurePort: ancestor.departurePort ?? null,
+    shipName: ancestor.shipName ?? null,
+    occupations: ancestor.occupations ?? null,
+    sourceSummary: ancestor.sourceSummary ?? null,
+  };
+}
+
+router.post(
+  '/ancestors/import/gedcom',
+  authenticate,
+  upload.single('file'),
+  async (req: Request, res: Response) => {
+    const userId = req.user!.id;
+
+    if (!req.file) {
+      res.status(400).json({ error: 'No file uploaded' });
+      return;
+    }
+
+    try {
+      const raw = req.file.buffer.toString('utf-8');
+      const result = await importAncestors(userId, raw);
+      res.json(result);
+    } catch (err) {
+      logger.error({ err }, 'GEDCOM import failed');
+      res.status(500).json({ error: 'Import failed' });
+    }
+  },
+);
+
+router.post('/ancestors/import/sample', authenticate, async (req: Request, res: Response) => {
+  const userId = req.user!.id;
+
+  try {
+    const raw = readFileSync(SAMPLE_FIXTURE_PATH, 'utf-8');
+    const result = await importAncestors(userId, raw);
+    res.json(result);
+  } catch (err) {
+    logger.error({ err }, 'Sample import failed');
+    res.status(500).json({ error: 'Sample import failed' });
   }
 });
 

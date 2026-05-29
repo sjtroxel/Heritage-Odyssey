@@ -4,31 +4,19 @@ import { createEmbedding } from '../src/services/embedding.js';
 
 const mocks = vi.hoisted(() => {
   const qMock = vi.fn();
-  const iMock = vi.fn(() => ({
-    query: qMock,
-  }));
-  return { queryMock: qMock, indexMock: iMock };
+  const nsMock = vi.fn(() => ({ query: qMock, upsert: vi.fn() }));
+  return { queryMock: qMock, namespaceMock: nsMock };
 });
 
-vi.mock('@pinecone-database/pinecone', () => {
-  return {
-    Pinecone: vi.fn().mockImplementation(function () {
-      return {
-        index: mocks.indexMock,
-      };
-    }),
-  };
-});
+vi.mock('../src/services/pinecone.js', () => ({
+  index: {
+    query: mocks.queryMock,
+    namespace: mocks.namespaceMock,
+  },
+}));
 
 vi.mock('../src/services/embedding.js', () => ({
   createEmbedding: vi.fn(),
-}));
-
-vi.mock('../src/config/env.js', () => ({
-  env: {
-    PINECONE_API_KEY: 'test-key',
-    PINECONE_INDEX: 'test-index',
-  },
 }));
 
 describe('vectorStore', () => {
@@ -126,5 +114,27 @@ describe('vectorStore', () => {
 
     const results = await query('test query');
     expect(results[0].content).toBe('');
+  });
+
+  it('should route through namespace when namespace option is provided', async () => {
+    const nsMockIndex = { query: vi.fn().mockResolvedValue({ matches: [] }) };
+    mocks.namespaceMock.mockReturnValue(nsMockIndex);
+    vi.mocked(createEmbedding).mockResolvedValue([0.1]);
+
+    await query('test query', { namespace: 'user-abc' });
+
+    expect(mocks.namespaceMock).toHaveBeenCalledWith('user-abc');
+    expect(nsMockIndex.query).toHaveBeenCalled();
+    expect(mocks.queryMock).not.toHaveBeenCalled();
+  });
+
+  it('should use the default index (no namespace) when namespace is not provided', async () => {
+    vi.mocked(createEmbedding).mockResolvedValue([0.1]);
+    mocks.queryMock.mockResolvedValue({ matches: [] });
+
+    await query('test query');
+
+    expect(mocks.namespaceMock).not.toHaveBeenCalled();
+    expect(mocks.queryMock).toHaveBeenCalled();
   });
 });
