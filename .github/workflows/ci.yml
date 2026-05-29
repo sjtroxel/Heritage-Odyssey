@@ -69,6 +69,9 @@ jobs:
           PINECONE_INDEX: heritage-odyssey-test
           ELEVENLABS_API_KEY: test-placeholder
           ELEVENLABS_VOICE_ID: test-placeholder
+          GOOGLE_CLIENT_ID: test-google-client-id
+          GOOGLE_CLIENT_SECRET: test-google-client-secret
+          GOOGLE_REDIRECT_URI: http://localhost:3000/api/auth/google/callback
 
       # Requires `coverage` script and coverage thresholds configured in vitest.config.ts — wired during Phase 1 implementation.
       - name: Coverage threshold
@@ -85,6 +88,9 @@ jobs:
           PINECONE_INDEX: heritage-odyssey-test
           ELEVENLABS_API_KEY: test-placeholder
           ELEVENLABS_VOICE_ID: test-placeholder
+          GOOGLE_CLIENT_ID: test-google-client-id
+          GOOGLE_CLIENT_SECRET: test-google-client-secret
+          GOOGLE_REDIRECT_URI: http://localhost:3000/api/auth/google/callback
 
       # Root build script will be defined in Phase 1. This step will verify the full monorepo compiles cleanly.
       - name: Build
