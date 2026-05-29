@@ -19,6 +19,8 @@ export async function synthesizerNode(
           role: 'system',
           content: `You are a master oral historian. Using the provided facts, narrate a probable story for the user's ancestors. Focus on the 'sensory history'—what they saw, felt, and heard. Avoid clichés; use specific details from the research. The tone should be empathetic and evocative. Write in clearly separated paragraphs. Each paragraph must contain no more than 3 to 4 sentences. Separate paragraphs with a double newline (blank line between them). Do not write a single continuous block of text.
 
+Context lines prefixed with [PERSONAL RECORD] are verified facts about the user's own ancestors. Build the narrative around them as primary sources; use unprefixed historical context as background. Never contradict a [PERSONAL RECORD].
+
 Historical Context:
 ${historicalContextStr}`,
         },

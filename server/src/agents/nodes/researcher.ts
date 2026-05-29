@@ -1,3 +1,4 @@
+import type { RunnableConfig } from '@langchain/core/runnables';
 import { AgentState } from '../state.js';
 import { ModelRouter } from '../../services/modelRouter.js';
 import { query as vectorStoreQuery } from '../../services/vectorStore.js';
@@ -5,14 +6,13 @@ import { MODELS } from '@heritage-odyssey/shared/models';
 import { HandoffPackage } from '@heritage-odyssey/shared/types';
 import { logger } from '../../services/logger.js';
 
-/**
- * Researcher agent node: Generates targeted search phrases and retrieves
- * historical context from the vector store.
- */
 export async function researcherNode(
   state: typeof AgentState.State,
+  config?: RunnableConfig,
 ): Promise<Partial<typeof AgentState.State>> {
   try {
+    const userId = config?.configurable?.userId as string | undefined;
+
     // 1. Use ModelRouter.chat() to extract targeted search phrases
     const response = await ModelRouter.chat({
       model: MODELS.RESEARCHER,
@@ -42,49 +42,63 @@ export async function researcherNode(
       throw new Error(`Failed to parse search phrases from model response: ${content}`);
     }
 
-    // 2. Query vector store for each phrase and deduplicate results by id
-    const allResults = await Promise.all(
-      searchPhrases.map((phrase) => vectorStoreQuery(phrase, { topK: 5 })),
-    );
+    // 2. Query general corpus + personal namespace in parallel
+    const [generalRaw, personalRaw] = await Promise.all([
+      Promise.all(searchPhrases.map((phrase) => vectorStoreQuery(phrase, { topK: 5 }))),
+      userId
+        ? Promise.all(
+            searchPhrases.map((phrase) =>
+              vectorStoreQuery(phrase, { topK: 3, namespace: `user-${userId}` }),
+            ),
+          )
+        : Promise.resolve([]),
+    ]);
 
-    const uniqueResultsMap = new Map<
+    // Deduplicate general results by id
+    const generalMap = new Map<
       string,
       { id: string; score: number | undefined; content: string }
     >();
-    for (const results of allResults) {
+    for (const results of generalRaw) {
       for (const result of results) {
-        if (!uniqueResultsMap.has(result.id)) {
-          uniqueResultsMap.set(result.id, {
-            ...result,
-            content: String(result.content),
-          });
+        if (!generalMap.has(result.id)) {
+          generalMap.set(result.id, { ...result, content: String(result.content) });
         }
       }
     }
+    const uniqueGeneral = Array.from(generalMap.values());
 
-    const uniqueResults = Array.from(uniqueResultsMap.values());
+    // Deduplicate personal results by id
+    const personalMap = new Map<
+      string,
+      { id: string; score: number | undefined; content: string }
+    >();
+    for (const results of personalRaw) {
+      for (const result of results) {
+        if (!personalMap.has(result.id)) {
+          personalMap.set(result.id, { ...result, content: String(result.content) });
+        }
+      }
+    }
+    const uniquePersonal = Array.from(personalMap.values());
 
     logger.info('Pinecone scores', {
-      scores: uniqueResults.map((r) => r.score),
+      general: uniqueGeneral.map((r) => r.score),
+      personal: uniquePersonal.map((r) => r.score),
     });
 
-    // 3. Count results with score >= 0.25
-    const qualifyingResults = uniqueResults.filter(
-      (result) => result.score !== undefined && result.score >= 0.25,
-    );
-    const count = qualifyingResults.length;
+    // 3. Sufficiency: proceed if ≥2 general results score ≥ 0.25 OR any personal records exist
+    const qualifyingGeneral = uniqueGeneral.filter((r) => r.score !== undefined && r.score >= 0.25);
 
-    if (count < 2) {
-      // Calculate best score and total retrieved for handoff logging
-      const totalRetrieved = uniqueResults.length;
+    if (qualifyingGeneral.length < 2 && uniquePersonal.length === 0) {
+      const totalRetrieved = uniqueGeneral.length;
       const bestScore =
-        totalRetrieved > 0 ? Math.max(...uniqueResults.map((r) => r.score ?? 0)) : 0;
+        totalRetrieved > 0 ? Math.max(...uniqueGeneral.map((r) => r.score ?? 0)) : 0;
 
-      // Return a HandoffPackage if fewer than 2 results meet the threshold
       const handoff: HandoffPackage = {
         reason: 'insufficient_retrieval',
         query: state.query,
-        retrievedCount: count,
+        retrievedCount: qualifyingGeneral.length,
         totalRetrieved,
         bestScore,
         suggestion:
@@ -93,14 +107,15 @@ export async function researcherNode(
       return { handoffPackage: handoff };
     }
 
-    // 4. Map results to content strings and return state update
-    const contents = qualifyingResults.map((result) => result.content);
+    // 4. Merge: personal records prefixed so downstream agents treat them as fact
+    const generalContext = qualifyingGeneral.map((r) => r.content);
+    const personalContext = uniquePersonal.map((r) => `[PERSONAL RECORD] ${r.content}`);
+
     return {
-      historicalContext: contents,
+      historicalContext: [...generalContext, ...personalContext],
       iterationCount: state.iterationCount + 1,
     };
   } catch (error: unknown) {
-    // 5. Wrap in try/catch and return error message
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error in Researcher node';
     return {

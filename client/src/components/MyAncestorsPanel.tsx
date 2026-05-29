@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Loader2, Trash2, Pencil, Play, X, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Loader2, Trash2, Pencil, Play, X, ChevronRight, Upload } from 'lucide-react';
 import { AncestorProfile, AncestorCreateRequest } from '@heritage-odyssey/shared/types';
 import { useAncestors } from '../hooks/useAncestors.js';
 
@@ -67,8 +67,17 @@ function ancestorToForm(ancestor: AncestorProfile): AncestorFormState {
 }
 
 const MyAncestorsPanel: React.FC<MyAncestorsPanelProps> = ({ onClose, onNarrate }) => {
-  const { ancestors, isLoading, fetchAncestors, createAncestor, updateAncestor, deleteAncestor } =
-    useAncestors();
+  const {
+    ancestors,
+    isLoading,
+    fetchAncestors,
+    createAncestor,
+    updateAncestor,
+    deleteAncestor,
+    importGedcom,
+    importSample,
+    clearImported,
+  } = useAncestors();
 
   const [view, setView] = useState<'list' | 'create' | 'edit'>('list');
   const [editingAncestor, setEditingAncestor] = useState<AncestorProfile | null>(null);
@@ -78,6 +87,15 @@ const MyAncestorsPanel: React.FC<MyAncestorsPanelProps> = ({ onClose, onNarrate 
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
+
+  type ImportStatus = 'idle' | 'loading' | 'done' | 'error';
+  const [importStatus, setImportStatus] = useState<ImportStatus>('idle');
+  const [importResult, setImportResult] = useState<{ count: number; warnings: string[] } | null>(
+    null,
+  );
+  const [clearConfirm, setClearConfirm] = useState(false);
+  const [clearLoading, setClearLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchAncestors();
@@ -139,6 +157,50 @@ const MyAncestorsPanel: React.FC<MyAncestorsPanelProps> = ({ onClose, onNarrate 
     },
     [deleteAncestor],
   );
+
+  const handleGedcomUpload = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      setImportStatus('loading');
+      setImportResult(null);
+      try {
+        const result = await importGedcom(file);
+        await fetchAncestors();
+        setImportResult({ count: result.imported, warnings: result.warnings });
+        setImportStatus('done');
+      } catch {
+        setImportStatus('error');
+      }
+    },
+    [importGedcom, fetchAncestors],
+  );
+
+  const handleSampleLoad = useCallback(async () => {
+    setImportStatus('loading');
+    setImportResult(null);
+    try {
+      const result = await importSample();
+      await fetchAncestors();
+      setImportResult({ count: result.imported, warnings: result.warnings });
+      setImportStatus('done');
+    } catch {
+      setImportStatus('error');
+    }
+  }, [importSample, fetchAncestors]);
+
+  const handleClearImported = useCallback(async () => {
+    setClearLoading(true);
+    try {
+      await clearImported();
+      setClearConfirm(false);
+      setImportStatus('idle');
+      setImportResult(null);
+    } finally {
+      setClearLoading(false);
+    }
+  }, [clearImported]);
 
   const inputClass =
     'w-full bg-paper/50 border border-brass/20 focus:border-brass/50 focus:outline-none px-3 py-2 text-sm text-ink placeholder:text-stone/30';
@@ -390,6 +452,104 @@ const MyAncestorsPanel: React.FC<MyAncestorsPanelProps> = ({ onClose, onNarrate 
                 No ancestors in the Registry yet. Add your first record to begin your odyssey.
               </p>
             )}
+
+            {/* Data Sources */}
+            <div className="mt-6 pt-5 border-t border-brass/15">
+              <p className="text-[10px] font-mono uppercase tracking-widest text-stone/50 mb-3">
+                Data Sources
+              </p>
+
+              {importStatus === 'loading' && (
+                <div className="flex items-center gap-2 text-stone/50 mb-3">
+                  <Loader2 size={12} className="animate-spin" />
+                  <span className="text-xs font-spectral italic">Reading the family record…</span>
+                </div>
+              )}
+
+              {importStatus === 'done' && importResult && (
+                <div className="mb-3 p-3 border border-brass/20 bg-stone/5">
+                  <p className="text-xs font-spectral italic text-ink/70">
+                    {importResult.count} {importResult.count === 1 ? 'record' : 'records'} committed
+                    to the Registry.
+                  </p>
+                  {importResult.warnings.length > 0 && (
+                    <ul className="mt-1.5 space-y-0.5">
+                      {importResult.warnings.map((w, i) => (
+                        <li key={i} className="text-[10px] font-mono text-stone/50">
+                          &#x26A0; {w}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+
+              {importStatus === 'error' && (
+                <p className="text-[10px] font-mono text-red-400/70 uppercase tracking-widest mb-3">
+                  Import failed. Please try again.
+                </p>
+              )}
+
+              <div className="flex flex-wrap gap-2 mb-3">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".ged"
+                  className="sr-only"
+                  onChange={handleGedcomUpload}
+                  data-testid="gedcom-file-input"
+                />
+                <button
+                  type="button"
+                  disabled={importStatus === 'loading'}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-1.5 px-3 py-1.5 border border-brass/30 text-[10px] font-mono uppercase tracking-widest text-stone/60 hover:text-ink/70 hover:border-brass/50 disabled:opacity-30 transition-colors rounded-sm"
+                >
+                  <Upload size={10} />
+                  Upload Family File (.ged)
+                </button>
+                <button
+                  type="button"
+                  disabled={importStatus === 'loading'}
+                  onClick={handleSampleLoad}
+                  className="flex items-center gap-1.5 px-3 py-1.5 border border-brass/30 text-[10px] font-mono uppercase tracking-widest text-stone/60 hover:text-ink/70 hover:border-brass/50 disabled:opacity-30 transition-colors rounded-sm"
+                >
+                  Load Sample Family
+                </button>
+              </div>
+
+              {ancestors.some((a) => a.gedcomId) && (
+                <div className="flex items-center gap-2">
+                  {clearConfirm ? (
+                    <>
+                      <span className="text-[9px] font-mono text-stone/50 uppercase tracking-widest">
+                        Remove all imported records?
+                      </span>
+                      <button
+                        onClick={handleClearImported}
+                        disabled={clearLoading}
+                        className="text-[9px] font-mono uppercase tracking-widest text-red-400/80 hover:text-red-400 transition-colors disabled:opacity-30"
+                      >
+                        {clearLoading ? <Loader2 size={10} className="animate-spin" /> : 'Yes'}
+                      </button>
+                      <button
+                        onClick={() => setClearConfirm(false)}
+                        className="text-[9px] font-mono uppercase tracking-widest text-stone/40 hover:text-stone/70 transition-colors"
+                      >
+                        No
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => setClearConfirm(true)}
+                      className="text-[9px] font-mono uppercase tracking-widest text-stone/40 hover:text-red-400/70 transition-colors"
+                    >
+                      Clear imported records
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
 
             {!isLoading && ancestors.length > 0 && (
               <ul className="flex flex-col gap-4">

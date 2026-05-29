@@ -1,5 +1,9 @@
 import { useState, useCallback } from 'react';
-import { AncestorProfile, AncestorCreateRequest } from '@heritage-odyssey/shared/types';
+import {
+  AncestorProfile,
+  AncestorCreateRequest,
+  GedcomImportResponse,
+} from '@heritage-odyssey/shared/types';
 import { apiUrl, authFetch } from '../lib/api.js';
 import { useAuthContext } from '../context/AuthContext.js';
 
@@ -65,5 +69,45 @@ export function useAncestors() {
     [token, refresh],
   );
 
-  return { ancestors, isLoading, fetchAncestors, createAncestor, updateAncestor, deleteAncestor };
+  const importGedcom = useCallback(
+    async (file: File): Promise<GedcomImportResponse> => {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await authFetch(
+        apiUrl('/api/ancestors/import/gedcom'),
+        { method: 'POST', body: formData },
+        token,
+        refresh,
+      );
+      return res.json() as Promise<GedcomImportResponse>;
+    },
+    [token, refresh],
+  );
+
+  const importSample = useCallback(async (): Promise<GedcomImportResponse> => {
+    const res = await authFetch(
+      apiUrl('/api/ancestors/import/sample'),
+      { method: 'POST' },
+      token,
+      refresh,
+    );
+    return res.json() as Promise<GedcomImportResponse>;
+  }, [token, refresh]);
+
+  const clearImported = useCallback(async (): Promise<void> => {
+    await authFetch(apiUrl('/api/ancestors/import'), { method: 'DELETE' }, token, refresh);
+    setAncestors((prev) => prev.filter((a) => !a.gedcomId));
+  }, [token, refresh]);
+
+  return {
+    ancestors,
+    isLoading,
+    fetchAncestors,
+    createAncestor,
+    updateAncestor,
+    deleteAncestor,
+    importGedcom,
+    importSample,
+    clearImported,
+  };
 }

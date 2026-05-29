@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, isNotNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -11,6 +11,7 @@ import { ancestorProfiles } from '../db/schema.js';
 import { logger } from '../services/logger.js';
 import { parseGedcom, type ParsedAncestor } from '../services/gedcomParser.js';
 import { embedAncestorProfile } from '../services/embedding.js';
+import { index as pineconeIndex } from '../services/pinecone.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SAMPLE_FIXTURE_PATH = join(__dirname, '../../../fixtures/sample-family.ged');
@@ -137,6 +138,20 @@ router.patch('/ancestors/:id', authenticate, async (req: Request, res: Response)
   } catch (error) {
     logger.error({ err: error }, 'Failed to update ancestor profile');
     res.status(500).json({ error: 'Failed to update ancestor profile' });
+  }
+});
+
+router.delete('/ancestors/import', authenticate, async (req: Request, res: Response) => {
+  const userId = req.user!.id;
+  try {
+    await pineconeIndex.namespace(`user-${userId}`).deleteAll();
+    await db
+      .delete(ancestorProfiles)
+      .where(and(eq(ancestorProfiles.userId, userId), isNotNull(ancestorProfiles.gedcomId)));
+    res.status(204).send();
+  } catch (err) {
+    logger.error({ err }, 'Failed to clear imported records');
+    res.status(500).json({ error: 'Failed to clear imported records' });
   }
 });
 

@@ -26,6 +26,8 @@ export async function narratorNode(
 2. Optimize the text for spoken word (cadence, tone, clarity).
 3. Preserve all paragraph breaks from the draft in your finalScript. Do not collapse paragraphs into a single block of text. The finalScript value must contain double newlines between paragraphs.
 
+Context lines prefixed with [PERSONAL RECORD] are verified facts about the user's own ancestors. Build the narrative around them as primary sources; use unprefixed historical context as background. Never contradict a [PERSONAL RECORD].
+
 Historical Context:
 ${historicalContextStr}
 

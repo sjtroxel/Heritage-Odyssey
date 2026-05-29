@@ -5,6 +5,7 @@ import { readFileSync } from 'fs';
 import { app } from '../../src/app.js';
 import { db } from '../../src/db/index.js';
 import { parseGedcom } from '../../src/services/gedcomParser.js';
+import { index as pineconeIndex } from '../../src/services/pinecone.js';
 
 vi.mock('../../src/db/index.js', () => ({
   db: {
@@ -29,6 +30,14 @@ vi.mock('jsonwebtoken', () => ({
 
 vi.mock('../../src/services/gedcomParser.js', () => ({
   parseGedcom: vi.fn(),
+}));
+
+const { mockDeleteAll } = vi.hoisted(() => ({
+  mockDeleteAll: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('../../src/services/pinecone.js', () => ({
+  index: { namespace: vi.fn().mockReturnValue({ deleteAll: mockDeleteAll }) },
 }));
 
 vi.mock('../../src/services/embedding.js', () => ({
@@ -316,6 +325,31 @@ describe('Ancestors Endpoints', () => {
       expect(response.body.imported).toBe(2);
       expect(response.body.warnings).toHaveLength(1);
       expect(readFileSync).toHaveBeenCalled();
+    });
+  });
+
+  describe('DELETE /api/ancestors/import', () => {
+    it('should return 401 without a token', async () => {
+      (jwt.verify as MockInstance).mockImplementation(() => {
+        throw new Error();
+      });
+      const response = await request(app).delete('/api/ancestors/import');
+      expect(response.status).toBe(401);
+    });
+
+    it('should purge the Pinecone namespace and delete imported DB rows', async () => {
+      (db.delete as MockInstance).mockReturnValue({
+        where: vi.fn().mockResolvedValue(undefined),
+      });
+
+      const response = await request(app)
+        .delete('/api/ancestors/import')
+        .set('Authorization', 'Bearer valid-token');
+
+      expect(response.status).toBe(204);
+      expect(vi.mocked(pineconeIndex.namespace)).toHaveBeenCalledWith('user-user-id');
+      expect(mockDeleteAll).toHaveBeenCalled();
+      expect(db.delete).toHaveBeenCalled();
     });
   });
 
