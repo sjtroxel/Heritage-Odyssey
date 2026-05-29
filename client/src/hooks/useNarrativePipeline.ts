@@ -162,7 +162,7 @@ export const useNarrativePipeline = () => {
   );
 
   const run = useCallback(
-    async (query: string) => {
+    async (query: string, ancestorId?: string) => {
       cleanup();
       setAgentStep(null);
       setAgentLog([]);
@@ -180,7 +180,7 @@ export const useNarrativePipeline = () => {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ query }),
+            body: JSON.stringify({ query, ...(ancestorId ? { ancestorId } : {}) }),
           },
           token,
           refresh,

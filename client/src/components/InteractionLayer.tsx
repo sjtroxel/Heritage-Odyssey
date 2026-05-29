@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Mic, Send, Square, Volume2, GripHorizontal } from 'lucide-react';
+import { Mic, Send, Square, Volume2, GripHorizontal, X as XIcon } from 'lucide-react';
+import { AncestorProfile } from '@heritage-odyssey/shared/types';
 import { useMediaRecorder } from '../hooks/useMediaRecorder.js';
 import { useNarrativePipeline } from '../hooks/useNarrativePipeline.js';
 import { apiUrl, authFetch, RateLimitError } from '../lib/api.js';
@@ -11,6 +12,11 @@ import PlaybackControls from './PlaybackControls.js';
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
+interface InteractionLayerProps {
+  selectedAncestor?: AncestorProfile | null;
+  onClearAncestor?: () => void;
+}
+
 const SAMPLE_QUERIES = [
   'Describe the journey of immigrants crossing the Atlantic in the nineteenth century',
   'What was life like for immigrant families living in New York tenements in the 1890s?',
@@ -21,7 +27,10 @@ const SAMPLE_QUERIES = [
 /**
  * Sticky-bottom interaction layer providing voice and text input.
  */
-const InteractionLayer: React.FC = () => {
+const InteractionLayer: React.FC<InteractionLayerProps> = ({
+  selectedAncestor = null,
+  onClearAncestor,
+}) => {
   const [inputValue, setInputValue] = useState('');
   const [currentQuery, setCurrentQuery] = useState('');
   const [containerHeight, setContainerHeight] = useState(200);
@@ -176,7 +185,7 @@ const InteractionLayer: React.FC = () => {
           setInputValue(data.text);
           setCurrentQuery(data.text);
           setSaveStatus('idle');
-          await run(data.text);
+          await run(data.text, selectedAncestor?.id);
         }
       } catch (err) {
         if (err instanceof RateLimitError) {
@@ -187,7 +196,7 @@ const InteractionLayer: React.FC = () => {
         console.error('Transcription error:', err);
       }
     },
-    [run, reset, setRateLimitReset, token, refresh],
+    [run, reset, setRateLimitReset, token, refresh, selectedAncestor],
   );
 
   const { isRecording, startRecording, stopRecording, isSupported, permissionDenied } =
@@ -198,7 +207,7 @@ const InteractionLayer: React.FC = () => {
     if (!inputValue.trim() || isRunning || isRecording) return;
     setCurrentQuery(inputValue);
     setSaveStatus('idle');
-    await run(inputValue);
+    await run(inputValue, selectedAncestor?.id);
   };
 
   const hasStatus =
@@ -288,6 +297,22 @@ const InteractionLayer: React.FC = () => {
       {/* Section 2 — pinned input, never scrolls */}
       <div className="shrink-0 px-4 md:px-6 pb-4 pt-2 border-t border-brass/10">
         <div className="max-w-2xl mx-auto w-full">
+          {selectedAncestor && (
+            <div className="flex items-center gap-2 mb-2 self-start">
+              <span className="font-spectral italic text-[11px] text-brass/80 border border-brass/30 px-3 py-1">
+                Narrating for:{' '}
+                {[selectedAncestor.name, selectedAncestor.lastName].filter(Boolean).join(' ')}
+              </span>
+              <button
+                onClick={onClearAncestor}
+                className="text-stone/40 hover:text-paper/60 transition-colors"
+                aria-label="Clear ancestor"
+              >
+                <XIcon size={12} />
+              </button>
+            </div>
+          )}
+
           {inputValue.length > 50 && (
             <p className="mb-2 font-spectral italic text-paper/40 line-clamp-2 leading-relaxed">
               {inputValue}
@@ -356,7 +381,7 @@ const InteractionLayer: React.FC = () => {
                         setCurrentQuery(q);
                         setSaveStatus('idle');
                         setIsSamplesOpen(false);
-                        run(q);
+                        run(q, selectedAncestor?.id);
                       }}
                       className="text-xs font-spectral italic text-paper/60 hover:text-paper/90 border border-brass/10 hover:border-brass/30 px-3 py-1.5 transition-colors bg-transparent rounded-sm"
                     >

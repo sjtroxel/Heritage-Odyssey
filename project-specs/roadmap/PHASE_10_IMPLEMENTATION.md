@@ -1,6 +1,6 @@
 # Phase 10 Implementation: Ancestor Profile System & Extended User Profile
 
-> **Status: IN PROGRESS** — Steps 1–12 complete as of 2026-05-28. 71 server tests + 15 client tests passing, typecheck + lint green. Steps 13–18 remain (client UI components + final test pass).
+> **Status: COMPLETE** — All 18 steps done as of 2026-05-28. 71 server tests + 15 client tests passing, typecheck + lint green.
 
 ---
 

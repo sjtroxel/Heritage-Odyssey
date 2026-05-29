@@ -10,6 +10,7 @@ interface SavedRecord {
   contentText: string;
   createdAt: string;
   ancestorProfileId: string | null;
+  ancestorName?: string | null;
 }
 
 interface MyRecordsPanelProps {
@@ -231,6 +232,12 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
                     <p className="text-xs font-libre font-bold uppercase tracking-wider text-ink/80 line-clamp-2">
                       {record.query}
                     </p>
+
+                    {record.ancestorName && (
+                      <p className="text-[10px] font-mono uppercase tracking-widest text-brass/70">
+                        Narrated for: {record.ancestorName}
+                      </p>
+                    )}
 
                     {isExpanded ? (
                       <div className="flex flex-col gap-3 pt-1">

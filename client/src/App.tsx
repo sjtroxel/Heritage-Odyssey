@@ -1,17 +1,32 @@
 import React, { useState } from 'react';
-import { BookOpen, Mic, Loader2, LogOut, Menu, X } from 'lucide-react';
+import { BookOpen, Mic, Loader2, LogOut, Menu, X, Settings, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AncestorProfile } from '@heritage-odyssey/shared/types';
 import InteractionLayer from './components/InteractionLayer.js';
 import LoginScreen from './components/LoginScreen.js';
 import Methodology from './components/Methodology.js';
 import OurStory from './components/OurStory.js';
 import MyRecordsPanel from './components/MyRecordsPanel.js';
+import MyAncestorsPanel from './components/MyAncestorsPanel.js';
+import OnboardingPrompt from './components/OnboardingPrompt.js';
+import ProfileSettingsModal from './components/ProfileSettingsModal.js';
 import { useAuthContext } from './context/AuthContext.js';
 
 const App: React.FC = () => {
-  const { isAuthenticated, isLoading, logout } = useAuthContext();
+  const { isAuthenticated, isLoading, logout, user } = useAuthContext();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRecordsOpen, setIsRecordsOpen] = useState(false);
+  const [isAncestorsOpen, setIsAncestorsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [selectedAncestor, setSelectedAncestor] = useState<AncestorProfile | null>(null);
+  const [onboardingDone, setOnboardingDone] = useState(false);
+
+  const showOnboarding =
+    isAuthenticated &&
+    !isLoading &&
+    user?.profileComplete === false &&
+    !onboardingDone &&
+    localStorage.getItem('onboarding_dismissed') !== 'true';
 
   if (isLoading) {
     return (
@@ -42,7 +57,7 @@ const App: React.FC = () => {
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8 text-xs font-libre font-bold tracking-widest text-paper/70 uppercase">
+          <nav className="hidden md:flex items-center gap-6 text-xs font-libre font-bold tracking-widest text-paper/70 uppercase">
             <a href="#story" className="hover:text-brass transition-colors">
               Our Story
             </a>
@@ -56,8 +71,23 @@ const App: React.FC = () => {
               Get Started
             </a>
             <button
+              onClick={() => setIsAncestorsOpen(true)}
+              className="flex items-center gap-1.5 hover:text-brass transition-colors"
+              title="My Ancestors"
+            >
+              <Users size={14} />
+              Ancestors
+            </button>
+            <button
+              onClick={() => setIsProfileOpen(true)}
+              className="flex items-center gap-1.5 hover:text-brass transition-colors"
+              title="Profile Settings"
+            >
+              <Settings size={14} />
+            </button>
+            <button
               onClick={logout}
-              className="flex items-center gap-1.5 text-xs font-libre font-bold tracking-widest text-paper/70 uppercase hover:text-brass transition-colors"
+              className="flex items-center gap-1.5 hover:text-brass transition-colors"
             >
               <LogOut size={14} />
               Sign Out
@@ -106,6 +136,26 @@ const App: React.FC = () => {
                 >
                   Get Started
                 </a>
+                <button
+                  onClick={() => {
+                    setIsAncestorsOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 text-paper/70 hover:text-brass transition-colors border-b border-brass/10 pb-2"
+                >
+                  <Users size={16} />
+                  My Ancestors
+                </button>
+                <button
+                  onClick={() => {
+                    setIsProfileOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 text-paper/70 hover:text-brass transition-colors border-b border-brass/10 pb-2"
+                >
+                  <Settings size={16} />
+                  Profile Settings
+                </button>
                 <button
                   onClick={() => {
                     logout();
@@ -238,8 +288,19 @@ const App: React.FC = () => {
       </main>
 
       {/* Persistent Interaction Layer */}
-      <InteractionLayer />
+      <InteractionLayer
+        selectedAncestor={selectedAncestor}
+        onClearAncestor={() => setSelectedAncestor(null)}
+      />
       {isRecordsOpen && <MyRecordsPanel onClose={() => setIsRecordsOpen(false)} />}
+      {isAncestorsOpen && (
+        <MyAncestorsPanel
+          onClose={() => setIsAncestorsOpen(false)}
+          onNarrate={(ancestor) => setSelectedAncestor(ancestor)}
+        />
+      )}
+      {isProfileOpen && <ProfileSettingsModal onClose={() => setIsProfileOpen(false)} />}
+      {showOnboarding && <OnboardingPrompt onComplete={() => setOnboardingDone(true)} />}
     </div>
   );
 };
