@@ -43,6 +43,10 @@ app.post('/api/auth/signup', authController.signup);
 app.post('/api/auth/login', authController.login);
 app.post('/api/auth/logout', authController.logout);
 app.post('/api/auth/refresh', authController.refresh);
+app.post('/api/auth/demo', authController.demoLogin);
+
+app.get('/api/auth/google', authController.googleAuthUrl);
+app.get('/api/auth/google/callback', authController.googleCallback);
 
 app.get('/api/auth/profile', authenticate, authController.getProfile);
 app.patch('/api/auth/profile', authenticate, authController.updateProfile);

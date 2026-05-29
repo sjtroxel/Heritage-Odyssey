@@ -18,6 +18,7 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().min(1).optional(),
   GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
   GOOGLE_REDIRECT_URI: z.string().url().optional(),
+  CLIENT_URL: z.string().url().optional().default('http://localhost:5173'),
 });
 
 const parsed = envSchema.safeParse(process.env);

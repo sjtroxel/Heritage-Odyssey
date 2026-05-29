@@ -14,7 +14,7 @@ import { embedAncestorProfile } from '../services/embedding.js';
 import { index as pineconeIndex } from '../services/pinecone.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SAMPLE_FIXTURE_PATH = join(__dirname, '../../../fixtures/sample-family.ged');
+const SAMPLE_FIXTURE_PATH = join(__dirname, '../../fixtures/sample-family.ged');
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 

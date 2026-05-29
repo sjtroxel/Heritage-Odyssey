@@ -53,6 +53,17 @@ export function useAuth() {
 
   useEffect(() => {
     const initAuth = async () => {
+      // Pick up access token delivered via Google OAuth redirect (?token=...)
+      const urlParams = new URLSearchParams(window.location.search);
+      const oauthToken = urlParams.get('token');
+      if (oauthToken) {
+        localStorage.setItem('accessToken', oauthToken);
+        window.history.replaceState({}, '', window.location.pathname);
+        const user = await fetchProfile(oauthToken);
+        setState({ token: oauthToken, user, isAuthenticated: true, isLoading: false });
+        return;
+      }
+
       if (!state.token) {
         await refresh();
       } else {
