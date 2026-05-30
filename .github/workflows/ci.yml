@@ -103,7 +103,7 @@ jobs:
       # in GitHub Settings → Variables to activate.
       - name: Promptfoo eval
         if: ${{ vars.E2E_LIVE == 'true' }}
-        run: npx promptfoo eval --config promptfoo.yaml
+        run: npx promptfoo@0.120.19 eval --config promptfoo.yaml
         env:
           E2E_API_URL: ${{ secrets.E2E_API_URL }}
           EVAL_BYPASS_TOKEN: ${{ secrets.EVAL_BYPASS_TOKEN }}
