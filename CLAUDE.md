@@ -170,14 +170,15 @@ All UI work must respect this design language. Deviating from it creates jarring
 
 ## Phase Status (as of 2026-05-29)
 
+> **PROJECT COMPLETE.** The planned roadmap (Phases 1 through 12A) shipped in full. Heritage Odyssey is feature-complete. Remaining work is minor UI and polish only (for example, additional ElevenLabs voice options and small interface tweaks), handled ad hoc rather than as new planned phases.
+
 | Phase | Name | Status |
 | :--- | :--- | :--- |
 | 1–8 | Foundation through Deployment | **COMPLETE** |
 | 9 | Feature Completion & Portfolio Polish | **COMPLETE** — Saved Records, My Records, Playwright E2E, observability UI, responsive audit, load test, `AUDIT.md` all done. |
 | 10 | Ancestor Profile System + Extended User Profile | **COMPLETE** — Full ancestor profile CRUD + extended user profile. 71 server + 15 client tests. |
 | 11A | Genealogy Import (Depth) | **COMPLETE** — GEDCOM import, 12-field schema, per-user Pinecone namespaces, dual-source RAG, Google OAuth, demo mode. All 13 steps done, smoke test passed 2026-05-29. |
-| 12 | Eval Service | **NEXT** — 12A (FastAPI depth) vs 12B (Promptfoo velocity) decision pending. See `ROADMAP.md`. |
-| 13 | Migration Map | **SPECCED** — design signal only, build timing TBD |
+| 12A | Eval Service (Python FastAPI, Depth) | **COMPLETE** — `evaluation-service/` microservice, `eval_scores` table, 6 scorers, promptfoo CI regression suite, LangSmith production tracing, `python-eval` CI job. Shipped 2026-05-29. |
 
 ---
 

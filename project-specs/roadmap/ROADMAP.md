@@ -1,5 +1,7 @@
 # Heritage Odyssey Roadmap
 
+> **STATUS: COMPLETE (2026-05-29).** The planned roadmap (Phases 1 through 12A) shipped in full. Heritage Odyssey is feature-complete. Ongoing work is minor UI and polish only (for example, additional ElevenLabs voice options and small interface tweaks), handled ad hoc rather than as new planned phases.
+
 | Phase | Name | Status | Key Goal |
 | :--- | :--- | :--- | :--- |
 | 1 | **Foundation** | COMPLETE | Set up the monorepo structure and development environment. |
@@ -12,14 +14,13 @@
 | 8 | **Deployment & Launch** | COMPLETE | Finalize production deployment and verify platform stability. |
 | 9 | **Feature Completion & Portfolio Polish** | COMPLETE | Implement Saved Records, close test/polish carry-overs from Phase 8, add `AUDIT.md` pre-ship cleanup. |
 | 10 | **Ancestor Profile System & Extended User Profile** | COMPLETE | Extended user profile (name, DOB, location, heritage regions, research interests); expanded ancestor profile schema; personalized narrative generation. |
-| — | **🔀 Strategic Fork** | PATH CHOSEN: 11A → 12A | Chose Path A (Depth). 11A complete 2026-05-29. **12A locked 2026-05-29** (rested decision, see note below). |
+| — | **🔀 Strategic Fork** | PATH CHOSEN: 11A → 12A | Chose Path A (Depth). 11A complete 2026-05-29. **12A complete 2026-05-29.** |
 | 11A | **Genealogy Import (Depth)** | COMPLETE | Full GEDCOM import + 12-field schema + multi-event parsing + per-user namespaces + dual-source RAG + Google OAuth/demo. Smoke test passed 2026-05-29. |
 | 11B | **Genealogy Import (Velocity)** | NOT CHOSEN | GEDCOM import (core fields) + 6-field schema + per-user namespaces + dual-source RAG + Google OAuth/demo. ~4-5 weeks. |
-| 12A | **Python FastAPI Eval Service (Depth)** | **LOCKED — NEXT** | Full FastAPI microservice, eval_scores table, 6-dimension HTTP API. Second Railway deploy is optional/stretch. ~3-4 weeks. Build order in [PHASE_12A_IMPLEMENTATION.md](PHASE_12A_IMPLEMENTATION.md). |
+| 12A | **Python FastAPI Eval Service (Depth)** | **COMPLETE** | FastAPI microservice (`evaluation-service/`), `eval_scores` table, 6-dimension HTTP API, promptfoo CI regression suite, LangSmith production tracing, `python-eval` CI job. Completed 2026-05-29. Build order in [PHASE_12A_IMPLEMENTATION.md](PHASE_12A_IMPLEMENTATION.md). |
 | 12B | **Eval Infrastructure (Velocity)** | NOT CHOSEN | Promptfoo CI + LangSmith env vars + extended `evaluation/` Python with LLM-as-judge. ~1.5-2 weeks. |
 
 > **12A lock rationale (2026-05-29, 3pm):** With 11A already shipped, the live cost of 12A over 12B is only the spec delta (~2 weeks), not the whole-track Aug-Oct vs Nov-Jan swing. 12A is chosen deliberately as a *scaffolded Python/FastAPI learning rep* ahead of the separate greenfield Python project that follows HO — building inside a repo where the domain, data, and eval logic already exist lowers cognitive load so attention goes to the Python itself. Conditions of the lock: (1) scope discipline — second Railway deploy, 30-day trend endpoint, and admin view are **optional/droppable** if they threaten the timeline; the eval suite can run as a CI job instead of a standing service; (2) the user does articulation/reading reps on the FastAPI + scorer code (the learning value depends on this, not on the artifact existing).
-| 13 | **Migration Map** | SPECCED | Interactive migration map driven by real geographic data from imported GEDCOM records. Independent of path choice. Specced for design signal; build timing TBD. |
 
 ---
 
@@ -120,7 +121,7 @@
 *   **Risks:** Environment differences between staging/prod; CORS and deployment-specific security configs.
 *   **Done:** Backend live on Railway, frontend live on Vercel. Security headers, CORS, Zod input validation, and rate limiting fully implemented. SSE observability streams real-time LangGraph node progress to the UI. Full test suite: 62 tests (47 server + 15 client), all passing. Playwright E2E tests and `autocannon` load testing formally deferred to Phase 9.
 
-### Phase 9: Feature Completion & Portfolio Polish [IN PROGRESS]
+### Phase 9: Feature Completion & Portfolio Polish [COMPLETE]
 *   **Deliverables:**
     1. **Unit tests (carry-over from Phase 8)** — `generateNarrativeStream` tests in `narrativeService.test.ts`; SSE and TTS route tests in `voiceRoutes.test.ts`. [DONE]
     2. **Narrative modal overlay** — High-contrast "Historical Record" modal with Pause/Resume controls. [DONE]
@@ -134,7 +135,7 @@
 *   **Risks:** Production schema migration via `drizzle-kit push` — sequence carefully. Playwright E2E tests consume real OpenAI/ElevenLabs credits; `E2E_LIVE=true` gate required in CI.
 *   **Done:** Unit tests for `generateNarrativeStream`, SSE generate route, and TTS route complete and passing (62 tests total). Narrative modal overlay finalized during Phase 8. Seven deliverables remain.
 
-### Phase 10: Ancestor Profile System [PLANNED]
+### Phase 10: Ancestor Profile System [COMPLETE]
 *   **Deliverables:**
     1. **Ancestor Profile CRUD** — `POST /api/ancestors`, `GET /api/ancestors`, `PATCH /api/ancestors/:id`, `DELETE /api/ancestors/:id`. The `ancestor_profiles` table has been in the database since Phase 2; this phase wires it to the UI. [PLANNED]
     2. **My Ancestors panel** — Modal/panel listing the user's ancestor profiles with create, edit, delete, and "Narrate" actions. [PLANNED]
@@ -197,23 +198,13 @@ Heritage Odyssey ships at portfolio-grade with the architecturally interesting d
 
 The decision should be made **after Phase 10 ships**, not before. The right inputs at that point are: (1) where the AI Engineer job market is then (postings, skill demands, what's still hot), (2) how the user feels about HO's depth vs starting a new project, and (3) whether any unforeseen Phase 10 work changed the cost estimates. Both paths are designed to be ready to pick up immediately once Phase 10 completes.
 
-Phase 13 (Migration Map) is independent of this fork and can be tackled under either path — though under Path A it has more meaningful geographic data to work with due to the deeper schema.
-
----
-
-### Phase 13: Migration Map [SPECCED — build timing TBD]
-*   **Summary:** Replace the dead "Explore the Map" hero button with an interactive migration map. With Phase 11's real geographic data from imported GEDCOM records (birth place → arrival port → census residence), actual migration routes become possible. The map shows a user's ancestor's probable journey as an animated route overlaid on a period-appropriate historical map base layer.
-*   **Candidate tooling:** Mapbox GL JS (most capable, free tier available), Leaflet (lighter weight, fully open-source), or Deck.gl (best for animated routes).
-*   **Specced as a design signal** — shows system design thinking even if not yet built. Include in the portfolio README and blog post as "Phase 13: planned." Recruiters reading the README see the vision even if the feature isn't shipped.
-*   **Independent of the Path A / Path B fork** — buildable under either, though Path A's richer schema (departurePort, shipName) gives the map more to render.
-
 ---
 
 ## File Naming Convention
 
 Phases that have alternative implementation paths use a letter suffix:
 
-- `PHASE_NN_FEATURE.md` — single path (Phases 1-10, 13)
+- `PHASE_NN_FEATURE.md` — single path (Phases 1-10)
 - `PHASE_NNA_FEATURE_DEPTH.md` — depth-path variant for that phase
 - `PHASE_NNB_FEATURE_VELOCITY.md` — velocity-path variant for that phase
 
