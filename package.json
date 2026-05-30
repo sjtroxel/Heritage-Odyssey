@@ -23,7 +23,7 @@
     "eval:prompts": "npx promptfoo@0.120.19 eval --config promptfoo.yaml",
     "test": "npm test --workspaces --if-present",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
