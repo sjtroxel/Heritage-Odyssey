@@ -13,18 +13,25 @@ import type { HealthStatus } from '@heritage-odyssey/shared/types';
 
 const app = express();
 
+// Trust Railway's load balancer — required for express-rate-limit to resolve client IPs correctly
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-// Rate limiting
+// Rate limiting — bypass predicate allows promptfoo CI eval runs via secret header
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
+  skip: (req) => {
+    const bypassToken = process.env.EVAL_BYPASS_TOKEN;
+    return !!bypassToken && req.header('x-eval-bypass') === bypassToken;
+  },
 });
 app.use(limiter);
 

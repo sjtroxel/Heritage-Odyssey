@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class EvaluateRequest(BaseModel):
@@ -20,6 +20,8 @@ class NarrativeScores(BaseModel):
 
 
 class EvaluationResult(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
     id: str
     query: str
     narrative_text: str

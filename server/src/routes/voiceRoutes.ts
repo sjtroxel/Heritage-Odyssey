@@ -17,6 +17,10 @@ const aiRateLimit = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests. Try again in 10 minutes.' },
+  skip: (req) => {
+    const bypassToken = process.env.EVAL_BYPASS_TOKEN;
+    return !!bypassToken && req.header('x-eval-bypass') === bypassToken;
+  },
 });
 
 const upload = multer({

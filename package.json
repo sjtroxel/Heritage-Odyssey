@@ -20,6 +20,7 @@
     "eval:dashboard": "cd evaluation && venv/bin/python main.py --dashboard",
     "eval:trace": "EVAL_MODE=true npm run dev",
     "eval:service": "cd evaluation-service && venv/bin/uvicorn main:app --reload --port 8000",
+    "eval:prompts": "promptfoo eval --config promptfoo.yaml",
     "test": "npm test --workspaces --if-present",
     "format": "prettier --write .",
     "prepare": "husky"
@@ -34,6 +35,7 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
+    "promptfoo": "^0.120.19",
     "typescript": "^5.4.5",
     "typescript-eslint": "^8.59.2"
   },

@@ -8,6 +8,7 @@ on:
       - 'client/**'
       - 'shared/**'
       - 'scripts/**'
+      - 'evaluation-service/**'
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'
@@ -18,6 +19,7 @@ on:
       - 'client/**'
       - 'shared/**'
       - 'scripts/**'
+      - 'evaluation-service/**'
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'
@@ -95,3 +97,33 @@ jobs:
       # Root build script will be defined in Phase 1. This step will verify the full monorepo compiles cleanly.
       - name: Build
         run: npm run build
+
+      # Promptfoo narrative regression suite — gated on vars.E2E_LIVE to avoid spending
+      # OpenAI/ElevenLabs credits on every push. Set repository variable E2E_LIVE=true
+      # in GitHub Settings → Variables to activate.
+      - name: Promptfoo eval
+        if: ${{ vars.E2E_LIVE == 'true' }}
+        run: npx promptfoo eval --config promptfoo.yaml
+        env:
+          E2E_API_URL: ${{ secrets.E2E_API_URL }}
+          EVAL_BYPASS_TOKEN: ${{ secrets.EVAL_BYPASS_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+  python-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'evaluation-service/requirements.txt'
+
+      - name: Install dependencies
+        run: pip install -r evaluation-service/requirements.txt
+
+      - name: pytest
+        run: cd evaluation-service && python -m pytest

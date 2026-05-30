@@ -1,0 +1,205 @@
+# Heritage Odyssey — promptfoo narrative regression suite
+# Run with: npm run eval:prompts
+# CI: gated on vars.E2E_LIVE == 'true' (costs OpenAI + ElevenLabs credits)
+#
+# Provider: promptfoo-provider.mjs — custom SSE consumer.
+# The narrative endpoint returns text/event-stream; the provider reads the
+# 'complete' event's .text field and returns it as output. Handoff cases
+# return { type: 'handoff' } as an object so the javascript assertion can match.
+
+description: Heritage Odyssey narrative regression suite
+
+prompts:
+  - "{{query}}"
+
+providers:
+  - id: file://promptfoo-provider.mjs
+    label: heritage-odyssey-narrative
+
+options:
+  timeout: 90000
+
+tests:
+  # --- Happy path: well-attested European emigration corridors ---
+
+  - description: German immigrants in Missouri, 1870s
+    vars:
+      query: "Tell me about German immigrants who settled in Missouri in the 1870s"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+        description: Non-trivial narrative string
+      - type: contains-any
+        value: [German, Germany, Missouri, emigrated, immigrant, nineteenth, century]
+      - type: llm-rubric
+        value: "The narrative is historically grounded, mentions a specific time period or place, and is at least 3 sentences"
+        threshold: 3.5
+
+  - description: Irish famine-era immigrants, mid-1800s
+    vars:
+      query: "Irish immigrants who fled to America during the great famine era"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+      - type: contains-any
+        value: [Irish, Ireland, famine, emigrant, immigrant, Atlantic, America]
+      - type: llm-rubric
+        value: "The narrative describes Irish emigration with historical context and emotional resonance"
+        threshold: 3.5
+
+  - description: Norwegian settlers on the Great Plains, 1880s
+    vars:
+      query: "Norwegian farmers who emigrated to the Great Plains in the 1880s"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+      - type: contains-any
+        value: [Norwegian, Norway, Scandinavian, Great Plains, prairie, Minnesota, Dakota, emigrated]
+      - type: llm-rubric
+        value: "The narrative is historically grounded and references Scandinavian settlement of the American Midwest"
+        threshold: 3.5
+
+  - description: Swedish immigrants in Midwest, 1860s–1880s
+    vars:
+      query: "Swedish immigrants who came to the American Midwest in the 1860s"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+      - type: contains-any
+        value: [Swedish, Sweden, Scandinavian, Minnesota, Illinois, emigrated, immigrant]
+      - type: llm-rubric
+        value: "The narrative mentions Swedish immigration with accurate historical context"
+        threshold: 3.0
+
+  - description: Polish industrial workers in Pennsylvania, early 1900s
+    vars:
+      query: "Polish immigrants who came to industrial Pennsylvania in the early 1900s"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+      - type: contains-any
+        value: [Polish, Poland, Pennsylvania, coal, steel, immigrant, emigrated, factory]
+      - type: llm-rubric
+        value: "The narrative references Polish immigration and industrial labor in America"
+        threshold: 3.0
+
+  - description: Italian immigrants through Ellis Island, 1900s
+    vars:
+      query: "Italian immigrants who arrived through Ellis Island around 1905"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+      - type: contains-any
+        value: [Italian, Italy, Ellis Island, immigrant, emigrated, Atlantic, New York]
+      - type: llm-rubric
+        value: "The narrative describes Italian immigration with historical accuracy and emotional depth"
+        threshold: 3.5
+
+  - description: Welsh coal miners in Pennsylvania, 1880s
+    vars:
+      query: "Welsh coal miners who immigrated to Pennsylvania in the 1880s"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+      - type: contains-any
+        value: [Welsh, Wales, coal, Pennsylvania, miner, immigrant, emigrated, mine]
+      - type: llm-rubric
+        value: "The narrative is grounded in the Welsh mining immigrant experience"
+        threshold: 3.0
+
+  - description: German settlers in Texas Hill Country, 1840s–1850s
+    vars:
+      query: "German immigrants who established communities in the Texas Hill Country in the 1840s"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+      - type: contains-any
+        value: [German, Germany, Texas, Hill Country, emigrated, immigrant, settlement, century]
+      - type: llm-rubric
+        value: "The narrative addresses German colonization of Central Texas with historical context"
+        threshold: 3.0
+
+  - description: Bohemian immigrants in Nebraska, 1870s
+    vars:
+      query: "Bohemian immigrants who homesteaded in Nebraska in the 1870s"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+      - type: contains-any
+        value: [Bohemian, Czech, Czechoslovakia, Nebraska, homestead, emigrated, immigrant, prairie]
+      - type: llm-rubric
+        value: "The narrative covers Czech or Bohemian immigration to the Great Plains"
+        threshold: 3.0
+
+  - description: Dutch Reformed immigrants in Michigan, 1840s–1850s
+    vars:
+      query: "Dutch Reformed immigrants who settled in western Michigan in the 1840s"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+      - type: contains-any
+        value: [Dutch, Holland, Netherlands, Michigan, Reformed, emigrated, immigrant, church]
+      - type: llm-rubric
+        value: "The narrative addresses Dutch religious immigration to Michigan"
+        threshold: 3.0
+
+  - description: English textile workers in New England mill towns, 1840s
+    vars:
+      query: "English factory workers who emigrated to New England mill towns in the 1840s"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 200"
+      - type: contains-any
+        value: [English, England, factory, mill, textile, New England, immigrant, emigrated]
+      - type: llm-rubric
+        value: "The narrative covers English immigration and industrial labor in New England"
+        threshold: 3.0
+
+  # --- Edge cases: less-indexed corridors ---
+
+  - description: Alsatian immigrants in St. Louis, 1850s
+    vars:
+      query: "Alsatian immigrants who settled in St. Louis in the 1850s"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 100"
+        description: Shorter acceptable — sparse historical record is valid
+      - type: contains-any
+        value: [Alsace, Alsatian, German, French, Missouri, St. Louis, immigrant, emigrated]
+
+  - description: Austro-Hungarian immigrants in Chicago, early 1900s
+    vars:
+      query: "Austro-Hungarian immigrants who came to Chicago in the early twentieth century"
+    assert:
+      - type: javascript
+        value: "typeof output === 'string' && output.length >= 100"
+      - type: contains-any
+        value: [Austrian, Hungarian, Austro-Hungarian, Chicago, immigrant, emigrated, empire, century]
+
+  # --- Handoff cases: queries outside the historical emigration domain ---
+  # These should score below the 0.25 Pinecone retrieval threshold and return
+  # a handoff event. The provider returns { type: 'handoff' } as an object.
+
+  - description: Out-of-domain sci-fi query triggers handoff
+    vars:
+      query: "Space aliens who colonized the planet Zorgon in the year 2250"
+    assert:
+      - type: javascript
+        value: "typeof output === 'object' && output !== null && output.type === 'handoff'"
+        description: Low retrieval score should trigger handoff, not a narrative
+
+  - description: Unrelated modern celebrity query triggers handoff
+    vars:
+      query: "The career of a famous modern pop music celebrity touring in 2024"
+    assert:
+      - type: javascript
+        value: "typeof output === 'object' && output !== null && output.type === 'handoff'"
+        description: No emigration context in the vector store for modern celebrities
+
+  - description: Ancient out-of-scope history query triggers handoff
+    vars:
+      query: "The military campaigns of Genghis Khan across Central Asia in the 13th century"
+    assert:
+      - type: javascript
+        value: "typeof output === 'object' && output !== null && output.type === 'handoff'"
+        description: Mongol conquest is outside the European emigration record corpus
