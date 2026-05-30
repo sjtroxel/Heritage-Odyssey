@@ -182,7 +182,9 @@ The current version indexes 19th and early-20th-century European emigration reco
 That boundary leaves out migration histories that matter just as much and are, for now, underrepresented in the index. Among them:
 
 - The transatlantic slave trade and the forced migration of enslaved Africans through the Middle Passage.
+- The forced displacement of Indigenous peoples of North America, including the removal-era relocations of the Trail of Tears.
 - Asian migration to the Americas, including Chinese labor during the Gold Rush and railroad era and the Chinese Exclusion period.
+- Migration to the United States from Mexico, Central America, and the wider Latin American region, both historical and present-day.
 - Migration between Africa and Europe, both historical and present-day.
 - Contemporary refugee and displacement movements.
 

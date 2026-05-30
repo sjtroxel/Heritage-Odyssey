@@ -4,6 +4,9 @@ import { useAuthContext } from '../context/AuthContext.js';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { apiUrl } from '../lib/api.js';
 
+/** The shared demo account used by "Continue as Guest". */
+export const GUEST_EMAIL = 'guest@heritage-odyssey.demo';
+
 const LoginScreen: React.FC = () => {
   const { login, register } = useAuthContext();
   const [isAuthLoading, setIsAuthLoading] = useState(false);
@@ -18,7 +21,7 @@ const LoginScreen: React.FC = () => {
 
   const handleGuestLogin = () => {
     setAuthMode('signin');
-    setEmail('guest@heritage-odyssey.demo');
+    setEmail(GUEST_EMAIL);
     setPassword('guest-demo-2026');
     setError(null);
   };

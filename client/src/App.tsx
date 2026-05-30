@@ -3,7 +3,7 @@ import { BookOpen, Mic, Loader2, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AncestorProfile } from '@heritage-odyssey/shared/types';
 import InteractionLayer from './components/InteractionLayer.js';
-import LoginScreen from './components/LoginScreen.js';
+import LoginScreen, { GUEST_EMAIL } from './components/LoginScreen.js';
 import Methodology from './components/Methodology.js';
 import OurStory from './components/OurStory.js';
 import MyRecordsPanel from './components/MyRecordsPanel.js';
@@ -25,6 +25,7 @@ const App: React.FC = () => {
     isAuthenticated &&
     !isLoading &&
     user?.profileComplete === false &&
+    user?.email !== GUEST_EMAIL &&
     !onboardingDone &&
     localStorage.getItem('onboarding_dismissed') !== 'true';
 
@@ -57,7 +58,7 @@ const App: React.FC = () => {
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6 text-xs font-libre font-bold tracking-widest text-paper/70 uppercase">
+          <nav className="hidden lg:flex items-center gap-6 text-xs font-libre font-bold tracking-widest text-paper/70 uppercase">
             <a href="#story" className="hover:text-brass transition-colors">
               OUR STORY
             </a>
@@ -93,7 +94,7 @@ const App: React.FC = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMenu}
-            className="md:hidden text-brass p-2 hover:bg-brass/10 rounded-sm transition-colors"
+            className="lg:hidden text-brass p-2 hover:bg-brass/10 rounded-sm transition-colors"
             aria-label="Toggle Menu"
           >
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -108,7 +109,7 @@ const App: React.FC = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="md:hidden bg-cast-iron border-t border-brass/20 overflow-hidden"
+              className="lg:hidden bg-cast-iron border-t border-brass/20 overflow-hidden"
             >
               <div className="flex flex-col p-6 gap-4 text-sm font-libre font-bold tracking-[0.2em] text-paper/80 uppercase">
                 <a

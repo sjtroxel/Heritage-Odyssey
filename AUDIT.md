@@ -118,6 +118,18 @@ npx autocannon -c 5 -d 30 -m POST \
 
 **Status: Deferred — API credit cost.** Each request to this endpoint consumes one ElevenLabs API call. 5 concurrent × 30 s at even 1 req/s/connection = 150 billable TTS calls. The per-endpoint AI rate limiter (10 req / 10 min, `server/src/routes/voiceRoutes.ts`) would also cap concurrent hammering to a 429 cascade after the first 10 requests, making a burst test of this endpoint structurally low-signal. The infrastructure test in §6.1 covers the bottleneck that matters under realistic load.
 
+## 7. Known Gaps — Data Scope
+
+This is a deliberate product boundary, documented here for honesty rather than treated as a defect to hide.
+
+**Gap:** The vector index covers 19th and early-20th-century European emigration records and does not yet cover other major migration histories — among them the transatlantic slave trade and the Middle Passage, the forced displacement of Indigenous peoples of North America, Asian migration to the Americas, Latin American migration to the United States, Africa–Europe migration, and contemporary refugee displacement.
+
+**Root cause:** Data availability, not design preference. The freely available, public-domain, machine-readable historical archives skew heavily European (Ellis Island arrival manifests, emigration ship records, first-person Atlantic-crossing accounts). Equivalent records for the histories above are often not yet digitized, not in the public domain, or not yet indexed at scale.
+
+**Why ship anyway:** A focused, honest v1 is a better engineering choice than implying coverage the underlying data cannot support. A retrieval system with no relevant documents returns empty results, which is a worse user experience than clear scope language. The Researcher node's handoff behavior (exit on sub-threshold retrieval rather than pass thin context downstream) reinforces this.
+
+**Path to closing it:** The pipeline architecture is ancestry-agnostic. Broadening coverage — through sources such as Freedmen's Bureau records, Chinese Exclusion Act case files, oral-history collections, and displacement datasets — is a data-ingestion effort rather than an architectural rewrite. See the README "Data scope" section for the user-facing statement.
+
 ## Summary
 
 | Check | Status |
@@ -131,3 +143,4 @@ npx autocannon -c 5 -d 30 -m POST \
 | Test suite | ✓ 62/62 passing |
 | Load test — infrastructure layer | ✓ 47 ms P50, rate limiter correct, no crashes |
 | Load test — TTS endpoint | ⏳ Deferred (ElevenLabs credit cost; AI rate limiter makes burst test low-signal) |
+| Known gap — data scope (European focus) | ✓ Documented (§7); root cause = data availability |

@@ -52,13 +52,13 @@ const OurStory: React.FC = () => {
           ></motion.div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="order-2 md:order-1"
+            className="order-2 lg:order-1"
           >
             <div className="bg-[#fffdfa] border border-stone/20 p-8 md:p-10 shadow-lg relative">
               {/* Corner seal-like accent */}
@@ -73,8 +73,8 @@ const OurStory: React.FC = () => {
                   time.
                 </p>
 
-                {/* Mobile-only image: centered and non-floating */}
-                <div className="md:hidden relative group my-8 max-w-xs mx-auto">
+                {/* Mobile + tablet image: centered and non-floating (float only at lg+) */}
+                <div className="lg:hidden relative group my-8 max-w-xs mx-auto">
                   <div className="absolute -inset-2 bg-cast-iron/5 rotate-1 rounded-sm -z-10"></div>
                   <img
                     src="/photo-3.jpg"
@@ -87,7 +87,7 @@ const OurStory: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="hidden md:block relative group my-8 md:float-right md:ml-6 md:mb-4 md:mt-2 max-w-full md:max-w-50">
+                <div className="hidden lg:block relative group my-8 lg:float-right lg:ml-6 lg:mb-4 lg:mt-2 max-w-full lg:max-w-50">
                   <div className="absolute -inset-2 bg-cast-iron/5 rotate-1 rounded-sm -z-10"></div>
                   <img
                     src="/photo-3.jpg"
@@ -115,7 +115,7 @@ const OurStory: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="relative group order-1 md:order-2 mb-8 md:mb-0"
+            className="relative group order-1 lg:order-2 mb-8 lg:mb-0"
           >
             <div className="absolute -inset-4 border border-brass/30 rounded-sm transition-transform duration-1000 group-hover:rotate-2 border-dashed opacity-50"></div>
             <div className="bg-[#fffcf8] p-8 md:p-10 border-2 border-stone/20 relative shadow-xl transition-all duration-700 cubic-bezier(0.34, 1.56, 0.64, 1) group-hover:-translate-y-2 group-hover:shadow-2xl cursor-default overflow-hidden">

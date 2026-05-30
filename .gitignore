@@ -17,8 +17,10 @@ default.sqlite
 *.local
 scripts/data/
 
+# Planning, drafts, career docs, raw blog assets — local-only, not part of the shipped repo.
+next-project-planning/
+
 # >100MB raw screencast; too large for GitHub. Kept locally as raw asset.
-next-project-planning/prior-project-blog-posts/asteroid-bonanza/Recording 2026-05-13 095817.mp4
 client/public/service-mbrs-ntscrm-00045651-00045651.mp4
 
 # Promptfoo cache
