@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useAuthContext } from '../context/AuthContext.js';
 
@@ -52,12 +53,22 @@ const OnboardingPrompt: React.FC<OnboardingPromptProps> = ({ onComplete }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8">
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
-      <div
+      <motion.div
         className="relative w-full max-w-lg bg-paper border border-brass/30 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 8 }}
+        transition={{ type: 'spring', stiffness: 320, damping: 30 }}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-brass/20 shrink-0">
           <h2 className="font-libre font-bold text-sm uppercase tracking-widest text-ink">
@@ -139,8 +150,8 @@ const OnboardingPrompt: React.FC<OnboardingPromptProps> = ({ onComplete }) => {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

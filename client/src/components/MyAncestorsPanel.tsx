@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { Loader2, Trash2, Pencil, Play, X, ChevronRight, Upload } from 'lucide-react';
 import { AncestorProfile, AncestorCreateRequest } from '@heritage-odyssey/shared/types';
 import { useAncestors } from '../hooks/useAncestors.js';
@@ -388,15 +389,23 @@ const MyAncestorsPanel: React.FC<MyAncestorsPanelProps> = ({ onClose, onNarrate 
   };
 
   return (
-    <div
+    <motion.div
       className="fixed inset-0 z-60 flex items-center justify-center p-4 md:p-8"
       onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
     >
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
-      <div
+      <motion.div
         className="relative w-full max-w-2xl bg-paper border border-brass/30 shadow-2xl flex flex-col max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 8 }}
+        transition={{ type: 'spring', stiffness: 320, damping: 30 }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-brass/20 shrink-0">
@@ -641,8 +650,8 @@ const MyAncestorsPanel: React.FC<MyAncestorsPanelProps> = ({ onClose, onNarrate 
             )}
           </div>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

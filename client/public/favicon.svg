@@ -1,8 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Wax Seal Base -->
-  <path d="M16 2c-1.5 0-3 .5-4.5 1-2-1-4.5-.5-6 1.5-1.5 1.5-1.5 4 0 6-.5 1.5-1 3-1 4.5 0 2 .5 4.5 2.5 6 .5 2 2.5 3.5 4.5 3.5 1.5 0 3-.5 4.5-1 2 1 4.5.5 6-1.5 1.5-1.5 1.5-4 0-6 .5-1.5 1-3 1-4.5 0-2-.5-4.5-2.5-6-.5-2-2.5-3.5-4.5-3.5z" fill="#9a7b2f" />
-  <!-- Inner Circle -->
-  <circle cx="16" cy="16" r="10" fill="#2d4a3e" opacity="0.3" />
-  <!-- Stylized 'H' -->
-  <path d="M12 11v10M20 11v10M12 16h8" stroke="#f4ece1" stroke-width="2.5" stroke-linecap="round" fill="none" />
+  <!-- Cast-iron medallion -->
+  <circle cx="16" cy="16" r="15" fill="#2d4a3e" />
+  <!-- Brass rim -->
+  <circle cx="16" cy="16" r="15" fill="none" stroke="#9a7b2f" stroke-width="1.6" />
+  <!-- Inner hairline ring -->
+  <circle cx="16" cy="16" r="11.6" fill="none" stroke="#9a7b2f" stroke-width="0.6" opacity="0.5" />
+  <!-- Secondary 8-point rays (brass, subtle compass-rose richness) -->
+  <path d="M21.66 10.34 L18.6 16 L21.66 21.66 L16 18.6 L10.34 21.66 L13.4 16 L10.34 10.34 L16 13.4 Z"
+        fill="#9a7b2f" opacity="0.55" />
+  <!-- Primary compass star, north point elongated -->
+  <path d="M16 2.5 L19.5 12.5 L27 16 L19.5 19.5 L16 27 L12.5 19.5 L5 16 L12.5 12.5 Z"
+        fill="#f4ece1" />
+  <!-- Compass hub -->
+  <circle cx="16" cy="16" r="1.5" fill="#2d4a3e" />
 </svg>

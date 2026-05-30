@@ -19,6 +19,7 @@ scripts/data/
 
 # Planning, drafts, career docs, raw blog assets — local-only, not part of the shipped repo.
 next-project-planning/
+ai-masterclass-resources/
 
 # >100MB raw screencast; too large for GitHub. Kept locally as raw asset.
 client/public/service-mbrs-ntscrm-00045651-00045651.mp4

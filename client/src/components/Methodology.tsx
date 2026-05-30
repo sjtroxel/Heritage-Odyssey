@@ -33,13 +33,13 @@ const Methodology: React.FC = () => {
           <div className="absolute inset-0 bg-cast-iron/10 mix-blend-overlay"></div>
         </motion.div>
 
-        <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-start">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="w-full md:w-1/3 md:sticky md:top-32"
+            className="w-full lg:w-1/3 lg:sticky lg:top-32"
           >
             <h2 className="text-3xl md:text-4xl font-libre font-bold text-ink mb-6 uppercase tracking-tighter">
               Our Methodology
@@ -54,7 +54,7 @@ const Methodology: React.FC = () => {
             </div>
           </motion.div>
 
-          <div className="w-full md:w-2/3 space-y-12">
+          <div className="w-full lg:w-2/3 space-y-12">
             {/* Agent Swarm */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}

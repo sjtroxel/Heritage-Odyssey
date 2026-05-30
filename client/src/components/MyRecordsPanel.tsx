@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { Loader2, Trash2, Volume2, X, Square } from 'lucide-react';
 import PlaybackControls from './PlaybackControls.js';
 import { apiUrl, authFetch } from '../lib/api.js';
@@ -28,6 +29,9 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
   const [isAudioLoaded, setIsAudioLoaded] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const objectUrlRef = React.useRef<string | null>(null);
+  // Bumped whenever playback is stopped/superseded, so an in-flight re-narrate
+  // request that resolves after a stop knows to bail instead of orphaning audio.
+  const playGenRef = React.useRef(0);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const toggleExpanded = useCallback((id: string) => {
@@ -97,6 +101,7 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
   }, []);
 
   const handleStopAudio = useCallback(() => {
+    playGenRef.current += 1;
     audioRef.current?.pause();
     if (audioRef.current) audioRef.current.src = '';
     if (objectUrlRef.current) {
@@ -127,6 +132,7 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
   const handleRenarrate = useCallback(
     async (record: SavedRecord) => {
       if (renaratingId) return;
+      const gen = (playGenRef.current += 1);
       audioRef.current?.pause();
       if (objectUrlRef.current) {
         URL.revokeObjectURL(objectUrlRef.current);
@@ -147,6 +153,9 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
           refresh,
         );
         const blob = await res.blob();
+        // If playback was stopped (or a newer re-narrate started) while this
+        // request was in flight, bail before creating/playing any audio.
+        if (playGenRef.current !== gen) return;
         const url = URL.createObjectURL(blob);
         objectUrlRef.current = url;
         const audio = new Audio(url);
@@ -174,15 +183,23 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
     new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
-    <div
+    <motion.div
       className="fixed inset-0 z-60 flex items-center justify-center p-4 md:p-8"
       onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
     >
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
-      <div
+      <motion.div
         className="relative w-full max-w-2xl bg-paper border border-brass/30 shadow-2xl flex flex-col max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 8 }}
+        transition={{ type: 'spring', stiffness: 320, damping: 30 }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-brass/20 shrink-0">
@@ -322,8 +339,8 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
             </ul>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
