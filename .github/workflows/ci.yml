@@ -127,3 +127,5 @@ jobs:
 
       - name: pytest
         run: cd evaluation-service && python -m pytest
+        env:
+          OPENAI_API_KEY: sk-test-placeholder
