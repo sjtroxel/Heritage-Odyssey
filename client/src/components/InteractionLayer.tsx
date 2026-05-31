@@ -450,7 +450,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
                       aria-checked={isSelected}
                       onClick={() => setSelectedVoiceId(voice.id)}
                       title={voice.description}
-                      className={`px-3 py-1 rounded-sm border text-[11px] font-libre uppercase tracking-wider transition-colors ${
+                      className={`px-3 py-1 rounded-sm border text-[10px] font-libre uppercase tracking-wider transition-colors ${
                         isSelected
                           ? 'bg-brass text-cast-iron-dark border-brass'
                           : 'bg-transparent text-paper/60 border-brass/30 hover:border-brass/60 hover:text-paper/90'

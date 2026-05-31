@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Trash2, Volume2, X, Square } from 'lucide-react';
+import { Loader2, Trash2, X, Square } from 'lucide-react';
 import PlaybackControls from './PlaybackControls.js';
 import { apiUrl, authFetch } from '../lib/api.js';
 import { useAuthContext } from '../context/AuthContext.js';
+import { VOICES } from '@heritage-odyssey/shared/voices';
 
 interface SavedRecord {
   id: string;
@@ -25,6 +26,7 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [renaratingId, setRenaratingId] = useState<string | null>(null);
+  const [activeVoiceId, setActiveVoiceId] = useState<string | null>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isAudioLoaded, setIsAudioLoaded] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
@@ -112,6 +114,7 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
     setIsAudioPlaying(false);
     setIsAudioLoaded(false);
     setRenaratingId(null);
+    setActiveVoiceId(null);
   }, []);
 
   const handleDelete = useCallback(
@@ -130,8 +133,9 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
   );
 
   const handleRenarrate = useCallback(
-    async (record: SavedRecord) => {
-      if (renaratingId) return;
+    async (record: SavedRecord, voiceId: string) => {
+      // No early-return guard: clicking another voice (or another record) while
+      // audio is playing should supersede the current playback, not be ignored.
       const gen = (playGenRef.current += 1);
       audioRef.current?.pause();
       if (objectUrlRef.current) {
@@ -139,6 +143,7 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
         objectUrlRef.current = null;
       }
       setRenaratingId(record.id);
+      setActiveVoiceId(voiceId);
       setIsAudioPlaying(false);
       setIsAudioLoaded(false);
       try {
@@ -147,7 +152,7 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: record.contentText }),
+            body: JSON.stringify({ text: record.contentText, voiceId }),
           },
           token,
           refresh,
@@ -170,13 +175,15 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
           setIsAudioPlaying(false);
           setIsAudioLoaded(false);
           setRenaratingId(null);
+          setActiveVoiceId(null);
         };
         await audio.play();
       } catch {
         setRenaratingId(null);
+        setActiveVoiceId(null);
       }
     },
-    [renaratingId, token, refresh],
+    [token, refresh],
   );
 
   const formatDate = (iso: string) =>
@@ -280,27 +287,43 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
                       {isExpanded ? '▾ collapse' : '▸ read record'}
                     </button>
 
-                    {renaratingId === record.id && isAudioLoaded && (
-                      <div className="border-t border-brass/15 pt-2 mt-1">
-                        <PlaybackControls
-                          isPlaying={isAudioPlaying}
-                          onToggle={handleToggleAudio}
-                          onRestart={handleRestartAudio}
-                          onSeekBackward={handleSeekBackward}
-                          onSeekForward={handleSeekForward}
-                        />
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between mt-1">
-                      <span className="text-[9px] font-mono text-stone/40 uppercase tracking-widest">
-                        {formatDate(record.createdAt)}
-                      </span>
-                      <div className="flex items-center gap-3">
-                        {renaratingId === record.id ? (
+                    {/* Narration voice switcher — re-narrate the saved text in any voice */}
+                    <div className="border-t border-brass/15 pt-2 mt-1 flex flex-col gap-2">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                        <span className="text-[9px] font-mono uppercase tracking-widest text-stone/40 shrink-0">
+                          Narrate in
+                        </span>
+                        <div
+                          role="radiogroup"
+                          aria-label="Narration voice"
+                          className="flex flex-wrap gap-1"
+                        >
+                          {VOICES.map((voice) => {
+                            const isActiveVoice =
+                              renaratingId === record.id && activeVoiceId === voice.id;
+                            return (
+                              <button
+                                key={voice.id}
+                                type="button"
+                                role="radio"
+                                aria-checked={isActiveVoice}
+                                onClick={() => handleRenarrate(record, voice.id)}
+                                title={voice.description}
+                                className={`px-2 py-0.5 rounded-sm border text-[9px] font-mono uppercase tracking-widest transition-colors ${
+                                  isActiveVoice
+                                    ? 'bg-brass text-paper border-brass'
+                                    : 'border-brass/25 text-brass/60 hover:border-brass/50 hover:text-brass'
+                                }`}
+                              >
+                                {voice.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {renaratingId === record.id && (
                           <button
                             onClick={handleStopAudio}
-                            className="flex items-center gap-1 text-[9px] font-mono uppercase tracking-widest text-brass/60 hover:text-red-400/70 transition-colors"
+                            className="flex items-center gap-1 text-[9px] font-mono uppercase tracking-widest text-brass/60 hover:text-red-400/70 transition-colors ml-auto"
                           >
                             {isAudioLoaded ? (
                               <Square size={10} fill="currentColor" />
@@ -309,29 +332,36 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
                             )}
                             {isAudioLoaded ? 'stop' : 'loading...'}
                           </button>
-                        ) : (
-                          <button
-                            onClick={() => handleRenarrate(record)}
-                            disabled={renaratingId !== null}
-                            className="flex items-center gap-1 text-[9px] font-mono uppercase tracking-widest text-brass/60 hover:text-brass disabled:opacity-30 transition-colors"
-                          >
-                            <Volume2 size={10} />
-                            re-narrate
-                          </button>
                         )}
-                        <button
-                          onClick={() => handleDelete(record.id)}
-                          disabled={deletingId === record.id}
-                          className="flex items-center gap-1 text-[9px] font-mono uppercase tracking-widest text-stone/40 hover:text-red-400/70 disabled:opacity-30 transition-colors"
-                        >
-                          {deletingId === record.id ? (
-                            <Loader2 size={10} className="animate-spin" />
-                          ) : (
-                            <Trash2 size={10} />
-                          )}
-                          delete
-                        </button>
                       </div>
+
+                      {renaratingId === record.id && isAudioLoaded && (
+                        <PlaybackControls
+                          isPlaying={isAudioPlaying}
+                          onToggle={handleToggleAudio}
+                          onRestart={handleRestartAudio}
+                          onSeekBackward={handleSeekBackward}
+                          onSeekForward={handleSeekForward}
+                        />
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-[9px] font-mono text-stone/40 uppercase tracking-widest">
+                        {formatDate(record.createdAt)}
+                      </span>
+                      <button
+                        onClick={() => handleDelete(record.id)}
+                        disabled={deletingId === record.id}
+                        className="flex items-center gap-1 text-[9px] font-mono uppercase tracking-widest text-stone/40 hover:text-red-400/70 disabled:opacity-30 transition-colors"
+                      >
+                        {deletingId === record.id ? (
+                          <Loader2 size={10} className="animate-spin" />
+                        ) : (
+                          <Trash2 size={10} />
+                        )}
+                        delete
+                      </button>
                     </div>
                   </li>
                 );
