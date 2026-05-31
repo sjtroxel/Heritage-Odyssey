@@ -8,8 +8,25 @@ import { generateNarrative, generateNarrativeStream } from '../services/narrativ
 import { logger } from '../services/logger.js';
 import { db } from '../db/index.js';
 import { ancestorProfiles, savedNarratives } from '../db/schema.js';
+import {
+  peekQuota,
+  consumeQuota,
+  quotaKey,
+  isQuotaBypassed,
+  type QuotaStatus,
+} from '../services/dailyQuota.js';
 
 const router = Router();
+
+/** Send a 429 carrying the daily-quota status so the client can distinguish it from the burst limiter. */
+const sendDailyLimit = (res: Response, status: QuotaStatus): void => {
+  res.setHeader('Retry-After', String(status.resetsInSeconds));
+  res.status(429).json({
+    error: 'Daily narration limit reached.',
+    scope: 'daily',
+    ...status,
+  });
+};
 
 const aiRateLimit = rateLimit({
   windowMs: 10 * 60 * 1000,
@@ -78,6 +95,15 @@ router.post('/narrative/stream', aiRateLimit, authenticate, async (req: Request,
       return;
     }
 
+    // Consume one unit only once we have a script to synthesize (handoffs are free).
+    if (!isQuotaBypassed(req)) {
+      const status = consumeQuota(quotaKey(req));
+      if (!status.allowed) {
+        sendDailyLimit(res, status);
+        return;
+      }
+    }
+
     // Set Content-Type for audio stream
     res.setHeader('Content-Type', 'audio/mpeg');
 
@@ -96,6 +122,14 @@ router.post('/narrative/stream', aiRateLimit, authenticate, async (req: Request,
 });
 
 /**
+ * GET /api/narrative/quota
+ * Authenticated read-only view of the caller's daily narration allowance.
+ */
+router.get('/narrative/quota', authenticate, (req: Request, res: Response) => {
+  res.json(peekQuota(quotaKey(req)));
+});
+
+/**
  * POST /api/narrative/generate
  * Authenticated SSE route, provides real-time agent step updates
  */
@@ -110,6 +144,16 @@ router.post(
       if (!query) {
         res.status(400).json({ error: 'No query provided' });
         return;
+      }
+
+      // Guard against starting an expensive generation the caller can't hear:
+      // peek (don't consume) — the consume happens at the /tts step.
+      if (!isQuotaBypassed(req)) {
+        const status = peekQuota(quotaKey(req));
+        if (status.remaining <= 0) {
+          sendDailyLimit(res, status);
+          return;
+        }
       }
 
       const userId = (req as Request & { user?: { id: string } }).user?.id;
@@ -181,6 +225,15 @@ router.post('/narrative/tts', aiRateLimit, authenticate, async (req: Request, re
     if (!text) {
       res.status(400).json({ error: 'No text provided' });
       return;
+    }
+
+    // One synthesis = one unit of the daily allowance (consume before streaming).
+    if (!isQuotaBypassed(req)) {
+      const status = consumeQuota(quotaKey(req));
+      if (!status.allowed) {
+        sendDailyLimit(res, status);
+        return;
+      }
     }
 
     res.setHeader('Content-Type', 'audio/mpeg');

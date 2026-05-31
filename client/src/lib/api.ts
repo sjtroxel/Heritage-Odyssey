@@ -12,12 +12,25 @@ export function apiUrl(path: string): string {
   return path;
 }
 
+export type RateLimitScope = 'burst' | 'daily';
+
+export interface QuotaSnapshot {
+  limit: number;
+  used: number;
+  remaining: number;
+  resetsAt: string;
+}
+
 export class RateLimitError extends Error {
   rateLimitReset: number;
-  constructor(resetMs: number) {
-    super('Rate limit reached.');
+  scope: RateLimitScope;
+  quota?: QuotaSnapshot;
+  constructor(resetMs: number, scope: RateLimitScope = 'burst', quota?: QuotaSnapshot) {
+    super(scope === 'daily' ? 'Daily narration limit reached.' : 'Rate limit reached.');
     this.name = 'RateLimitError';
     this.rateLimitReset = resetMs;
+    this.scope = scope;
+    this.quota = quota;
   }
 }
 
@@ -46,9 +59,34 @@ export async function authFetch(
   }
 
   if (response.status === 429) {
-    const h = response.headers.get('RateLimit-Reset');
-    const resetMs = h ? parseInt(h, 10) * 1000 : Date.now() + 10 * 60 * 1000;
-    throw new RateLimitError(resetMs);
+    let scope: RateLimitScope = 'burst';
+    let quota: QuotaSnapshot | undefined;
+    let resetMs = Date.now() + 10 * 60 * 1000;
+    // The daily quota carries its details in the JSON body (readable cross-origin,
+    // unlike custom headers). The burst limiter relies on the RateLimit-Reset header.
+    try {
+      const data = await response.clone().json();
+      if (data?.scope === 'daily') {
+        scope = 'daily';
+        quota = {
+          limit: data.limit,
+          used: data.used,
+          remaining: data.remaining,
+          resetsAt: data.resetsAt,
+        };
+        resetMs =
+          typeof data.resetsInSeconds === 'number'
+            ? Date.now() + data.resetsInSeconds * 1000
+            : Date.parse(data.resetsAt);
+      }
+    } catch {
+      // Body wasn't JSON — fall through to the burst path.
+    }
+    if (scope === 'burst') {
+      const h = response.headers.get('RateLimit-Reset');
+      if (h) resetMs = parseInt(h, 10) * 1000;
+    }
+    throw new RateLimitError(resetMs, scope, quota);
   }
 
   if (!response.ok) {

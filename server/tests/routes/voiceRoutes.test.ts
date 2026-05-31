@@ -11,6 +11,22 @@ vi.mock('express-rate-limit', () => ({
   rateLimit: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
+// Bypass the daily narration quota so route tests stay deterministic.
+// The quota logic itself is covered in tests/dailyQuota.test.ts.
+vi.mock('../../src/services/dailyQuota.js', () => ({
+  peekQuota: () => ({ limit: 3, used: 0, remaining: 3, resetsAt: '', resetsInSeconds: 0 }),
+  consumeQuota: () => ({
+    allowed: true,
+    limit: 3,
+    used: 1,
+    remaining: 2,
+    resetsAt: '',
+    resetsInSeconds: 0,
+  }),
+  quotaKey: () => 'test-key',
+  isQuotaBypassed: () => false,
+}));
+
 // Mock services to isolate route logic
 vi.mock('../../src/services/voiceService.js', () => ({
   transcribeAudio: vi.fn(),

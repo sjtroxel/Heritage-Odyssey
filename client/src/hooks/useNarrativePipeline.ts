@@ -112,6 +112,19 @@ export const useNarrativePipeline = () => {
     setRateLimitReset(null);
   }, [cleanup]);
 
+  // Centralizes 429 handling: the daily quota shows a static message (its reset
+  // is hours away), the burst limiter drives the short M:SS countdown.
+  const applyRateLimit = useCallback((err: RateLimitError) => {
+    if (err.scope === 'daily') {
+      setError('Daily narration limit reached — resets at midnight UTC.');
+    } else {
+      setRateLimitReset(err.rateLimitReset);
+      setError('Rate limit reached.');
+    }
+    setIsRunning(false);
+    setIsPlaying(false);
+  }, []);
+
   const playTTS = useCallback(
     async (text: string, voiceId?: string) => {
       try {
@@ -149,16 +162,14 @@ export const useNarrativePipeline = () => {
         await audioRef.current.play();
       } catch (err) {
         if (err instanceof RateLimitError) {
-          setRateLimitReset(err.rateLimitReset);
-          setError('Rate limit reached.');
-          setIsRunning(false);
+          applyRateLimit(err);
           return;
         }
         setError(err instanceof Error ? err.message : 'TTS playback failed');
         setIsPlaying(false);
       }
     },
-    [token, refresh],
+    [token, refresh, applyRateLimit],
   );
 
   const run = useCallback(
@@ -284,9 +295,7 @@ export const useNarrativePipeline = () => {
         }
       } catch (err) {
         if (err instanceof RateLimitError) {
-          setRateLimitReset(err.rateLimitReset);
-          setError('Rate limit reached.');
-          setIsRunning(false);
+          applyRateLimit(err);
           return;
         }
         setError(err instanceof Error ? err.message : 'Pipeline execution failed');
@@ -294,7 +303,7 @@ export const useNarrativePipeline = () => {
         setIsRunning(false);
       }
     },
-    [cleanup, playTTS, token, refresh],
+    [cleanup, playTTS, token, refresh, applyRateLimit],
   );
 
   useEffect(() => {

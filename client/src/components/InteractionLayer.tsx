@@ -8,11 +8,15 @@ import {
   X as XIcon,
   Compass,
   ChevronDown,
+  Loader2,
+  Check,
+  RotateCcw,
 } from 'lucide-react';
 import { AncestorProfile } from '@heritage-odyssey/shared/types';
 import { VOICES, DEFAULT_VOICE_ID } from '@heritage-odyssey/shared/voices';
 import { useMediaRecorder } from '../hooks/useMediaRecorder.js';
 import { useNarrativePipeline } from '../hooks/useNarrativePipeline.js';
+import { useDailyQuota } from '../hooks/useDailyQuota.js';
 import { apiUrl, authFetch, RateLimitError } from '../lib/api.js';
 import AudioVisualizer from './AudioVisualizer.js';
 import { useAuthContext } from '../context/AuthContext.js';
@@ -53,6 +57,10 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [isMinimized, setIsMinimized] = useState(false);
   const [selectedVoiceId, setSelectedVoiceId] = useState<string>(DEFAULT_VOICE_ID);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  // Holds a fresh Whisper transcript awaiting the user's confirmation. We do NOT
+  // auto-submit voice input — a misheard fragment shouldn't burn a daily narration.
+  const [pendingTranscript, setPendingTranscript] = useState<string | null>(null);
   const isResizing = useRef(false);
 
   const { token, refresh } = useAuthContext();
@@ -71,6 +79,19 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
     rateLimitReset,
     setRateLimitReset,
   } = useNarrativePipeline();
+
+  const { quota, refreshQuota } = useDailyQuota();
+  const quotaExhausted = quota?.remaining === 0;
+
+  // Run the pipeline, then refresh the daily counter (a generation consumes one
+  // unit at the TTS step).
+  const runWithQuota = useCallback(
+    async (query: string, ancestorId?: string, voiceId?: string) => {
+      await run(query, ancestorId, voiceId);
+      refreshQuota();
+    },
+    [run, refreshQuota],
+  );
 
   // Rate limit countdown logic
   useEffect(() => {
@@ -181,6 +202,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
 
   const onRecordingComplete = useCallback(
     async (blob: Blob, _mimeType: string) => {
+      setIsTranscribing(true);
       try {
         const formData = new FormData();
         formData.append('audio', blob, 'recording.audio');
@@ -197,10 +219,10 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
 
         const data = await response.json();
         if (data.text) {
+          // Surface the transcript for review instead of submitting it directly.
           setInputValue(data.text);
-          setCurrentQuery(data.text);
+          setPendingTranscript(data.text);
           setSaveStatus('idle');
-          await run(data.text, selectedAncestor?.id, selectedVoiceId);
         }
       } catch (err) {
         if (err instanceof RateLimitError) {
@@ -209,24 +231,48 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
           return;
         }
         console.error('Transcription error:', err);
+      } finally {
+        setIsTranscribing(false);
       }
     },
-    [run, reset, setRateLimitReset, token, refresh, selectedAncestor, selectedVoiceId],
+    [reset, setRateLimitReset, token, refresh],
   );
+
+  // The user confirmed the transcript reads correctly — now spend a narration.
+  // Submits the current input so any light edits to the transcript are honored.
+  const confirmTranscript = useCallback(async () => {
+    const text = inputValue.trim();
+    if (!text) return;
+    setPendingTranscript(null);
+    setCurrentQuery(text);
+    setSaveStatus('idle');
+    await runWithQuota(text, selectedAncestor?.id, selectedVoiceId);
+  }, [inputValue, runWithQuota, selectedAncestor, selectedVoiceId]);
+
+  const discardTranscript = useCallback(() => {
+    setPendingTranscript(null);
+    setInputValue('');
+  }, []);
 
   const { isRecording, startRecording, stopRecording, isSupported, permissionDenied } =
     useMediaRecorder({ onComplete: onRecordingComplete });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim() || isRunning || isRecording) return;
+    if (!inputValue.trim() || isRunning || isRecording || quotaExhausted) return;
+    setPendingTranscript(null);
     setCurrentQuery(inputValue);
     setSaveStatus('idle');
-    await run(inputValue, selectedAncestor?.id, selectedVoiceId);
+    await runWithQuota(inputValue, selectedAncestor?.id, selectedVoiceId);
   };
 
   const hasStatus =
-    isRecording || isPlaying || pipelineError || permissionDenied || countdown !== null;
+    isRecording ||
+    isPlaying ||
+    isTranscribing ||
+    pipelineError ||
+    permissionDenied ||
+    countdown !== null;
 
   const showClear = narrativeText || agentLog.length > 0 || pipelineError || rateLimitReset;
 
@@ -318,6 +364,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
                 onClick={() => {
                   reset();
                   setInputValue('');
+                  setPendingTranscript(null);
                 }}
                 className="text-[10px] font-mono text-stone/40 hover:text-paper/60 uppercase tracking-widest transition-colors self-end mb-2"
               >
@@ -335,6 +382,13 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
                   <div className="flex items-center gap-2 text-paper/80 text-xs font-spectral italic animate-in fade-in">
                     <Volume2 size={14} className="animate-pulse text-brass" />
                     <span>The Record Speaks...</span>
+                  </div>
+                )}
+
+                {isTranscribing && (
+                  <div className="flex items-center gap-2 text-paper/80 text-xs font-spectral italic animate-in fade-in">
+                    <Loader2 size={14} className="animate-spin text-brass" />
+                    <span>Transcribing your words...</span>
                   </div>
                 )}
 
@@ -377,10 +431,42 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
               </div>
             )}
 
-            {inputValue.length > 50 && (
+            {inputValue.length > 50 && pendingTranscript === null && (
               <p className="mb-2 font-spectral italic text-paper/40 line-clamp-2 leading-relaxed">
                 {inputValue}
               </p>
+            )}
+
+            {/* Voice transcript review — confirm before spending a daily narration */}
+            {pendingTranscript !== null && (
+              <div className="mb-3 border border-brass/40 bg-cast-iron-dark/70 rounded-sm p-3 flex flex-col gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-rose-200/90">
+                  Confirm your request — review what we heard
+                </span>
+                <p className="font-spectral italic text-paper/90 text-sm leading-relaxed">
+                  “{inputValue.trim() || '(nothing heard — try again)'}”
+                </p>
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                  <button
+                    onClick={confirmTranscript}
+                    disabled={isRunning || quotaExhausted || !inputValue.trim()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-brass/15 text-brass border border-brass/40 rounded-sm text-[10px] font-libre font-bold uppercase tracking-widest hover:bg-brass hover:text-cast-iron-dark disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <Check size={13} />
+                    Submit this request
+                  </button>
+                  <button
+                    onClick={discardTranscript}
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-stone/30 text-paper/60 rounded-sm text-[10px] font-libre font-bold uppercase tracking-widest hover:text-paper hover:border-stone/50 transition-colors"
+                  >
+                    <RotateCcw size={13} />
+                    Discard &amp; re-record
+                  </button>
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-rose-200/90 ml-auto">
+                    {quotaExhausted ? 'Daily limit reached' : 'Uses 1 daily narration'}
+                  </span>
+                </div>
+              </div>
             )}
 
             {/* Interaction Bar */}
@@ -391,12 +477,13 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
                   onMouseUp={stopRecording}
                   onTouchStart={startRecording}
                   onTouchEnd={stopRecording}
-                  className={`shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-sm flex items-center justify-center transition-all border-2 shadow-lg relative z-10 ${
+                  disabled={quotaExhausted}
+                  className={`shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-sm flex items-center justify-center transition-all border-2 shadow-lg relative z-10 disabled:opacity-30 disabled:cursor-not-allowed ${
                     isRecording
                       ? 'bg-brass text-cast-iron-dark scale-95 shadow-inner border-brass'
                       : 'bg-brass/10 text-brass hover:bg-brass/20 border-brass/40'
                   }`}
-                  title="Hold to speak"
+                  title={quotaExhausted ? 'Daily narration limit reached' : 'Hold to speak'}
                 >
                   {isRecording ? (
                     <Square size={20} fill="currentColor" />
@@ -422,7 +509,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
 
                 <button
                   type="submit"
-                  disabled={!inputValue.trim() || isRunning || isRecording}
+                  disabled={!inputValue.trim() || isRunning || isRecording || quotaExhausted}
                   className="w-10 h-10 md:w-12 md:h-12 bg-brass/10 text-brass border border-brass/30 flex items-center justify-center hover:bg-brass hover:text-cast-iron-dark disabled:opacity-10 transition-all rounded-sm shadow-md"
                 >
                   <Send size={18} strokeWidth={1.5} />
@@ -432,7 +519,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
 
             {/* Voice picker — choose the narrating voice for generated audio */}
             <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-brass/60 shrink-0">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-rose-200/90 shrink-0">
                 Narrating Voice
               </span>
               <div
@@ -461,6 +548,19 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
                   );
                 })}
               </div>
+
+              {quota && (
+                <span
+                  className={`ml-auto text-[9px] font-mono uppercase tracking-widest ${
+                    quotaExhausted ? 'text-rose-300/80' : 'text-rose-200/90'
+                  }`}
+                  title={`Each narration uses one of your ${quota.limit} daily generations. Resets at midnight UTC.`}
+                >
+                  {quotaExhausted
+                    ? 'Daily limit reached · resets midnight UTC'
+                    : `${quota.remaining}/${quota.limit} narrations left today`}
+                </span>
+              )}
             </div>
 
             {!isRunning && !narrativeText && (
@@ -477,14 +577,15 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
                     {SAMPLE_QUERIES.map((q, i) => (
                       <button
                         key={i}
+                        disabled={quotaExhausted}
                         onClick={() => {
                           setInputValue(q);
                           setCurrentQuery(q);
                           setSaveStatus('idle');
                           setIsSamplesOpen(false);
-                          run(q, selectedAncestor?.id, selectedVoiceId);
+                          runWithQuota(q, selectedAncestor?.id, selectedVoiceId);
                         }}
-                        className="text-xs font-spectral italic text-paper/60 hover:text-paper/90 border border-brass/10 hover:border-brass/30 px-3 py-1.5 transition-colors bg-transparent rounded-sm"
+                        className="text-xs font-spectral italic text-paper/60 hover:text-paper/90 border border-brass/10 hover:border-brass/30 px-3 py-1.5 transition-colors bg-transparent rounded-sm disabled:opacity-30 disabled:cursor-not-allowed"
                       >
                         {q}
                       </button>

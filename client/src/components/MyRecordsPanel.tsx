@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Trash2, X, Square } from 'lucide-react';
+import { Loader2, Trash2, X, Square, Info } from 'lucide-react';
 import PlaybackControls from './PlaybackControls.js';
-import { apiUrl, authFetch } from '../lib/api.js';
+import { apiUrl, authFetch, RateLimitError } from '../lib/api.js';
 import { useAuthContext } from '../context/AuthContext.js';
+import { useDailyQuota } from '../hooks/useDailyQuota.js';
 import { VOICES } from '@heritage-odyssey/shared/voices';
 
 interface SavedRecord {
@@ -21,6 +22,8 @@ interface MyRecordsPanelProps {
 
 const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
   const { token, refresh } = useAuthContext();
+  const { quota, refreshQuota } = useDailyQuota();
+  const quotaExhausted = quota?.remaining === 0;
   const [records, setRecords] = useState<SavedRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -166,6 +169,7 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
         const audio = new Audio(url);
         audioRef.current = audio;
         setIsAudioLoaded(true);
+        refreshQuota(); // a synthesis consumed one unit
         audio.onplay = () => setIsAudioPlaying(true);
         audio.onpause = () => setIsAudioPlaying(false);
         audio.onended = () => {
@@ -178,12 +182,16 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
           setActiveVoiceId(null);
         };
         await audio.play();
-      } catch {
+      } catch (err) {
         setRenaratingId(null);
         setActiveVoiceId(null);
+        if (err instanceof RateLimitError) {
+          // Server says the allowance is spent — sync the counter to reflect it.
+          refreshQuota();
+        }
       }
     },
-    [token, refresh],
+    [token, refresh, refreshQuota],
   );
 
   const formatDate = (iso: string) =>
@@ -242,6 +250,23 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
             <p className="text-center text-sm font-spectral italic text-stone/50 py-12">
               No records have been committed to the Registry.
             </p>
+          )}
+
+          {!loading && !error && records.length > 0 && quota && (
+            <div
+              className={`flex items-center gap-2 mb-4 px-3 py-2 border rounded-sm text-[10px] font-mono uppercase tracking-widest ${
+                quotaExhausted
+                  ? 'border-rose-300/40 bg-rose-200/10 text-rose-300/90'
+                  : 'border-brass/20 bg-brass/5 text-stone/60'
+              }`}
+            >
+              <Info size={12} className="shrink-0" />
+              <span>
+                {quotaExhausted
+                  ? 'Daily narration limit reached · resets midnight UTC'
+                  : `Choosing a voice re-narrates · uses 1 of ${quota.limit} daily · ${quota.remaining} left`}
+              </span>
+            </div>
           )}
 
           {!loading && !error && records.length > 0 && (
@@ -307,9 +332,14 @@ const MyRecordsPanel: React.FC<MyRecordsPanelProps> = ({ onClose }) => {
                                 type="button"
                                 role="radio"
                                 aria-checked={isActiveVoice}
+                                disabled={quotaExhausted && !isActiveVoice}
                                 onClick={() => handleRenarrate(record, voice.id)}
-                                title={voice.description}
-                                className={`px-2 py-0.5 rounded-sm border text-[9px] font-mono uppercase tracking-widest transition-colors ${
+                                title={
+                                  quotaExhausted
+                                    ? 'Daily narration limit reached'
+                                    : voice.description
+                                }
+                                className={`px-2 py-0.5 rounded-sm border text-[9px] font-mono uppercase tracking-widest transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
                                   isActiveVoice
                                     ? 'bg-brass text-paper border-brass'
                                     : 'border-brass/25 text-brass/60 hover:border-brass/50 hover:text-brass'
