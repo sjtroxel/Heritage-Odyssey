@@ -144,7 +144,7 @@ All UI work must respect this design language. Deviating from it creates jarring
 
 ## Known Traps — Read These
 
-**Railway / Husky:** `railway.toml` sets `installCommand = "npm ci --ignore-scripts"`. This is intentional and required. Without `--ignore-scripts`, Railway's production `npm ci` skips devDeps, then the `prepare` script runs `husky`, `husky: not found`, exit 127, deploy fails. Do not remove this flag.
+**Railway / nixpacks devDeps:** The nixpacks builder honors only `buildCommand` and `startCommand` from `railway.toml` — **`installCommand` is ignored** (it always runs a plain `npm ci`, and the `prepare`/husky script still runs). Because Railway sets `NODE_ENV=production`, that `npm ci` omits `devDependencies`, so build-time tools (`tsc`, the `@types/*` packages) go missing and the build dies with `sh: 1: tsc: not found`, exit 127. **Fix: the `NPM_CONFIG_INCLUDE=dev` service variable** (set in the Railway dashboard) forces the full devDep set back into the build. Durable in-repo alternative: embed it in the build, e.g. `buildCommand = "npm ci --include=dev --ignore-scripts && npm run build --workspace=shared && npm run build --workspace=server"`. Note this defect is latent — Railway's Docker layer cache can preserve an old install layer that still has devDeps, so deploys pass until a cache miss exposes the real behavior. Do **not** rely on the dead `installCommand` line, and avoid `NPM_CONFIG_PRODUCTION=false` (deprecated in npm 9).
 
 **Multiple .env files:** `server/.env` holds all real API keys. There is no root `.env`. Python evaluation scripts must load env with `load_dotenv('server/.env', override=True)` — if you use a relative path without override, they silently pick up nothing and fail with cryptic key errors.
 

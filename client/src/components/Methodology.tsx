@@ -2,20 +2,29 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const Methodology: React.FC = () => {
-  const ledgerTexture = `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`;
+  // Layered mahogany surface (CSS-only, no image asset): a warm brass light
+  // from the top, a diagonal wood-tone body, and a fine vertical grain.
+  const mahoganySurface = [
+    'radial-gradient(120% 75% at 50% -10%, rgba(154,123,47,0.20), transparent 55%)',
+    'repeating-linear-gradient(91deg, rgba(0,0,0,0.10) 0px, rgba(0,0,0,0) 3px, rgba(255,238,214,0.02) 5px, rgba(0,0,0,0) 8px)',
+    'linear-gradient(118deg, #5a2c19 0%, #43200f 45%, #2c1409 100%)',
+  ].join(', ');
 
   return (
     <section
       id="methodology"
-      className="py-24 px-4 border-b border-stone/10 relative overflow-hidden"
-      style={{
-        backgroundColor: '#f2f0eb',
-        backgroundImage: ledgerTexture,
-        backgroundBlendMode: 'multiply',
-      }}
+      className="py-24 px-4 border-b border-brass/20 relative overflow-hidden"
+      style={{ backgroundColor: '#2c1409', backgroundImage: mahoganySurface }}
     >
-      {/* Ledger-like vertical line */}
-      <div className="absolute left-[5%] top-0 w-px h-full bg-red-900/10 hidden md:block"></div>
+      {/* Vignette — settles the edges so the cream cards float */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            'radial-gradient(135% 120% at 50% 45%, transparent 50%, rgba(0,0,0,0.5) 100%)',
+        }}
+      ></div>
 
       <div className="max-w-5xl mx-auto relative z-10">
         <motion.div
@@ -41,11 +50,11 @@ const Methodology: React.FC = () => {
             viewport={{ once: true }}
             className="w-full lg:w-1/3 lg:sticky lg:top-32"
           >
-            <h2 className="text-3xl md:text-4xl font-libre font-bold text-ink mb-6 uppercase tracking-tighter">
+            <h2 className="text-3xl md:text-4xl font-libre font-bold text-paper mb-6 uppercase tracking-tighter">
               Our Methodology
             </h2>
             <div className="w-12 h-1 bg-brass mb-8"></div>
-            <div className="bg-[#fffdfa] p-6 border-l-4 border-red-900/20 shadow-md">
+            <div className="bg-[#fffdfa] p-6 border-l-4 border-brass/50 shadow-xl">
               <p className="font-spectral text-lg text-stone leading-relaxed">
                 To transform dry census data into living legacy, we employ a rigorous triple-agent
                 orchestration grounded in the{' '}
