@@ -113,7 +113,7 @@ export const useNarrativePipeline = () => {
   }, [cleanup]);
 
   const playTTS = useCallback(
-    async (text: string) => {
+    async (text: string, voiceId?: string) => {
       try {
         setIsPlaying(true);
         const response = await authFetch(
@@ -123,7 +123,7 @@ export const useNarrativePipeline = () => {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ text }),
+            body: JSON.stringify({ text, ...(voiceId ? { voiceId } : {}) }),
           },
           token,
           refresh,
@@ -162,7 +162,7 @@ export const useNarrativePipeline = () => {
   );
 
   const run = useCallback(
-    async (query: string, ancestorId?: string) => {
+    async (query: string, ancestorId?: string, voiceId?: string) => {
       cleanup();
       setAgentStep(null);
       setAgentLog([]);
@@ -255,7 +255,7 @@ export const useNarrativePipeline = () => {
                 setNarrativeText(data.text);
                 setAgentStep(null);
                 setIsRunning(false);
-                await playTTS(data.text);
+                await playTTS(data.text, voiceId);
               }
             } else if (type === 'handoff') {
               const data = JSON.parse(rawData) as HandoffData;

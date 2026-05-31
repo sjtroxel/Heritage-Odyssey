@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { ElevenLabsClient } from 'elevenlabs';
+import { isValidVoiceId } from '@heritage-odyssey/shared/voices';
 import { env } from '../config/env.js';
 import { Readable } from 'stream';
 
@@ -31,9 +32,12 @@ export async function transcribeAudio(fileBuffer: Buffer, mimeType: string): Pro
 
 /**
  * Streams narrative text to speech using ElevenLabs.
+ * `voiceId` is validated against the shared catalog; an unknown or missing
+ * value falls back to the default voice rather than billing an arbitrary one.
  */
-export async function streamNarrative(text: string): Promise<Readable> {
-  const audioStream = await elevenlabs.textToSpeech.convertAsStream(env.ELEVENLABS_VOICE_ID, {
+export async function streamNarrative(text: string, voiceId?: string): Promise<Readable> {
+  const selectedVoiceId = isValidVoiceId(voiceId) ? voiceId : env.ELEVENLABS_VOICE_ID;
+  const audioStream = await elevenlabs.textToSpeech.convertAsStream(selectedVoiceId, {
     text,
     model_id: 'eleven_multilingual_v2',
     output_format: 'mp3_44100_128',

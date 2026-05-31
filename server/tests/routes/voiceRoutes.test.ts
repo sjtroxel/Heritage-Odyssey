@@ -214,7 +214,26 @@ describe('Voice Routes Integration', () => {
       expect(response.status).toBe(200);
       expect(response.headers['content-type']).toBe('audio/mpeg');
       expect(response.body.toString()).toBe('mock-audio-bytes');
-      expect(voiceService.streamNarrative).toHaveBeenCalledWith('A narrative to speak aloud.');
+      expect(voiceService.streamNarrative).toHaveBeenCalledWith(
+        'A narrative to speak aloud.',
+        undefined,
+      );
+    });
+
+    it('forwards the selected voiceId to streamNarrative', async () => {
+      vi.mocked(voiceService.streamNarrative).mockResolvedValue(
+        Readable.from([Buffer.from('mock-audio-bytes')]) as unknown as Readable,
+      );
+
+      await request(app)
+        .post('/api/narrative/tts')
+        .set('Authorization', 'Bearer valid-token')
+        .send({ text: 'A narrative to speak aloud.', voiceId: 'lcMyyd2HUfFzxdCaC4Ta' });
+
+      expect(voiceService.streamNarrative).toHaveBeenCalledWith(
+        'A narrative to speak aloud.',
+        'lcMyyd2HUfFzxdCaC4Ta',
+      );
     });
 
     it('returns 400 when text is missing', async () => {

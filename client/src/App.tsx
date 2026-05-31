@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [selectedAncestor, setSelectedAncestor] = useState<AncestorProfile | null>(null);
   const [onboardingDone, setOnboardingDone] = useState(false);
+  const [isPanelMinimized, setIsPanelMinimized] = useState(false);
 
   const showOnboarding =
     isAuthenticated &&
@@ -178,7 +179,11 @@ const App: React.FC = () => {
             </AnimatePresence>
           </header>
 
-          <main className="pb-50">
+          <main
+            className={`transition-[padding] duration-300 ease-in-out ${
+              isPanelMinimized ? 'pb-0' : 'pb-50'
+            }`}
+          >
             {/* Hero Section */}
             <section
               id="odyssey"
@@ -299,6 +304,7 @@ const App: React.FC = () => {
           <InteractionLayer
             selectedAncestor={selectedAncestor}
             onClearAncestor={() => setSelectedAncestor(null)}
+            onMinimizedChange={setIsPanelMinimized}
           />
           <AnimatePresence>
             {isRecordsOpen && <MyRecordsPanel onClose={() => setIsRecordsOpen(false)} />}

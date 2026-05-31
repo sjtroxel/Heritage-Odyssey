@@ -10,6 +10,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { AncestorProfile } from '@heritage-odyssey/shared/types';
+import { VOICES, DEFAULT_VOICE_ID } from '@heritage-odyssey/shared/voices';
 import { useMediaRecorder } from '../hooks/useMediaRecorder.js';
 import { useNarrativePipeline } from '../hooks/useNarrativePipeline.js';
 import { apiUrl, authFetch, RateLimitError } from '../lib/api.js';
@@ -24,6 +25,7 @@ type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 interface InteractionLayerProps {
   selectedAncestor?: AncestorProfile | null;
   onClearAncestor?: () => void;
+  onMinimizedChange?: (minimized: boolean) => void;
 }
 
 const SAMPLE_QUERIES = [
@@ -39,6 +41,7 @@ const SAMPLE_QUERIES = [
 const InteractionLayer: React.FC<InteractionLayerProps> = ({
   selectedAncestor = null,
   onClearAncestor,
+  onMinimizedChange,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [currentQuery, setCurrentQuery] = useState('');
@@ -49,6 +52,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [isMinimized, setIsMinimized] = useState(false);
+  const [selectedVoiceId, setSelectedVoiceId] = useState<string>(DEFAULT_VOICE_ID);
   const isResizing = useRef(false);
 
   const { token, refresh } = useAuthContext();
@@ -196,7 +200,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
           setInputValue(data.text);
           setCurrentQuery(data.text);
           setSaveStatus('idle');
-          await run(data.text, selectedAncestor?.id);
+          await run(data.text, selectedAncestor?.id, selectedVoiceId);
         }
       } catch (err) {
         if (err instanceof RateLimitError) {
@@ -207,7 +211,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
         console.error('Transcription error:', err);
       }
     },
-    [run, reset, setRateLimitReset, token, refresh, selectedAncestor],
+    [run, reset, setRateLimitReset, token, refresh, selectedAncestor, selectedVoiceId],
   );
 
   const { isRecording, startRecording, stopRecording, isSupported, permissionDenied } =
@@ -218,7 +222,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
     if (!inputValue.trim() || isRunning || isRecording) return;
     setCurrentQuery(inputValue);
     setSaveStatus('idle');
-    await run(inputValue, selectedAncestor?.id);
+    await run(inputValue, selectedAncestor?.id, selectedVoiceId);
   };
 
   const hasStatus =
@@ -231,7 +235,10 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
       {/* Minimized state — floating corner button to summon the panel back */}
       {isMinimized && (
         <button
-          onClick={() => setIsMinimized(false)}
+          onClick={() => {
+            setIsMinimized(false);
+            onMinimizedChange?.(false);
+          }}
           className="fixed bottom-5 right-5 z-40 pointer-events-auto flex items-center gap-2.5
             bg-cast-iron border border-brass px-5 py-3 rounded-sm
             shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:bg-cast-iron-dark transition-colors group
@@ -273,7 +280,10 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
             />
           </div>
           <button
-            onClick={() => setIsMinimized(true)}
+            onClick={() => {
+              setIsMinimized(true);
+              onMinimizedChange?.(true);
+            }}
             onMouseDown={(e) => e.stopPropagation()}
             onTouchStart={(e) => e.stopPropagation()}
             className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5
@@ -420,6 +430,39 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
               </form>
             </div>
 
+            {/* Voice picker — choose the narrating voice for generated audio */}
+            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-brass/60 shrink-0">
+                Narrating Voice
+              </span>
+              <div
+                role="radiogroup"
+                aria-label="Narrating voice"
+                className="flex flex-wrap gap-1.5"
+              >
+                {VOICES.map((voice) => {
+                  const isSelected = voice.id === selectedVoiceId;
+                  return (
+                    <button
+                      key={voice.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={isSelected}
+                      onClick={() => setSelectedVoiceId(voice.id)}
+                      title={voice.description}
+                      className={`px-3 py-1 rounded-sm border text-[11px] font-libre uppercase tracking-wider transition-colors ${
+                        isSelected
+                          ? 'bg-brass text-cast-iron-dark border-brass'
+                          : 'bg-transparent text-paper/60 border-brass/30 hover:border-brass/60 hover:text-paper/90'
+                      }`}
+                    >
+                      {voice.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {!isRunning && !narrativeText && (
               <div className="mt-3">
                 <button
@@ -439,7 +482,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
                           setCurrentQuery(q);
                           setSaveStatus('idle');
                           setIsSamplesOpen(false);
-                          run(q, selectedAncestor?.id);
+                          run(q, selectedAncestor?.id, selectedVoiceId);
                         }}
                         className="text-xs font-spectral italic text-paper/60 hover:text-paper/90 border border-brass/10 hover:border-brass/30 px-3 py-1.5 transition-colors bg-transparent rounded-sm"
                       >

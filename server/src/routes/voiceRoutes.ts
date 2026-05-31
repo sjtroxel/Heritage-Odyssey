@@ -176,7 +176,7 @@ router.post(
  */
 router.post('/narrative/tts', aiRateLimit, authenticate, async (req: Request, res: Response) => {
   try {
-    const { text } = req.body;
+    const { text, voiceId } = req.body;
 
     if (!text) {
       res.status(400).json({ error: 'No text provided' });
@@ -184,7 +184,7 @@ router.post('/narrative/tts', aiRateLimit, authenticate, async (req: Request, re
     }
 
     res.setHeader('Content-Type', 'audio/mpeg');
-    const audioStream = await streamNarrative(text);
+    const audioStream = await streamNarrative(text, voiceId);
     audioStream.pipe(res);
   } catch (error) {
     logger.error({ err: error }, 'TTS streaming error');
