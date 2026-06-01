@@ -611,81 +611,86 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
             </p>
           </div>
         </div>
+      </div>
 
-        {isNarrativeOpen && narrativeText && (
+      {/* Narrative modal — rendered as a sibling of the panel, NOT a child.
+          The panel sets `transform` (for the minimize slide) which makes it the
+          containing block for any `position: fixed` descendant, and its
+          `overflow-hidden` would then clip this modal to the panel's box. Keep
+          it out here so `fixed inset-0` resolves to the viewport. */}
+      {isNarrativeOpen && narrativeText && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
+          onClick={() => setIsNarrativeOpen(false)}
+        >
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+
           <div
-            className="fixed inset-0 z-60 flex items-center justify-center p-4 md:p-8"
-            onClick={() => setIsNarrativeOpen(false)}
+            className="relative w-full max-w-2xl bg-paper border border-brass/30 shadow-2xl flex flex-col max-h-[65vh] md:max-h-[75vh]"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-
-            <div
-              className="relative w-full max-w-2xl bg-paper border border-brass/30 shadow-2xl flex flex-col max-h-[65vh] md:max-h-[75vh]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="border-b border-brass/20 shrink-0">
-                {/* Row 1 — title + document actions */}
-                <div className="flex items-center justify-between px-6 py-2.5">
-                  <span className="text-[10px] font-libre font-bold uppercase tracking-[0.2em] text-stone/60">
-                    Historical Record
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={handleSave}
-                      disabled={saveStatus !== 'idle'}
-                      className={`text-[10px] font-mono uppercase tracking-widest transition-colors ${
-                        saveStatus === 'saved'
-                          ? 'text-brass/50 cursor-default'
-                          : saveStatus === 'error'
-                            ? 'text-red-400/70 cursor-default'
-                            : saveStatus === 'saving'
-                              ? 'text-brass/40 cursor-wait'
-                              : 'text-brass/70 hover:text-brass'
-                      }`}
-                    >
-                      {saveStatus === 'saved'
-                        ? '✓ saved'
+            <div className="border-b border-brass/20 shrink-0">
+              {/* Row 1 — title + document actions */}
+              <div className="flex items-center justify-between px-6 py-2.5">
+                <span className="text-[10px] font-libre font-bold uppercase tracking-[0.2em] text-stone/60">
+                  Historical Record
+                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleSave}
+                    disabled={saveStatus !== 'idle'}
+                    className={`text-[10px] font-mono uppercase tracking-widest transition-colors ${
+                      saveStatus === 'saved'
+                        ? 'text-brass/50 cursor-default'
                         : saveStatus === 'error'
-                          ? '✕ error'
+                          ? 'text-red-400/70 cursor-default'
                           : saveStatus === 'saving'
-                            ? 'saving...'
-                            : '+ save'}
-                    </button>
-                    <button
-                      onClick={() => setIsNarrativeOpen(false)}
-                      className="text-[10px] font-mono text-stone/40 hover:text-ink/60 uppercase tracking-widest transition-colors"
-                    >
-                      ✕ close
-                    </button>
-                  </div>
-                </div>
-
-                {/* Row 2 — playback transport */}
-                <div className="px-6 py-2 border-t border-brass/10">
-                  <PlaybackControls
-                    isPlaying={isPlaying}
-                    onToggle={togglePlayback}
-                    onRestart={restartPlayback}
-                    onSeekBackward={seekBackward}
-                    onSeekForward={seekForward}
-                  />
+                            ? 'text-brass/40 cursor-wait'
+                            : 'text-brass/70 hover:text-brass'
+                    }`}
+                  >
+                    {saveStatus === 'saved'
+                      ? '✓ saved'
+                      : saveStatus === 'error'
+                        ? '✕ error'
+                        : saveStatus === 'saving'
+                          ? 'saving...'
+                          : '+ save'}
+                  </button>
+                  <button
+                    onClick={() => setIsNarrativeOpen(false)}
+                    className="text-[10px] font-mono text-stone/40 hover:text-ink/60 uppercase tracking-widest transition-colors"
+                  >
+                    ✕ close
+                  </button>
                 </div>
               </div>
 
-              <div className="overflow-y-auto px-6 py-5">
-                {narrativeText.split(/\n\n+/).map((para, i) => (
-                  <p
-                    key={i}
-                    className="text-ink/80 text-sm md:text-base font-spectral leading-relaxed italic mb-4 last:mb-0"
-                  >
-                    {para.trim()}
-                  </p>
-                ))}
+              {/* Row 2 — playback transport */}
+              <div className="px-6 py-2 border-t border-brass/10">
+                <PlaybackControls
+                  isPlaying={isPlaying}
+                  onToggle={togglePlayback}
+                  onRestart={restartPlayback}
+                  onSeekBackward={seekBackward}
+                  onSeekForward={seekForward}
+                />
               </div>
             </div>
+
+            <div className="overflow-y-auto px-6 py-5">
+              {narrativeText.split(/\n\n+/).map((para, i) => (
+                <p
+                  key={i}
+                  className="text-ink/80 text-sm md:text-base font-spectral leading-relaxed italic mb-4 last:mb-0"
+                >
+                  {para.trim()}
+                </p>
+              ))}
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 };
