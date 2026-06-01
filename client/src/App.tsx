@@ -65,13 +65,13 @@ const App: React.FC = () => {
           <header className="border-b border-brass/30 bg-cast-iron sticky top-0 z-50 shadow-md">
             <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="font-libre font-bold text-xl md:text-2xl tracking-tighter text-brass uppercase">
+                <span className="font-libre font-bold text-xl md:text-2xl tracking-tighter text-brass uppercase whitespace-nowrap">
                   Heritage Odyssey
                 </span>
               </div>
 
               {/* Desktop Nav */}
-              <nav className="hidden lg:flex items-center gap-6 text-xs font-libre font-bold tracking-widest text-paper/70 uppercase">
+              <nav className="hidden xl:flex items-center gap-6 text-xs font-libre font-bold tracking-widest text-paper/70 uppercase whitespace-nowrap">
                 <a href="#story" className="hover:text-brass transition-colors">
                   OUR STORY
                 </a>
@@ -107,7 +107,7 @@ const App: React.FC = () => {
               {/* Mobile Menu Button */}
               <button
                 onClick={toggleMenu}
-                className="lg:hidden text-brass p-2 hover:bg-brass/10 rounded-sm transition-colors"
+                className="xl:hidden text-brass p-2 hover:bg-brass/10 rounded-sm transition-colors"
                 aria-label="Toggle Menu"
               >
                 {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -122,7 +122,7 @@ const App: React.FC = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className="lg:hidden bg-cast-iron border-t border-brass/20 overflow-hidden"
+                  className="xl:hidden bg-cast-iron border-t border-brass/20 overflow-hidden"
                 >
                   <div className="flex flex-col p-6 gap-4 text-sm font-libre font-bold tracking-[0.2em] text-paper/80 uppercase">
                     <a

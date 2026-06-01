@@ -30,7 +30,7 @@ npm run dev              # server + client concurrently (hot reload)
 # CI gate — run all four before every push
 npm run typecheck        # tsc --noEmit across all workspaces
 npm run lint             # ESLint across all workspaces
-npm run test             # Vitest: 62 tests (47 server + 15 client)
+npm run test             # Vitest: 138 tests (113 server + 25 client)
 npm run coverage         # Coverage report
 npm run build            # Build all workspaces
 
@@ -152,7 +152,9 @@ All UI work must respect this design language. Deviating from it creates jarring
 
 **Audio element not in DOM:** `useNarrativePipeline` creates audio via `new Audio()` — it is an in-memory object, not attached to the DOM. You cannot query it with a CSS selector. For UI state assertions about audio playback, check for the "The Record Speaks..." text that renders when `isPlaying && !isRunning`.
 
-**Rate limiting:** All AI endpoints (`/api/narrative/generate`, `/api/narrative/tts`, `/api/voice/transcribe`) are rate-limited at 10 requests per 10 minutes per IP in production. Unit tests mock this limiter as a pass-through — don't remove that mock pattern or the test suite will fail intermittently.
+**Rate limiting (two layers):** (1) A burst limiter (`express-rate-limit`) caps all AI endpoints (`/api/narrative/generate`, `/api/narrative/tts`, `/api/voice/transcribe`) at 10 requests / 10 min per IP. (2) A **daily narration quota** (`server/src/services/dailyQuota.ts`) caps audio syntheses at 3 per day per IP — the unit is one `/tts` call, so both fresh generations and My Records voice-switches count; `/generate` peek-gates (refuses at 0 remaining without consuming) and `/tts` consumes. `GET /api/narrative/quota` backs the client usage meter. Both layers respect the `x-eval-bypass` token. Unit tests mock **both** as pass-throughs (`vi.mock('express-rate-limit')` and `vi.mock('.../dailyQuota.js')` in `voiceRoutes.test.ts`); the quota logic itself is covered in `dailyQuota.test.ts`. Don't remove either mock or the suite fails intermittently.
+
+**Voice selection:** Four narrating voices live in `shared/voices.ts` (`VOICES` + `DEFAULT_VOICE_ID` + `isValidVoiceId`), the single source of truth for both the client picker and the server allowlist. `streamNarrative(text, voiceId?)` validates against it and falls back to `ELEVENLABS_VOICE_ID` (the default/Adam) for unknown values, so a client can't bill the account against an arbitrary voice. The green-panel picker sets the initial generation voice; My Records lets you re-narrate a saved record in any voice.
 
 **`default.sqlite`:** TruLens auto-creates this at the working directory when `evaluation/main.py` runs. It is gitignored. If it appears tracked, run `git rm --cached default.sqlite`.
 

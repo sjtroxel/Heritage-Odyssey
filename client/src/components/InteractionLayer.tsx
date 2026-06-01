@@ -39,6 +39,13 @@ const SAMPLE_QUERIES = [
   'Describe conditions aboard immigrant ships during the great migration era',
 ];
 
+// Collapsed height of the panel. Must be tall enough to show the input bar, the
+// voice picker (which wraps to a second row on narrower tablets), the "example
+// queries" toggle, and the footer without clipping.
+const BASE_HEIGHT = 280;
+// Expanded height when the sample-query cards are revealed.
+const SAMPLES_HEIGHT = 400;
+
 /**
  * Sticky-bottom interaction layer providing voice and text input.
  */
@@ -49,7 +56,7 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [currentQuery, setCurrentQuery] = useState('');
-  const [containerHeight, setContainerHeight] = useState(200);
+  const [containerHeight, setContainerHeight] = useState(BASE_HEIGHT);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [isSamplesOpen, setIsSamplesOpen] = useState(false);
   const [isNarrativeOpen, setIsNarrativeOpen] = useState(false);
@@ -114,29 +121,31 @@ const InteractionLayer: React.FC<InteractionLayerProps> = ({
     setIsNarrativeOpen(Boolean(narrativeText));
   }, [narrativeText]);
 
-  // Auto-expand logic when results or samples appear
+  // Auto-expand logic when results or samples appear.
+  //
+  // NOTE: `containerHeight` is deliberately NOT in the dependency array, and we
+  // use functional updates instead of reading it directly. This effect should
+  // only react to *state transitions* (run starting, narrative arriving, samples
+  // toggling). If it ran on every height change it would fight the user's manual
+  // drag — snapping the panel back the instant they tried to resize it.
   useEffect(() => {
     if (isMinimized) return;
-    if (isRunning || narrativeText) {
-      // Expanded height for narrative results
-      if (containerHeight < 400) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setContainerHeight(Math.floor(window.innerHeight * 0.55));
-      }
-    } else if (isSamplesOpen) {
-      // Tighter expanded height specifically for samples
-      if (containerHeight < 300) {
-        setContainerHeight(340);
-      }
-    } else {
-      // Return to base height when nothing is active
-      setContainerHeight(200);
-    }
-
     if (isRunning) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsSamplesOpen(false);
     }
-  }, [isRunning, narrativeText, isSamplesOpen, containerHeight, isMinimized]);
+    if (isRunning || narrativeText) {
+      // Expanded height for narrative results — grow only, never shrink a panel
+      // the user may have already dragged taller.
+      setContainerHeight((h) => (h < 400 ? Math.floor(window.innerHeight * 0.55) : h));
+    } else if (isSamplesOpen) {
+      // Make room for the sample-query cards.
+      setContainerHeight((h) => (h < SAMPLES_HEIGHT ? SAMPLES_HEIGHT : h));
+    } else {
+      // Return to base height when nothing is active.
+      setContainerHeight(BASE_HEIGHT);
+    }
+  }, [isRunning, narrativeText, isSamplesOpen, isMinimized]);
 
   // Resize logic
   const startResizing = useCallback(() => {

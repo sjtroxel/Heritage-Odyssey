@@ -9,7 +9,7 @@ Heritage Odyssey takes a question about an ancestor or a migration era, retrieve
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![LangGraph](https://img.shields.io/badge/LangGraph-multi--agent-1C3C3C)
-![Tests](https://img.shields.io/badge/tests-130%20Node%20%2B%2014%20Python-success)
+![Tests](https://img.shields.io/badge/tests-138%20Node%20%2B%2014%20Python-success)
 
 **Live:** [heritage-odyssey.vercel.app](https://heritage-odyssey.vercel.app) (frontend) · [heritage-odyssey.up.railway.app](https://heritage-odyssey.up.railway.app) (API)
 
@@ -52,7 +52,9 @@ flowchart LR
 2. The **Researcher** queries Pinecone across both the shared corpus and the user's private namespace. It proceeds only when at least two general records clear the `0.25` similarity threshold, or the user has matching records in their own imported tree. Otherwise it emits a `handoff` event and exits rather than feeding thin context forward.
 3. The **Synthesizer** drafts a historical narrative from the retrieved documents.
 4. The **Narrator** rewrites the draft for spoken delivery. Its output is what goes to text-to-speech.
-5. Every stage yields a server-sent event (`agent_step`, `complete`, `handoff`, `error`) from an async generator in `narrativeService.ts`. The client renders the pipeline as it runs, then plays the completed narrative through ElevenLabs.
+5. Every stage yields a server-sent event (`agent_step`, `complete`, `handoff`, `error`) from an async generator in `narrativeService.ts`. The client renders the pipeline as it runs, then plays the completed narrative through ElevenLabs in one of four selectable voices. Saved narratives can be replayed in any voice from the My Records panel.
+
+Two cost guardrails sit in front of the model calls: a per-IP burst limiter and a per-IP daily narration quota (each synthesis counts once), surfaced to the user as a live remaining-count. Voice input goes through Whisper and is shown back to the user for confirmation before it is submitted, so a misheard fragment never spends a generation.
 
 The graph itself stays stable. Query enrichment happens in the service layer before `graph.invoke`, so adding context sources does not mean rewriting the agent wiring.
 
@@ -66,7 +68,7 @@ The graph itself stays stable. Query enrichment happens in the service layer bef
 | Agent orchestration | LangGraph (`@langchain/langgraph`), three-node graph |
 | Vector database | Pinecone (1536-dim, cosine), per-user namespaces |
 | LLM | OpenAI GPT-4o across all three agent nodes |
-| Text-to-speech | ElevenLabs neural TTS |
+| Text-to-speech | ElevenLabs neural TTS (four selectable narrating voices) |
 | Speech-to-text | OpenAI Whisper (voice query input) |
 | Database | Neon PostgreSQL, Drizzle ORM |
 | Auth | JWT access tokens + httpOnly refresh, Google OAuth, demo mode |
@@ -161,7 +163,7 @@ npm run eval:service        # FastAPI on port 8000, /docs for OpenAPI UI
 ```bash
 npm run typecheck    # tsc --noEmit across all workspaces
 npm run lint         # ESLint across all workspaces
-npm run test         # Vitest: 105 server + 25 client
+npm run test         # Vitest: 113 server + 25 client
 npm run coverage     # coverage with thresholds
 npm run build        # build all workspaces
 ```
